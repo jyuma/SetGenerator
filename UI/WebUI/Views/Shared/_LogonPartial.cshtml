@@ -1,0 +1,33 @@
+﻿@using System.Collections
+@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new {id = "logoutForm", @class = "navbar-right"}))
+    {
+        @Html.AntiForgeryToken()
+            
+        <text><strong>
+                @if (User.Identity.GetUserName() == "admin")
+                {
+                    <a id="profile-clicked" href="javascript:;">@User.Identity.GetUserName()</a>
+                }
+                else
+                {
+                    <span>
+                        @if (Session["Bands"] != null)
+                        {
+                            @Html.DropDownList("ddlUserBand", new SelectList((IEnumerable)Session["Bands"], "Id", "Name", Session["BandId"]), new { @onchange = "shared._layout.setCurrentBand()" })
+                        }
+                        @Html.ActionLink("Welcome " + User.Identity.GetUserName() + "! ", "Manage", "Account", routeValues: null, htmlAttributes: new { title = "Manage" })
+                    </span>
+                }
+                <a href="javascript:document.getElementById('logoutForm').submit()">Fuck off</a>
+            </strong>
+        </text>
+    }
+}
+else
+{
+    @*@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new {id = "registerLink"})*@
+    @Html.ActionLink("Sign In", "Login", "Account")
+}

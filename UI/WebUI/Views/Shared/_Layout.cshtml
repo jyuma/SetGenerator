@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+
+    @Styles.Render("~/bundles/CommonStyles")
+    @Scripts.Render("~/bundles/ModernizrScripts")
+    @Scripts.Render("~/bundles/CommonScripts")
+    @Scripts.Render("~/bundles/CustomScripts")
+
+</head>
+<body>
+    <div>
+        <nav class="navbar">
+            <div class=" container-fluid">
+                <ul class="navbar-brand">
+                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                    @if (Request.IsAuthenticated)
+                    {
+                        <li>@Html.ActionLink("Bands", "Index", "Bands")</li>
+                        <li>@Html.ActionLink("Gigs", "Index", "Gigs")</li>
+                        <li>@Html.ActionLink("Songs", "Index", "Songs")</li>
+                        <li>@Html.ActionLink("Set Lists", "Index", "SetLists")</li>
+                    }
+                </ul>
+                <div class="navbar-text navbar-right">@Html.Partial("_LogonPartial")</div>
+            </div>
+        </nav>
+        
+        <div id="header">
+            @RenderBody()
+        </div>
+        
+        <div id="footer">
+            <p>Authored by John Charlton</p>
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/BootstrapScripts")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

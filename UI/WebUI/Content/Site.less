@@ -1,0 +1,274 @@
+﻿/* Body texture */
+@colourBlack: #222222;
+@colourBlackSelected: #8a8a8a;
+@colourIvoryHover: #f3f1f1;
+@colourIvory: #e9e4e4;
+@colourWhite: #ffffff;
+@colourPrimary: #457bc5;
+@colourDanger: #b94a48;
+@colourWarning: #ED9C28;
+@colourSuccess: #47A447;
+@colourTableHeaderText: #2c71d0;
+@colourTableHeaderTextHover: #6ea5f3;
+@colourBanner: #d1d0d0;
+@colourGrey: #8b8a8a;
+
+body {
+    margin: 0;
+    /*background: url('Images/background.png') repeat center;*/
+}
+
+/* Home main image */
+#registerLink {
+    padding-right: 5px;
+}
+
+#wrapper {
+    position: relative;
+    margin: 0 0 0 150px;
+    max-width: 1200px;
+}
+
+#home-content {
+    background: url('images/home.jpg');
+    margin: auto;
+    min-height: 650px;
+
+    h2 {
+        padding: 10px;
+        color: @colourBanner;
+    }
+}
+
+.glyphicon {
+    color: @colourBlack;
+}
+
+.glyphicon-new-window {
+    color: @colourSuccess;
+}
+
+.glyphicon-pencil {
+    color: @colourPrimary;
+}
+
+.glyphicon-remove {
+    color: @colourDanger;
+}
+
+.glyphicon-trash {
+    color: @colourWarning;
+}
+
+#ddlUserBand {
+    border-radius: 6px;
+}
+
+/* Search Menu Items */
+
+#txtSearchKey {
+    width: 55px;
+}
+
+.text-search {
+    width: 300px;
+}
+
+.container-fluid {
+    margin-right: 30px;
+}
+
+.row {
+    margin-bottom: 5px;
+}
+
+.panel-heading, .panel-body {
+    padding: 5px 10px 5px 10px;
+}
+
+table {
+    .col-glyphicon {
+        width: 10px;
+    }
+
+    .col-link {
+        width: 90px;
+    }
+
+    th {
+        background-color: @colourGrey;
+        color: @colourTableHeaderText;
+        a, a:link, span {
+            color: @colourIvory;
+        }
+
+        a:link {
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: @colourWhite;
+        }
+    }
+    td {
+        cursor: default;
+    }
+}
+
+.navbar-text {
+    > a {
+        color: @colourIvory;
+        text-decoration: none;
+
+        &:hover {
+            color: @colourIvoryHover;
+        }
+    }
+}
+#logoutForm.navbar-right {
+    strong {
+        > a {
+            color: @colourIvory;
+            text-decoration: none;
+
+            &:hover {
+                color: @colourIvoryHover;
+            }
+        }
+        span {
+            > a {
+                color: @colourIvory;
+                text-decoration: none;
+
+                &:hover {
+                    color: @colourIvoryHover;
+                }
+            }
+        }
+    }
+}
+
+.navbar {
+    height: 65px;
+    margin-bottom: 0;
+    background-color: @colourPrimary;
+    .navbar-brand {
+        > li {
+            display: inline-block;
+            padding: 0 0 0 10px;
+            margin-top: 5px;
+            > a {
+                color: @colourIvory;
+                text-decoration: none;
+                font-size: 1.2em;
+                &:hover {
+                    color: @colourIvoryHover;
+                }
+            }
+        }
+    }
+}
+
+.nav-pills {
+    margin: 8px 0 5px 0;
+}
+
+h1, h2, h3 {
+    margin: 0;
+    padding: 0;
+    font-weight: normal;
+}
+
+h1 {
+    font-size: 2em;
+}
+
+h2 {
+    font-size: 2.4em;
+}
+
+h3 {
+    font-size: 1.6em;
+    padding: 1px;
+}
+
+h4 {
+    font-size: 1.2em;
+    padding: 0;
+    margin: 0;
+}
+
+/* Page */
+
+#page {
+    width: 980px;
+    margin: 0px auto;
+    padding: 0px 0px 0px 0px;
+}
+
+#page-bgtop {
+}
+
+#page-bgbtm {
+    padding: 30px 10px 0px 40px;
+}
+
+/* Content */
+
+#content {
+    width: 980px;
+    padding: 30px 0 0 0;
+}
+
+/* Footer */
+#footer {
+    position: relative;
+    height: 25px;
+    padding: 0;
+    color: @colourIvory;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: Arial, Helvetica, sans-serif;
+    background: @colourPrimary;
+    clear: both;
+}
+
+#footer p {
+    padding-top: 5px;
+    line-height: normal;
+    font-size: 9px;
+    text-align: center;
+}
+
+#footer a {
+    color: #3185EB;
+}
+
+.modal-dialog {
+    padding:0;
+}
+
+.modal-body {
+    padding-bottom: 0;
+}
+.modal-header {
+    color: @colourIvory;
+    background-color: @colourPrimary;
+}
+
+/* Validation */
+
+.validation-container {
+    position: relative;
+    color: @colourDanger;
+    padding: 0;
+    margin-left: 10px;
+    border-style: none;
+    clear: both;
+    li {
+        display: list-item;
+        text-decoration: none;
+        font-size: 1em;
+        padding: 0;
+    }
+}

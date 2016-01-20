@@ -1,0 +1,14 @@
+﻿@{
+    ViewBag.Title = "Home";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        home.index.init({ username: @Html.Raw(Json.Encode(Model.UserName)) });
+    });
+</script>
+
+<div id="home-content">
+    <h2>Welcome to Set Generator, dude!</h2>
+</div>

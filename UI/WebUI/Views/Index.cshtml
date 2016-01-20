@@ -1,0 +1,810 @@
+﻿@model SetGenerator.WebUI.ViewModels.SongViewModel
+@{
+    ViewBag.Title = "Songs";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (!Request.IsAuthenticated)
+{
+    Url.Action("Index", "Home");
+}
+
+<script type="text/javascript">
+    var HIGHLIGHT_ROW_COLOUR = "#e3e8ff";
+    var STRING_ALL = "<All>";
+    var STRING_NONE = "<None>";
+    var ADD_SONG_HEADER = "Add Song";
+    var EDIT_SONG_HEADER = "Edit Song";
+    var SETDISABLED_HEADER = "Shitcan It?";
+    var SETENABLED_HEADER = "Ressurect It?";
+    var DEFAULT_BAND_ID = 1;
+
+    var _songList = @Html.Raw(Json.Encode(Model.SongList));
+    var _userBandList = @Html.Raw(Json.Encode(Model.UserBandArrayList));
+    var _memberArrayList = @Html.Raw(Json.Encode(Model.MemberArrayList));
+    var _instrumenArraytList = @Html.Raw(Json.Encode(Model.InstrumentArrayList));
+    var _keyNameArrayList = @Html.Raw(Json.Encode(Model.KeyNameArrayList));
+    var _keyNameList = @Html.Raw(Json.Encode(Model.KeyNameList));
+    var _keyListFull = @Html.Raw(Json.Encode(Model.KeyListFull));    // used for retrieving the key id before saving
+    var _newMemberInstrumentDetailList = @Html.Raw(Json.Encode(Model.NewSongMemberInstrumentList));
+    var _bandMemberList = @Html.Raw(Json.Encode(Model.BandMemberList));
+    //var _memberNameList = @Html.Raw(Json.Encode(Model.MemberArrayList));
+    var _tableColumnList = @Html.Raw(Json.Encode(Model.TableColumnList));
+    var _memberNameList;
+    var _composerList;
+
+    $(document).ready(function() {
+        $("#ddlSearchBands")[0].selectedIndex = 0;
+        loadLists();
+        ko.applyBindings(new SongViewModel());
+        createDialogForms();
+
+        $("button").button();
+        $("button").removeClass("ui-widget");
+        $("#song-table-container").show();
+    });
+
+    function SongMemberInstrument(instrumentid, memberid, instrabbrev) {
+        var self = this;
+        self.instrumentid = instrumentid;
+        self.memberid = memberid;
+        self.memberName = getValue(_memberArrayList, memberid, 'Display', 'Value');
+        self.instrumentAbbrev = instrabbrev;
+        self.memberInstruments = [];
+
+        $(_bandMemberList).each(function(index, value) {
+            if (value.Id == memberid) {
+                self.memberInstruments.push({ Display: STRING_NONE, Value: 0 });
+                $(value.MemberInstrumentDetails).each(function(i, v) {
+                    self.memberInstruments.push({ Display: v.Name, Value: v.Id });
+                });
+            }
+        });
+    }
+
+    function SongKeyDetail(detail) {
+        var self = this;
+
+        self.id = detail.Id;
+        self.nameid = detail.NameId;
+        self.sharpflatnat = detail.SharpFlatNatural;
+        self.sharpflatnatdesc = GetSharpFlatNotation(detail.SharpFlatNatural);
+        self.majminor = detail.MajorMinor;
+        self.name = detail.Name + self.sharpflatnatdesc + (detail.MajorMinor == 1 ? "m" :"");
+    }
+
+    function Song(id, bandid, title, keydetail, singerid, composer, neverclose, neveropen, disabled, updateuser, updatedate, instrumentmemberdetails) {
+        var self = this;
+
+        self.id = id;
+        self.title = title;
+        self.keyid = keydetail.Id;
+        self.keydetail = new SongKeyDetail(keydetail);
+        self.singerid = singerid;
+        self.composer = composer;
+        self.neverclose = neverclose;
+        self.neveropen = neveropen;
+        self.disabled = disabled;
+        self.singer = getValue(_memberArrayList, singerid, 'Display', 'Value');
+        self.key = self.keydetail.name;
+        self.updateuser = updateuser;
+        self.updatedate = updatedate;
+        self.bandid = bandid;
+        self.memberInstruments = [];
+
+        $(instrumentmemberdetails).each(function(index, value) {
+            var memberName = getValue(_memberArrayList, value.MemberId, 'Display', 'Value').toLowerCase();
+            self[memberName] = getValue(instrumentmemberdetails, value.InstrumentId, 'InstrumentAbbrev', 'InstrumentId');
+        });
+
+        self.memberInstrumentDetails = instrumentmemberdetails;
+    }
+
+    //---------------------------------------------- VIEW MODEL (BEGIN) ---------------------------------------------------
+
+    function SongViewModel() {
+        var self = this;
+
+        self.songs = ko.observableArray([]);
+        self.memberInstrumentTable = ko.observableArray([]);
+        self.keyNameList = ko.observableArray(_keyNameList);
+        self.memberNameList = ko.observableArray(_memberNameList);
+        self.keyNameArrayList = ko.observableArray(_keyNameArrayList);
+        self.sharpFlatNaturalArrayList = ko.observableArray([{ Value: '0', Display: ' ' }, { Value: '1', Display: '#' }, { Value: '2', Display: 'b' }]);
+        self.majorMinorArrayList = ko.observableArray( [{ Value: '0', Display: 'Major' }, { Value: '1', Display: 'Minor' }]);
+        self.bandList = ko.observableArray(_userBandList);
+        self.showDisabled = ko.observable(false);
+        self.selectedSong = ko.observable();
+        self.selectedBandId = ko.observable(_userBandList[0].Value);
+        self.memberSearch = ko.observable(STRING_ALL);
+        self.keySearch = ko.observable('');
+        self.titleSearch = ko.observable('');
+        self.editFormHeader =  ko.observable('');
+        self.setDisabledFormHeader =  ko.observable('');
+        self.isMinor = ko.observable(false);
+
+        createSongArray(_songList);
+
+        self.columns = ko.computed(function() {
+            var arr = [];
+            $(_tableColumnList).each(function(index, value) {
+                arr.push({ title: value.Header, sortKey: value.Data, dataMember: value.Data, isVisible: ko.observable(value.IsVisible), alwaysVisible: value.AlwaysVisible, isMember: value.IsMember });
+            });
+            return arr;
+        });
+
+        self.memberArrayList = ko.computed(function() {
+            var arr = [];
+            arr.push({ Value: 0, Display: STRING_NONE});
+            $(_memberArrayList).each(function(index, value) {
+                arr.push({ Value: value.Value, Display: value.Display });
+            });
+            return arr;
+        });
+
+        self.keyNameSearchList = ko.computed(function() {
+            var arr = [];
+            arr.push(STRING_ALL);
+            $(_keyNameList).each(function(index, value) {
+                arr.push(value);
+            });
+            return arr;
+        });
+
+        self.singerNameSearchList = ko.computed(function() {
+            var arr = [];
+            arr.push(STRING_ALL);
+            $(_memberNameList).each(function(index, value) {
+                arr.push(value);
+            });
+            return arr;
+        });
+
+        function createSongArray(list) {
+            self.songs.removeAll();
+            $(list).each(function(index, value) {
+                if (value.Disabled && self.showDisabled()) {
+                    pushSong(value);
+                }
+                if (!value.Disabled && !self.showDisabled()) {
+                    pushSong(value);
+                }
+            });
+        };
+
+        function pushSong (value) {
+            self.songs.push(new Song(value.Id, value.BandId, value.Title, value.KeyDetail, value.SingerId, value.Composer, value.NeverClose, value.NeverOpen, value.Disabled, value.UserUpdate, value.DateUpdate, value.SongMemberInstrumentDetails));
+        };
+
+        self.songsTable = self.songs;
+
+        self.memberInstrumentHeaders = [
+            {title:'Member', sortKey:'member'},
+            {title:'Instrument', sortKey:'instrument'}
+        ];
+
+        self.sort = function(header, event){
+            var sortKey = header.sortKey;
+
+            $(self.columns()).each(function(index, value){
+                if (value.sortKey == sortKey) {
+                    self.songs.sort(function(a,b){
+                        return a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : a[sortKey] == b[sortKey] ? 0 : 0;
+                    });
+                }
+            });
+        };
+
+        self.filteredSongs = ko.computed(function() {
+            return ko.utils.arrayFilter(self.songs(), function(s) {
+                return (
+                            (s.bandid == self.selectedBandId()) &&
+                            (self.memberSearch() == STRING_ALL || s.singer == self.memberSearch()) &&
+                            ((self.titleSearch().length == 0 || s.title.toLowerCase().indexOf(self.titleSearch().toLowerCase()) != -1)) &&
+                            ((self.keySearch().length == 0 || s.key.toLowerCase().indexOf(self.keySearch().toLowerCase()) != -1))
+                        );
+                });
+        });
+
+        
+        self.songsTable = ko.computed(function() {
+            return self.songs();  //self.filteredSongs();
+        });
+
+        self.toggleDisabled = function() {
+            self.showDisabled(!self.showDisabled());
+            createSongArray(_songList);
+        };
+
+        self.showEditDialog = function(s) {
+            self.highlightRow(s);
+            self.showSongEditDialog(s);
+        };
+
+        self.deleteSelectedSong = function(s) {
+            deleteSong(s.id);
+        };
+
+        self.showDeleteDialog = function(s) {
+            self.highlightRow(s);
+            self.showSongDeleteDialog(s);
+        };
+
+        self.showDisableDialog = function(s) {
+            self.highlightRow(s);
+            self.showSetDisabledDialog(s);
+        };
+
+        self.showColumnDialog = function() {
+            initDialog("song-column-form");
+
+            $("#btnOkColumns").unbind('click');
+            $("#btnOkColumns").click(function() {
+                self.saveColumns();
+            });
+        };
+
+        self.showSongDeleteDialog = function(row) {
+            if (row.id > 0) {
+                initDialog("song-delete-form");
+
+                $("#btnDelete").unbind('click');
+                $("#btnDelete").click(function() {
+                    self.deleteSong(row.id);
+                });
+            }
+        };
+
+        self.showSetDisabledDialog = function(row) {
+            if (row.id > 0) {
+                if (self.showDisabled()) {
+                    self.setDisabledFormHeader(SETENABLED_HEADER);
+                } else {
+                    self.setDisabledFormHeader(SETDISABLED_HEADER);
+                }
+                initDialog("song-disable-form");
+
+                $("#btnYesDelete").unbind('click');
+                $("#btnYesDelete").click(function() {
+                    self.deleteSong(row.id);
+                });
+                $("#btnSetDisable").unbind('click');
+                $("#btnSetDisable").click(function() {
+                    self.setDisabled(row.id);
+                });
+                $("#song-disable-form").closest(".ui-dialog")
+                    .removeClass("ui-widget")
+                    .removeClass("ui-widget-content")
+                    .removeClass("ui-dialog-content")
+                    .addClass("ui-dialog-custom");
+            }
+        };
+
+        self.showSongEditDialog = function(row) {
+            if (row.id > 0) {
+                self.editFormHeader(EDIT_SONG_HEADER);
+                var song = self.getSong(row.id);
+                self.selectedSong(song);
+                self.memberInstrumentTable.removeAll();
+
+                ko.utils.arrayForEach(song.memberInstrumentDetails, function(item) {
+                    self.memberInstrumentTable.push(new SongMemberInstrument(item.InstrumentId, item.MemberId, item.InstrumentAbbrev));
+                });
+                $("#txtTitle").val(song.title);
+                $("#ddlKey").val(song.keydetail.nameid);
+                $("#ddlMajorMinor").val(song.keydetail.majminor);
+                $("#ddlSharpFlatNatural").val(song.keydetail.sharpflatnat);
+                $("#ddlSinger").val(song.singerid);
+                $("#txtComposer").val(song.composer);
+                $("#chkNeverClose").attr('checked', song.neverclose);
+                $("#chkNeverOpen").attr('checked', song.neveropen);
+                $("#txtTitle").focus();
+            } else {
+                self.editFormHeader(ADD_SONG_HEADER);
+                self.memberInstrumentTable.removeAll();
+                self.selectedSong([]);
+                $(_newMemberInstrumentDetailList).each(function(index, value) {
+                    self.memberInstrumentTable.push(new SongMemberInstrument(value.InstrumentId, value.MemberId, value.InstrumentAbbrev));
+                });
+                $("#txtTitle").val('');
+                $("#ddlKey")[0].selectedIndex = 0;
+                $("#ddlMajorMinor")[0].selectedIndex = 0;
+                $("#ddlSharpFlatNatural")[0].selectedIndex = 0;
+                $("#ddlSinger")[0].selectedIndex = 0;
+                $("#txtComposer").val('');
+                $("#chkNeverClose").attr('checked', false);
+                $("#chkNeverOpen").attr('checked', false);
+                $("#txtTitle").focus();
+            }
+            initDialog("song-edit-form");
+
+            $("#btnSave").unbind('click');
+            $("#btnSave").click(function () {
+                $("#validation-container").html("");
+                $("#validation-container").hide();
+                self.saveSong();
+            });
+
+            $("#song-edit-form").closest(".ui-dialog")
+                .removeClass("ui-widget")
+                .removeClass("ui-widget-content")
+                .removeClass("ui-dialog-content")
+                .addClass("ui-dialog-custom");
+        };
+
+        self.getSong = function(songid) {
+            var song = null;
+
+            ko.utils.arrayForEach(self.songs(), function(item) {
+                if (item.id == songid) {
+                    song = item;
+                }
+            });
+            return song;
+        };
+
+        self.highlightRow = function(row) {
+            var id = row.id;
+            var table = $("#tblSong");
+            var rows = $("#tblSong tr:gt(0)");
+            rows.each(function() {
+                $(this).css("background-color", "#ffffff");
+            });
+
+            var r = table.find("#row_" + id);
+            r.css("background-color", HIGHLIGHT_ROW_COLOUR);
+            $("#tblSong").attr('tr:hover', HIGHLIGHT_ROW_COLOUR);
+        };
+
+        //function getCurrentDate() {
+        //    var today = new Date();
+        //    var dd = today.getDate();
+        //    var mm = today.getMonth() + 1;
+
+        //    var yyyy = today.getFullYear();
+        //    if(dd < 10){
+        //        dd = '0' + dd;}
+        //    if(mm < 10){
+        //        mm = '0' + mm;}
+        //    today = mm + '/' + dd + '/' + yyyy;
+        //    return today;
+        //}
+
+        self.saveSong = function() {
+            var song = self.getSongFromDialog();
+            var jsonData = JSON.stringify(song);
+
+            $("body").css("cursor", "wait");
+
+            $.ajax({
+                type: "POST",
+                url: "/Song/Save/",
+                data: { song: jsonData },
+                dataType: "json",
+                traditional: true,
+                failure: function(data) {
+                    $("#song-edit-form").dialog('close');
+                    $("body").css("cursor", "default");
+                    $("#validation-container").html("");
+                },
+                success: function(data) {
+                    if (data.Success) {
+                        _songList = data.SongList;
+                        createSongArray(_songList);
+                        self.selectedSong(self.getSong(data.SelectedId));
+                        $("#song-edit-form").dialog('close');
+                        self.highlightRow(self.selectedSong());
+                        refreshComposerAutocomplete();
+                    } else {
+                        if (data.ErrorMessages.length > 0) {
+                            $("#validation-container").show();
+                            $("#validation-container").html("");
+                            var html = "<ul>";
+                            for (var i = 0; i < data.ErrorMessages.length; i++) {
+                                var message = data.ErrorMessages[i];
+                                html = html + "<li>" + message + "</li>";
+                            }
+                            html = html + "</ul>";
+                            $("#validation-container").append(html);
+                        }
+                    }
+                    $("body").css("cursor", "default");
+                }
+            });
+        };
+
+        self.deleteSong = function(songid) {
+            $("body").css("cursor", "wait");
+
+            $.ajax({
+                type: "POST",
+                url: "/Song/Delete/",
+                data: { id: songid },
+                dataType: "json",
+                traditional: true,
+                failure: function() {
+                    if (self.showDisabled())
+                        $("#song-delete-form").dialog('close');
+                   else
+                        $("#song-disable-form").dialog('close');
+                    $("body").css("cursor", "default");
+                },
+                success: function(data) {
+                    if (data.Success) {
+                        _songList = data.SongList;
+                        createSongArray(_songList);
+                        if (self.showDisabled())
+                            $("#song-delete-form").dialog('close');
+                        else
+                            $("#song-disable-form").dialog('close');
+
+                        refreshComposerAutocomplete();
+                    }
+                    $("body").css("cursor", "default");
+                }
+            });
+        };
+
+        self.setDisabled = function(songid) {
+            $("body").css("cursor", "wait");
+
+            $.ajax({
+                type: "POST",
+                url: "/Song/SetDisabled/",
+                data: { id: songid, bandId: self.selectedBandId(), disabled: !self.showDisabled() },
+                dataType: "json",
+                traditional: true,
+                failure: function() {
+                    $("#song-disable-form").dialog('close');
+                    $("body").css("cursor", "default");
+                },
+                success: function(data) {
+                    if (data.Success) {
+                        _songList = data.SongList;
+                        createSongArray(_songList);
+                        $("#song-disable-form").dialog('close');
+                        refreshComposerAutocomplete();
+                    }
+                    $("body").css("cursor", "default");
+                }
+            });
+        };
+
+        self.saveColumns = function() {
+            var jsonData = JSON.stringify(self.getColumns());
+            $.ajax({
+                type: "POST",
+                url: "/Song/SaveColumns/",
+                data: { columns: jsonData },
+                dataType: "json",
+                traditional: true,
+                failure: function() {
+                   $("#song-column-form").dialog('close');
+                },
+                success: function() {
+                    $("#song-column-form").dialog('close');
+                }
+            });
+        };
+
+        self.getColumns = function() {
+            var arr = [];
+            $(self.columns()).each(function(index, value) {
+                arr.push({ Header: value.title, Data: value.dataMember, IsVisible: value.isVisible() });
+            });
+            return arr;
+        };
+
+        self.getSongFromDialog = function() {
+            var title = $.trim($("#txtTitle").val());
+            var singerid = $("#ddlSinger").val();
+            var nameid = parseInt($("#ddlKey").val());
+            var sharpflatnat = parseInt($("#ddlSharpFlatNatural").val());
+            var majminor = parseInt($("#ddlMajorMinor").val());
+            var composer = $.trim($("#txtComposer").val());
+            var neverclose = $("#chkNeverClose").is(':checked');
+            var neveropen = $("#chkNeverOpen").is(':checked');
+            var disabled = $("#chkDisable").is(':checked');
+            var meminstdetails = [];
+            var keyid = getKeyId(nameid, sharpflatnat, majminor);
+
+            $('#tblSongMemberIstrument tr').not('thead tr').each(function(index, value) {
+                var memberinstrumentid = value.id.replace('row_','');
+                var instrumentid = $(this).find("select[name=ddlMemberInstrument_" + memberinstrumentid + "]").val();
+                var memberid = $(this).find('input').attr('id').replace('txtMemberInstrument_', '');
+                meminstdetails.push({ MemberId: memberid, InstrumentId: instrumentid });
+            });
+            return { Id: self.selectedSong().id, BandId: self.selectedBandId(), Title: title, SingerId: singerid, KeyId: keyid, Composer: composer, NeverClose: neverclose, NeverOpen: neveropen, Disabled: disabled, SongMemberInstrumentDetails: meminstdetails };
+        };
+    };
+
+    //---------------------------------------------- VIEW MODEL (END) -----------------------------------------------------
+
+    //---------------------------------------------- GENERAL (BEGIN) ------------------------------------------------------
+
+    function refreshComposerAutocomplete()
+    {
+        loadComposerList();
+
+        if (jQuery($("#txtComposer")).data('autocomplete')) {
+            jQuery($("#txtComposer")).autocomplete("destroy");
+            jQuery($("#txtComposer")).removeData('autocomplete');
+        }
+        $("#txtComposer").autocomplete({source: _composerList});
+    }
+
+    function getKeyId(nameid, sharpflatnat, majminor) {
+        var id = 0;
+        $(_keyListFull).each(function(index, value) {
+            if (value.NameId == nameid && value.SharpFlatNatural == sharpflatnat && value.MajorMinor == majminor) {
+                id = value.Id;
+            }
+        });
+        return id;
+    }
+
+    function GetSharpFlatNotation(sharpflatnat) {
+        var desc = "";
+        if (sharpflatnat > 0)
+            desc = sharpflatnat == 1 ? "#" : "b";
+        return desc;
+    }
+
+    function loadLists() {
+        loadMemberNameList();
+        loadComposerList();
+    }
+
+    ko.utils.stringStartsWith = function(string, startsWith) {
+        string = string || "";
+        if (startsWith.length > string.length) return false;
+        return string.substring(0, startsWith.length) === startsWith;
+    };
+
+    function getValue(list, id, dataMember, valueMember)
+    {
+        var name = '';
+        $(list).each(function(index, item) {
+            if (item[valueMember] == id){
+                name = item[dataMember];
+                return name;
+            }
+        });
+        return name;
+    }
+    //---------------------------------------------- GENERAL (END) ------------------------------------------------------
+
+    //---------------------------------------------- CONTROLLER (BEGIN) -------------------------------------------------------
+
+    function loadMemberNameList() {
+        var url = "/Song/GetMemberNameList/";
+
+        $.ajax({
+            url: url,
+            data: { bandId: DEFAULT_BAND_ID },
+            type: "GET",
+            dataType: "json",
+            async: false,
+            cache: false,
+            success: function(result) {
+                _memberNameList = result;
+            }
+        });
+    }
+
+    function loadComposerList() {
+        var url = "/Song/GetComposerList/";
+
+        $.ajax({
+            url: url,
+            data: { bandId: DEFAULT_BAND_ID },
+            type: "GET",
+            dataType: "json",
+            async: false,
+            cache: false,
+            success: function(result) {
+                _composerList = result;
+            }
+        });
+    }
+
+    function isSessionExpired() {
+        var url = "/Song/GetCurrentSessionUser/";
+        var user;
+        $.ajax({
+            url: url,
+            data: null,
+            type: "GET",
+            dataType: "text",
+            async: false,
+            cache: false,
+            success: function (result) {
+                user = result;
+            }
+        });
+        return (user.length == 0);
+    }
+
+    //---------------------------------------------- CONTROLLER (END) -------------------------------------------------------
+
+    //--------------------------------------------- DIALOG (BEGIN) ----------------------------------------------------
+
+    function initDialog(formName, ht) {
+        var height = ht > 0 ? ht : 'auto';
+        $("#" + formName).dialog({
+            modal: true,
+            open: function() { $(".ui-dialog-titlebar").hide(); },
+            width: 'auto',
+            height: height,
+            resizable: false
+        });
+    }
+
+    function createDialogForms() {
+        createSongEditDialog();
+        createSongDisableDialog();
+        createSongDeleteDialog();
+        createSongColumnDialog();
+    }
+
+    function createSongDisableDialog() {
+        $("#btnCancelDisable").click(function () {
+            $("#song-disable-form").dialog('close');
+        });
+    }
+
+    function createSongDeleteDialog() {
+        $("#btnCancelDelete").click(function () {
+            $("#song-delete-form").dialog('close');
+        });
+    }
+
+    function createSongColumnDialog() {
+        $("#btnCancelColumns").click(function () {
+            $("#song-column-form").dialog('close');
+        });
+    }
+
+    function createSongEditDialog() {
+        $("#btnCancel").click(function () {
+            $("#song-edit-form").dialog('close');
+            $("#validation-container").html("");
+            $("#validation-container").hide();
+        });
+
+        $("#txtComposer")
+            .autocomplete({
+                source: _composerList,
+                noResults: '',
+                results: function() {}
+            });
+    }
+    //--------------------------------------------- DIALOG (END) ----------------------------------------------------
+</script>
+
+<div id="menu-song">
+    <ul id="jsddm-song">
+        <li>
+            <a href="#" data-bind="click: showEditDialog">Add</a>
+        </li>
+        <li class="filter-menu" style="width: 140px; height: 20px;">
+            Band: <select id="ddlSearchBands" data-bind="options: bandList(), optionsText: 'Display', optionsValue: 'Value', value: selectedBandId()"></select>
+        </li>
+        <li class="filter-menu" style="width: 140px">
+            Singer:
+            <select id="ddlSearchSingers" data-bind="options: singerNameSearchList(), value: memberSearch"></select>
+        </li>
+        <li class="filter-menu" style="width: 100px;">
+            Key:
+            <input type="text" id="txtSearchKey" data-bind="value: keySearch, valueUpdate: 'keyup'" maxlength="3" style="width:35px; height: 20px;" />
+        </li>
+        <li class="filter-menu" style="width: 200px">
+            Title:
+            <input type="text" id="txtSearchTitle" data-bind="value: titleSearch, valueUpdate: 'keyup'" style="height: 20px;" />
+        </li>
+        <li style="float: right;" data-bind="click: toggleDisabled">
+            <!-- ko if: showDisabled() -->
+            <a href="#">A List</a>
+            <!-- /ko -->
+            <!-- ko if: !showDisabled() -->
+            <a href="#">Shit Can</a>
+            <!-- /ko -->
+        </li>
+        <li style="float: right; border-left: 1px solid white; border-right: none;">
+            <a href="#" style="width: 130px;" data-bind="click: showColumnDialog">Show/Hide Columns</a>
+        </li>
+    </ul>
+</div>
+
+<div id="song-table-container" style="display: none;">
+    <table class="table-main" id="tblSong">
+        <thead>
+            <tr>
+                <th></th>
+                <th></th>
+                <!-- ko foreach: columns -->
+                <!-- ko if: !isMember -->
+                <th data-bind="visible: isVisible, click: $parent.sort, text: title, attr: { id: 'song-col-' + dataMember }"></th>
+                <!-- /ko -->
+                <!-- ko if: isMember -->
+                <th class="column-member" data-bind="visible: isVisible, click: $parent.sort, text: title"></th>
+                <!-- /ko -->
+                <!-- /ko -->
+        </thead>
+
+        <tbody data-bind="foreach: songsTable">
+            <tr data-bind="click: $parent.highlightRow, attr: {id: 'row_' +  id}">
+                <!-- ko if: !($parent.showDisabled()) -->
+                <td class="table-edit"><a href="#" data-bind="click: $parent.showEditDialog"><img src="~/Content/images/edit.png" alt="" /></a></td>
+                <!-- /ko -->
+                <!-- ko if: $parent.showDisabled() -->
+                <td class="table-edit"><a href="#" data-bind="click: $parent.showDeleteDialog">Delete</a></td>
+                <!-- /ko -->
+                <!-- ko if: !($parent.showDisabled()) -->
+                <td class="table-edit"><a href="#" data-bind="click: $parent.showDisableDialog"><img src="~/Content/images/trash.png" alt="" /></a></td>
+                <!-- /ko -->
+                <!-- ko if: $parent.showDisabled() -->
+                <td class="table-edit"><a href="#" data-bind="click: $parent.showDisableDialog">Ressurect</a></td>
+                <!-- /ko -->
+                <!-- ko foreach: $parent.columns -->
+                <td data-bind="text: $parent[dataMember], visible: isVisible "></td>
+                <!-- /ko -->
+                <!-- ko foreach: memberInstruments -->
+                <td data-bind="text: instrument, visible: isVisible"></td>
+                <!-- /ko -->
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div id="dialog-wrapper-song" style="display: none;">
+    <div id='song-edit-form'>
+        <div class='dialog-header'>
+            <h2 data-bind="text: editFormHeader()"></h2>
+            <div id='save-cancel-button-container'><span><button id='btnSave' type='button'>Save</button><button id='btnCancel' type='button'>Cancel</button></span></div>
+        </div>
+        <div class='input-container'><div class='input-label'>Title</div><div class='input-subcontainer'><input type='text' id='txtTitle' maxlength="50" class='song-title' /></div></div>
+        <div class='input-container'><div class='input-label'>Key</div><div class='input-subcontainer'><select id='ddlKey' class='song-key' data-bind="options: keyNameArrayList(), optionsText: 'Display', optionsValue: 'Value'"></select><div class="song-sharpflatnat"><select id="ddlSharpFlatNatural" data-bind="options: sharpFlatNaturalArrayList(), optionsText: 'Display', optionsValue: 'Value'"></select></div><div class="song-majorminor"><select id="ddlMajorMinor" data-bind="options: majorMinorArrayList(), optionsText: 'Display', optionsValue: 'Value'"></select></div></div></div>
+        <div class='input-container'><div class='input-label'>Singer</div><div class='input-subcontainer'><select id="ddlSinger" class='song-singer' data-bind="options: memberArrayList(), optionsText: 'Display', optionsValue: 'Value'"></select></div></div>
+        <div class='input-container'><div class='input-label'>Composer</div><div class='input-subcontainer'><input type='text' id='txtComposer' class='song-composer' maxlength=100 /></div></div>
+        <div class='input-container'><div class='input-label'>Never Close</div><div class='input-subcontainer'><input type='checkbox' id='chkNeverClose' /></div></div>
+        <div class='input-container'><div class='input-label'>Never Open</div><div class='input-subcontainer'><input type='checkbox' id='chkNeverOpen' /></div></div>
+        <div id="song-instrument-container">
+            <table id="tblSongMemberIstrument">
+                <thead>
+                    <tr data-bind="foreach: memberInstrumentHeaders">
+                        <th data-bind="click: $parent.sort, text: title, attr: { class: sortKey }, style: { width: '300px;' } "></th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: memberInstrumentTable">
+                    <tr data-bind="attr: {id: 'row_' +  memberid + '_' + instrumentid }">
+                        <td><input type="text" data-bind="value: memberName, attr: { id: 'txtMemberInstrument_' + memberid, readonly: true }" /></td>
+                        <td><select data-bind="options: memberInstruments, optionsText: 'Display', optionsValue: 'Value', value: instrumentid, attr: { name: 'ddlMemberInstrument_' +  memberid + '_' + instrumentid } "></select></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class='validation-container' id='validation-container'></div>
+    </div>
+
+    <div id='song-disable-form'>
+        <div class='dialog-header'><h2 data-bind="text: setDisabledFormHeader()"></h2></div>
+        <div id='disable-cancel-button-container'><button id='btnSetDisable' type='button'>OK</button><button id='btnCancelDisable' type='button'>Cancel</button></div>
+        <div id='disable-delete-container' data-bind="if: !(showDisabled())">Too shitty even for the shitcan?<button id='btnYesDelete' data-bind="click: deleteSelectedSong">Yes, delete it oompletely!</button></div>
+    </div>
+
+    <div class='delete-form'>
+        <div class='dialog-header'><h2 data-bind="text: 'Delete Song?'"></h2></div>
+        <div id='delete-cancel-button-container'><button id='btnDelete' type='button'>Delete</button><button id='btnCancelDelete' type='button'>Cancel</button></div>
+    </div>
+
+    <div id='song-column-form'>
+        <div id='ok-column-button-container'><button id='btnOkColumns' type='button'>OK</button></div>
+        <ul data-bind="foreach: columns">
+            <li data-bind="if: !alwaysVisible">
+                <input type="checkbox" data-bind="checked: isVisible" /> <span data-bind="text: title"></span>
+            </li>
+        </ul>
+    </div>
+</div>
+
