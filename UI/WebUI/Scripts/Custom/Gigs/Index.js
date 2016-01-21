@@ -32,13 +32,13 @@
                 });
             }
 
-            function Gig(id, venue, description, date, updateuser, updatedate) {
+            function Gig(id, venue, description, dategig, updateuser, updatedate) {
                 var self = this;
 
                 self.id = id;
                 self.venue = venue;
                 self.description = description;
-                self.date = date;
+                self.dategig = dategig;
                 self.updateuser = updateuser;
                 self.updatedate = updatedate;
             }
@@ -73,7 +73,7 @@
                 });
 
                 function pushGig(value) {
-                    self.gigs.push(new Gig(value.Id, value.Venue, value.Description, value.Date, value.UserUpdate, value.DateUpdate));
+                    self.gigs.push(new Gig(value.Id, value.Venue, value.Description, value.DateGig, value.UserUpdate, value.DateUpdate));
                 };
 
                 self.selectedGig(self.gigs()[0]);
@@ -128,7 +128,7 @@
 
                     dialog.custom.showModal({
                         title: "Delete Gig?",
-                        message: "This will permanently delete the gig for venue '" + g.venue + "' on " + g.date + ".",
+                        message: "This will permanently delete the gig for venue '" + g.venue + "' on " + g.dategig + ".",
                         callback: function () {
                             return self.deleteGig(row.id);
                         },
@@ -201,10 +201,10 @@
                 self.getGigDetailFromDialog = function () {
                     var venue = $.trim($("#txtVenue").val());
                     var description = $.trim($("#txtDescription").val());
-                    var date = $("#dtDateGig").val();
+                    var dategig = $("#dtDateGig").val();
 
                     return {
-                        Id: self.selectedGig().id, Venue: venue, Description: description, DateGig: date
+                        Id: self.selectedGig().id, Venue: venue, Description: description, DateGig: dategig
                     };
                 };
 
@@ -281,7 +281,7 @@
                         },
                         success: function (data) {
                             if (data.Success) {
-                                lists.gigList = data.gigList;
+                                lists.gigList = data.GigList;
                                 createGigArray(lists.gigList);
                             }
                             $("body").css("cursor", "default");
@@ -291,15 +291,28 @@
                     return true;
                 };
 
-                self.saveColumns = function () {
+                self.saveColumns = function() {
                     var jsonData = JSON.stringify(self.getColumns());
-                    $.ajax({
-                        type: "POST",
-                        url: site.url + "Gigs/SaveColumns/",
-                        data: { columns: jsonData },
-                        dataType: "json",
-                        traditional: true
+                    var selfColumns = self.getColumns();        // after changes
+                    var tableColumns = lists.tableColumnList;   // before changes
+                    var isDifference = false;
+
+                    $(selfColumns).each(function (index, value) {
+                        var isvisible = tableColumns[index].IsVisible;
+                        if (isvisible !== value.IsVisible) {
+                            isDifference = true;
+                        }
                     });
+
+                    if (isDifference) {
+                        $.ajax({
+                            type: "POST",
+                            url: site.url + "Gigs/SaveColumns/",
+                            data: { columns: jsonData },
+                            dataType: "json",
+                            traditional: true
+                        });
+                    }
                 };
 
                 //---------------------------------------------- CONTROLLER (END) -------------------------------------------------------

@@ -63,7 +63,7 @@ namespace SetGenerator.WebUI.Controllers
                 BandId = gig.BandId,
                 Venue = gig.Venue,
                 Description = gig.Description,
-                Date = gig.DateGig.ToShortDateString(),
+                DateGig = gig.DateGig.ToShortDateString(),
                 UserUpdate = gig.User1.UserName,
                 DateUpdate = gig.DateUpdate.ToShortDateString()
             }).ToArray();
@@ -166,7 +166,7 @@ namespace SetGenerator.WebUI.Controllers
         {
             var g = new Gig
             {
-                DateGig = Convert.ToDateTime(gig.Date),
+                DateGig = Convert.ToDateTime(gig.DateGig),
                 Venue = gig.Venue,
                 Description = gig.Description,
                 BandId = _bandId,
@@ -184,7 +184,7 @@ namespace SetGenerator.WebUI.Controllers
             var gig = _gigRepository.GetSingle(gd.Id);
             if (gig != null)
             {
-                //gig.DateGig = Convert.ToDateTime(gd.Date);
+                gig.DateGig = Convert.ToDateTime(gd.DateGig);
                 gig.Venue = gd.Venue;
                 gig.Description = gd.Description;
                 gig.BandId = _bandId;

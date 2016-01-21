@@ -17,8 +17,13 @@
         </div>
         <div class="row">
             <div class="col-sm-6">
-                <div class="label label-default">Date</div>
-                <input type="date" id="dtDateGig" class="form-control input-date" value="@Model.DateGig" maxlength="10" />
+                <div class="label label-default">Gig Date</div>
+                <div class="input-group date" data-provide="datepicker">
+                    <input id="dtDateGig" type="text" value="@Model.DateGig.ToShortDateString()" class="form-control">
+                    <div class="input-group-addon">
+                        <span class="glyphicon glyphicon-th"></span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

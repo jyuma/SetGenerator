@@ -24,7 +24,7 @@ namespace SetGenerator.WebUI
             commonStylesBundle.Include(
                      "~/Content/bootstrap.css",
                      "~/Content/bootstrap-theme.css",
-                     "~/Content/awesome-bootstrap-checkbox.css",
+                     "~/Content/bootstrap-datepicker.standalone.css",
                      "~/Content/Site.less");
             commonStylesBundle.Builder = nullBuilder;
             commonStylesBundle.Orderer = nullOrderer;
@@ -34,7 +34,8 @@ namespace SetGenerator.WebUI
             var commonScriptsBundle = new Bundle("~/bundles/CommonScripts");
             commonScriptsBundle.Include(
                     "~/Scripts/jquery-{version}.js",
-                    "~/Scripts/knockout-{version}.js");
+                    "~/Scripts/knockout-{version}.js",
+                    "~/Scripts/bootstrap-datepicker.js");
             commonScriptsBundle.Builder = nullBuilder;
             commonScriptsBundle.Transforms.Add(scriptTransformer);
             bundles.Add(commonScriptsBundle);

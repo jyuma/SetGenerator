@@ -176,7 +176,7 @@
                             $("#validation-container").hide();
                             return self.saveSetList(id > 0);
                         },
-                        width: 250
+                        width: 350
                     });
                 };
 
@@ -315,13 +315,26 @@
 
                 self.saveColumns = function() {
                     var jsonData = JSON.stringify(self.getColumns());
-                    $.ajax({
-                        type: "POST",
-                        url: site.url + "SetLists/SaveColumns/",
-                        data: { columns: jsonData },
-                        dataType: "json",
-                        traditional: true
+                    var selfColumns = self.getColumns();        // after changes
+                    var tableColumns = lists.tableColumnList;   // before changes
+                    var isDifference = false;
+
+                    $(selfColumns).each(function (index, value) {
+                        var isvisible = tableColumns[index].IsVisible;
+                        if (isvisible !== value.IsVisible) {
+                            isDifference = true;
+                        }
                     });
+
+                    if (isDifference) {
+                        $.ajax({
+                            type: "POST",
+                            url: site.url + "SetLists/SaveColumns/",
+                            data: { columns: jsonData },
+                            dataType: "json",
+                            traditional: true
+                        });
+                    }
                 };
 
                 //---------------------------------------------- CONTROLLER (END) -------------------------------------------------------

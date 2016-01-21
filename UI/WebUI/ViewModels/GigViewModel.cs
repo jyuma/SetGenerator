@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace SetGenerator.WebUI.ViewModels
@@ -7,7 +8,7 @@ namespace SetGenerator.WebUI.ViewModels
     {
         public int Id { get; set; }
         public int BandId { get; set; }
-        public string Date { get; set; }
+        public string DateGig { get; set; }
         public string Venue { get; set; }
         public string Description { get; set; }
         public string UserUpdate { get; set; }
