@@ -45,7 +45,8 @@ namespace SetGenerator.WebUI.Controllers
         {
             if (Session["Bands"] == null)
             {
-                Session["Bands"] = GetBands();
+                var bands = GetBands();
+                Session["Bands"] = bands;
             }
 
             return View(LoadLogonViewModel());

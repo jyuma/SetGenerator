@@ -314,6 +314,9 @@ namespace SetGenerator.WebUI.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut();
+            Session["Bands"] = null;
+            Session["UserId"] = null;
+            Session["UserName"] = null;
             return RedirectToAction("Index", "Home");
         }
 
