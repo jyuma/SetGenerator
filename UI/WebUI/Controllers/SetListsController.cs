@@ -205,7 +205,7 @@ namespace SetGenerator.WebUI.Controllers
                 UserUpdate = setlist.User1.UserName,
                 DateUpdate = setlist.DateUpdate.ToShortDateString(),
                 NumSets = 1
-            }).ToArray();
+            }).OrderBy(x => x.Name).ToArray();
 
             return result;
         }

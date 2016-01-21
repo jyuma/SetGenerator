@@ -118,7 +118,7 @@ namespace SetGenerator.WebUI.Controllers
                         InstrumentId = y.InstrumentId,
                         InstrumentName = y.Instrument.Name
                     }).ToArray()
-                }).ToArray();
+                }).OrderBy(x => x.Title).ToArray();
         }
 
         [HttpGet]

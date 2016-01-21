@@ -66,7 +66,7 @@ namespace SetGenerator.WebUI.Controllers
                 DateGig = gig.DateGig.ToShortDateString(),
                 UserUpdate = gig.User1.UserName,
                 DateUpdate = gig.DateUpdate.ToShortDateString()
-            }).ToArray();
+            }).OrderBy(x => x.DateGig).ToArray();
 
             return result;
         }
