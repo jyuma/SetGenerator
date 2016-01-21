@@ -36,14 +36,6 @@ namespace SetGenerator.WebUI.ViewModels
 
     public class SetViewModel
     {
-        //public ICollection<SetSongDetail> SongList { get; set; }
-        //public ICollection<SetSongDetail> UnusedSongList { get; set; }
-        //public ArrayList MemberArrayList { get; set; }
-        //public ArrayList KeyNameArrayList { get; set; }
-        //public ArrayList InstrumentArrayList { get; set; }
-        //public IEnumerable<string> KeyNameList { get; set; }
-        //public ArrayList UserBandArrayList { get; set; }
-        //public ICollection<TableColumnDetail> TableColumnList { get; set; }
         public string Name { get; set; }
         public ICollection<int> SetNumberList { get; set; }
         public int SetListId { get; set; }

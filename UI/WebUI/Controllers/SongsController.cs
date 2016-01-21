@@ -89,7 +89,7 @@ namespace SetGenerator.WebUI.Controllers
             var bandId = Convert.ToInt32(Session["BandId"]);
             var songs = _songRepository.GetList(bandId);
 
-            var result = songs.Select(
+            return songs.Select(
                 x => new SongDetail
                 {
                     Id = x.Id,
@@ -119,8 +119,6 @@ namespace SetGenerator.WebUI.Controllers
                         InstrumentName = y.Instrument.Name
                     }).ToArray()
                 }).ToArray();
-
-            return result;
         }
 
         [HttpGet]

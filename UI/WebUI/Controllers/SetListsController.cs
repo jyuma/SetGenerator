@@ -32,7 +32,7 @@ namespace SetGenerator.WebUI.Controllers
 
         public SetListsController(  ISetListRepository setListRepository, 
                                     ISongRepository songRepository, 
-                                    IMemberRepository memberRepository, 
+                                    IMemberRepository memberRepository,
                                     IKeyRepository keyRepository,
                                     IAccount account, 
                                     IValidationRules validationRules)
@@ -62,13 +62,9 @@ namespace SetGenerator.WebUI.Controllers
             var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ReportConnectionString"].ConnectionString);
             ds.Connection = connection;
 
-            string mimeType = string.Empty;
-            string encoding = string.Empty;
-            string filenameExtension = string.Empty;
-            string[] streamids;
-            Warning[] warnings;
+            string reportPath = GetReportPath();
 
-            rv.LocalReport.ReportPath = Server.MapPath("~/Reports/Sets.rdlc");
+            rv.LocalReport.ReportPath = Server.MapPath(reportPath);
             rv.ProcessingMode = ProcessingMode.Local;
 
             var userId = Convert.ToInt32(System.Web.HttpContext.Current.User.Identity.GetUserId());
@@ -76,12 +72,67 @@ namespace SetGenerator.WebUI.Controllers
             rv.LocalReport.DataSources.Add(rds);
             rv.LocalReport.Refresh();
 
+            string mimeType = string.Empty;
+            string encoding = string.Empty;
+            string filenameExtension = string.Empty;
+            string[] streamids;
+            Warning[] warnings;
             var streamBytes = rv.LocalReport.Render("PDF", null, out mimeType, out encoding, out filenameExtension, out streamids, out warnings);
 
             var setlist = _setListRepository.GetSingle(id);
             var filename = setlist.Name + ".pdf";
 
             return File(streamBytes, mimeType, filename);
+        }
+
+        private string GetReportPath()
+        {
+            var bandId = Convert.ToInt32(Session["BandId"]);
+            var reportPath = "~/Reports/Sets.rdlc";
+
+            var showKey = _currentUser.UserPreferenceTableColumns
+                .Single(x => x.TableColumnId == Constants.UserTableColumn.KeyId)
+                .IsVisible;
+
+            var showSinger = _currentUser.UserPreferenceTableColumns
+                .Single(x => x.TableColumnId == Constants.UserTableColumn.SingerId)
+                .IsVisible;
+
+            var showMembers = _currentUser.UserPreferenceTableMembers
+                .Where(x => x.BandId == bandId)
+                .Where(x => x.TableId == Constants.UserTable.SetId)
+                .Any(x => x.IsVisible);
+
+            if (showKey && !showSinger && !showMembers)
+            {
+                reportPath = "~/Reports/Sets_Key.rdlc";
+            }
+            else if (showKey && showSinger && !showMembers)
+            {
+                reportPath = "~/Reports/Sets_Key_Singer.rdlc";
+            }
+            else if (showKey && !showSinger)
+            {
+                reportPath = "~/Reports/Sets_Key_Members.rdlc";
+            }
+            else if (!showKey && showSinger && showMembers)
+            {
+                reportPath = "~/Reports/Sets_Singer_Members.rdlc";
+            }
+            else if (!showKey && !showSinger && showMembers)
+            {
+                reportPath = "~/Reports/Sets_Members.rdlc";
+            }
+            else if (!showKey && showSinger)
+            {
+                reportPath = "~/Reports/Sets_Singer.rdlc";
+            }
+            else if (showKey)
+            {
+                reportPath = "~/Reports/Sets_Key_Singer_Members.rdlc";
+            }
+
+            return reportPath;
         }
 
         [HttpGet]
@@ -212,9 +263,11 @@ namespace SetGenerator.WebUI.Controllers
             {
                 msgs = ValidateSetList(detail.Name, (detail.NumSets * detail.NumSongs), false);
                 if (msgs == null)
+                {
                     UpdateSetList(detail);
+                }
             }
-            //var vm = LoadSetListViewModel(setListId, msgs);
+
             return Json(new
             {
                 SetlistList = GetSetlistList(),
@@ -285,68 +338,60 @@ namespace SetGenerator.WebUI.Controllers
 
         private IEnumerable<SetSongDetail> GetUnusedSongList(SetList setlist)
         {
-            var result = new Collection<SetSongDetail>();
             var bandId = Convert.ToInt32(Session["BandId"]);
+            var setSongIds = setlist.Sets.Select(x => x.SongId);
+            var allAListSongs = _songRepository.GetAList(bandId);
 
-            var usedSongs = setlist.Sets.Select(x => x.SongId);
-            var allSongs = _songRepository.GetAList(bandId);
-            var unUsedSongs = allSongs
-                .Where(x => !usedSongs.Contains(x.Id))
-                .ToArray();
-
-            foreach (var song in unUsedSongs)
+            return allAListSongs
+                .Where(x => !setSongIds.Contains(x.Id)).Select(x =>
             {
-                var songMemberInstrumentList = GetSongMemberInstrumentDetails(song.SongMemberInstruments);
-                result.Add(new SetSongDetail
+                var songMemberInstrumentList = GetSongMemberInstrumentDetails(x.SongMemberInstruments);
+                return new SetSongDetail
                 {
                     Number = 0,
-                    Id = song.Id,
+                    Id = x.Id,
                     BandId = bandId,
-                    Title = song.Title,
-                    KeyId = song.KeyId,
-                    KeyDetail = GetSongKeyDetail(song.Key),
-                    SingerId = song.SingerId,
-                    Composer = song.Composer,
-                    NeverClose = song.NeverClose,
-                    NeverOpen = song.NeverOpen,
-                    Disabled = song.IsDisabled,
-                    UserUpdate = song.User1.UserName,
-                    DateUpdate = song.DateUpdate.ToShortDateString(),
+                    Title = x.Title,
+                    KeyId = x.KeyId,
+                    KeyDetail = GetSongKeyDetail(x.Key),
+                    SingerId = x.SingerId,
+                    Composer = x.Composer,
+                    NeverClose = x.NeverClose,
+                    NeverOpen = x.NeverOpen,
+                    Disabled = x.IsDisabled,
+                    UserUpdate = x.User1.UserName,
+                    DateUpdate = x.DateUpdate.ToShortDateString(),
                     SongMemberInstrumentDetails = songMemberInstrumentList
-                });
-            }
-
-            return result;
+                };
+            }).ToArray();
         }
 
         private IEnumerable<SetSongDetail> GetSongList(SetList setlist)
         {
-            var result = new Collection<SetSongDetail>();
             var bandId = Convert.ToInt32(Session["BandId"]);
 
-            foreach (var set in setlist.Sets)
+            return setlist.Sets.Select(x =>
             {
-                var songMemberInstrumentList = GetSongMemberInstrumentDetails(set.Song.SongMemberInstruments);
-                result.Add(new SetSongDetail
-                {
-                    Number = set.Number,
-                    Id = set.Song.Id,
-                    BandId = bandId,
-                    Title = set.Song.Title,
-                    KeyId = set.Song.KeyId,
-                    KeyDetail = GetSongKeyDetail(set.Song.Key),
-                    SingerId = set.Song.SingerId,
-                    Composer = set.Song.Composer,
-                    NeverClose = set.Song.NeverClose,
-                    NeverOpen = set.Song.NeverOpen,
-                    Disabled = set.Song.IsDisabled,
-                    UserUpdate = set.Song.User1.UserName,
-                    DateUpdate = set.Song.DateUpdate.ToShortDateString(),
-                    SongMemberInstrumentDetails = songMemberInstrumentList
-                });
-            }
+                var songMemberInstrumentList = GetSongMemberInstrumentDetails(x.Song.SongMemberInstruments);
 
-            return result;
+                return new SetSongDetail
+                {
+                    Number = x.Number,
+                    Id = x.Song.Id,
+                    BandId = bandId,
+                    Title = x.Song.Title,
+                    KeyId = x.Song.KeyId,
+                    KeyDetail = GetSongKeyDetail(x.Song.Key),
+                    SingerId = x.Song.SingerId,
+                    Composer = x.Song.Composer,
+                    NeverClose = x.Song.NeverClose,
+                    NeverOpen = x.Song.NeverOpen,
+                    Disabled = x.Song.IsDisabled,
+                    UserUpdate = x.Song.User1.UserName,
+                    DateUpdate = x.Song.DateUpdate.ToShortDateString(),
+                    SongMemberInstrumentDetails = songMemberInstrumentList
+                };
+            }).ToArray();
         }
 
         private static SongKeyDetail GetSongKeyDetail(Key key)

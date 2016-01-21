@@ -23,6 +23,7 @@ namespace SetGenerator.WebUI
             var commonStylesBundle = new Bundle("~/bundles/CommonStyles");
             commonStylesBundle.Include(
                      "~/Content/bootstrap.css",
+                     "~/Content/bootstrap-theme.css",
                      "~/Content/awesome-bootstrap-checkbox.css",
                      "~/Content/Site.less");
             commonStylesBundle.Builder = nullBuilder;
@@ -48,7 +49,8 @@ namespace SetGenerator.WebUI
                     "~/Scripts/Custom/Home/Index.js",
                     "~/Scripts/Custom/Songs/Index.js",
                     "~/Scripts/Custom/SetLists/Index.js",
-                    "~/Scripts/Custom/SetLists/Sets.js");
+                    "~/Scripts/Custom/SetLists/Sets.js",
+                    "~/Scripts/Custom/Gigs/Index.js");
             customScriptsBundle.Builder = nullBuilder;
             customScriptsBundle.Transforms.Add(scriptTransformer);
             bundles.Add(customScriptsBundle);

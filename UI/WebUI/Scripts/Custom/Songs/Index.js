@@ -38,7 +38,7 @@
                     url: site.url + "Songs/GetData/",
                     dataType: "json",
                     traditional: true,
-                    async: false,
+                    //async: false,
                     success: function (data) {
                         $.extend(lists, data);
                     }

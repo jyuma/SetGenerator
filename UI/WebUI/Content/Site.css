@@ -43,8 +43,14 @@ body {
 #txtSearchKey {
   width: 55px;
 }
+.date-search {
+  width: 80px;
+}
 .text-search {
   width: 300px;
+}
+.input-date {
+  width: 90px;
 }
 .container-fluid {
   margin-right: 30px;
@@ -79,6 +85,9 @@ table th a:hover {
 }
 table td {
   cursor: default;
+}
+.navbar {
+  border-radius: 0;
 }
 .navbar-text > a {
   color: #e9e4e4;

@@ -17,6 +17,13 @@ namespace SetGenerator.Service
         public const string EmailContextProfileEdited = "The following user has just edited their profile";
         public const string EmailContextPasswordChanged = "The following user has just changed their password";
 
+        // table column
+        public struct UserTableColumn
+        {
+            public const int KeyId = 15;
+            public const int SingerId = 16;
+        }
+
         // user table
         public struct UserTable
         {
@@ -26,7 +33,6 @@ namespace SetGenerator.Service
             public const int MemberId = 4;
             public const int SetId = 5;
             public const int SetListId = 6;
-            public const int UserId = 5;
         }
 
         // Setlist

@@ -4,11 +4,10 @@ using SetGenerator.Repositories;
 using SetGenerator.Service;
 using SetGenerator.WebUI.ViewModels;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Web.Mvc;
+using SetGenerator.WebUI.Common;
 
 namespace SetGenerator.WebUI.Controllers
 {
@@ -17,23 +16,59 @@ namespace SetGenerator.WebUI.Controllers
         private readonly IGigRepository _gigRepository;
         private readonly IAccount _account;
         private readonly int _bandId = 1;
-        private readonly string _currentUserName;
         private readonly User _currentUser;
+        private readonly CommonSong _common;
 
-        public GigsController(IGigRepository gigRepository, IAccount account)
+        public GigsController(  IGigRepository gigRepository,
+                                IMemberRepository memberRepository,
+                                IKeyRepository keyRepository,
+                                IAccount account)
         {
             _gigRepository = gigRepository;
             _account = account;
-            _currentUserName = GetCurrentSessionUser();
-            if (_currentUserName.Length > 0)
-                _currentUser = _account.GetUserByUserName(_currentUserName);
+
+            var currentUserName = GetCurrentSessionUser();
+            if (currentUserName.Length > 0)
+                _currentUser = _account.GetUserByUserName(currentUserName);
+            _common = new CommonSong(account, keyRepository, memberRepository, currentUserName);
         }
 
         [Authorize]
         public ActionResult Index()
         {
-            var gigs = _gigRepository.GetList(_bandId);
-            return View(LoadGigViewModel(gigs, 0, null));
+            return View(LoadGigViewModel(0, null));
+        }
+
+        [HttpGet]
+        public JsonResult GetData()
+        {
+            var bandId = Convert.ToInt32(Session["BandId"]);
+            var vm = new
+            {
+                gigList = GetGigList(),
+                tableColumnList = _common.GetTableColumnList(_currentUser.UserPreferenceTableColumns, _currentUser.UserPreferenceTableMembers, Constants.UserTable.GigId, bandId)
+            };
+
+            return Json(vm, JsonRequestBehavior.AllowGet);
+        }
+
+        private IEnumerable<GigDetail> GetGigList()
+        {
+            var bandId = Convert.ToInt32(Session["BandId"]);
+            var gigList = _gigRepository.GetList(bandId);
+
+            var result = gigList.Select(gig => new GigDetail
+            {
+                Id = gig.Id,
+                BandId = gig.BandId,
+                Venue = gig.Venue,
+                Description = gig.Description,
+                Date = gig.DateGig.ToShortDateString(),
+                UserUpdate = gig.User1.UserName,
+                DateUpdate = gig.DateUpdate.ToShortDateString()
+            }).ToArray();
+
+            return result;
         }
 
         public string GetCurrentSessionUser()
@@ -41,54 +76,40 @@ namespace SetGenerator.WebUI.Controllers
             return (System.Web.HttpContext.Current.User.Identity.Name);
         }
 
-        private GigViewModel LoadGigViewModel(IEnumerable<Gig> gigs, int selectedId, List<string> msgs)
+        private static GigViewModel LoadGigViewModel(int selectedId, List<string> msgs)
         {
-            var model = new GigViewModel();
-            var user = _account.GetUserByUserName(_currentUserName);
-            var list = gigs.Select(g => new GigDetail
+            var model = new GigViewModel
             {
-                Id = g.Id,
-                BandId = g.BandId,
-                DateGig = g.DateGig.ToShortDateString(),
-                Venue = g.Venue,
-                Description = g.Description,
-                UserUpdate = g.User1.UserName,
-                DateUpdate = g.DateUpdate.ToShortDateString()
-            }).ToList();
-            model.SelectedId = selectedId;
-            model.GigList = list;
-            model.TableColumnList = GetTableColumnList(user);
-            model.Success = (msgs == null);
-            model.ErrorMessages = msgs;
+                SelectedId = selectedId,
+                Success = (msgs == null),
+                ErrorMessages = msgs
+            };
+
             return model;
         }
 
-        // -- for the table columns
-        private static IList<TableColumnDetail> GetTableColumnList(User u)
+        [HttpGet]
+        public PartialViewResult GetGigEditView(int id)
         {
-            var list = new List<TableColumnDetail>();
+            return PartialView("_GigEdit", LoadSetListEditViewModel(id));
+        }
 
-            if (u != null)
+        private GigEditViewModel LoadSetListEditViewModel(int id)
+        {
+            Gig gig = null;
+
+            if (id > 0)
             {
-                list.AddRange(u.UserPreferenceTableColumns.Where(x => x.TableColumn.TableId == Constants.UserTable.GigId).Select(tc => new TableColumnDetail
-                {
-                    Header = tc.TableColumn.Name,
-                    Data = tc.TableColumn.Data,
-                    IsVisible = tc.IsVisible,
-                    AlwaysVisible = tc.TableColumn.AlwaysVisible,
-                    IsMember = false
-                }));
-
-                list.AddRange(u.UserPreferenceTableMembers.Where(x => x.TableId == Constants.UserTable.GigId).Select(tc => new TableColumnDetail
-                {
-                    Header = tc.Member.FirstName,
-                    Data = tc.Member.FirstName.ToLower(),
-                    IsVisible = tc.IsVisible,
-                    AlwaysVisible = false,
-                    IsMember = true
-                }));
+                gig = _gigRepository.GetSingle(id);
             }
-            return list;
+            var vm = new GigEditViewModel
+            {
+                DateGig = (gig != null) ? gig.DateGig : DateTime.Now,
+                Venue = (gig != null) ? gig.Venue : string.Empty,
+                Description = (gig != null) ? gig.Description : string.Empty,
+            };
+
+            return vm;
         }
 
         [HttpPost]
@@ -100,20 +121,24 @@ namespace SetGenerator.WebUI.Controllers
 
             if (gigId > 0)
             {
-                //  msgs = ValidateGig(s.Title, false);
+                //msgs = ValidateGig(s.Title, false);
                 if (msgs == null)
                     UpdateGig(g);
             }
             else
             {
-                //  msgs = ValidateGig(s.Title, true);
+                //msgs = ValidateGig(s.Title, true);
                 if (msgs == null)
                     gigId = AddGig(g);
             }
 
-            var songs = _gigRepository.GetList(g.BandId);
-            var vm = LoadGigViewModel(songs, gigId, msgs);
-            return Json(vm);
+            return Json(new
+            {
+                GigList = GetGigList(),
+                SelectedId = gigId,
+                Success = (null == msgs),
+                ErrorMessages = msgs
+            }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -121,30 +146,30 @@ namespace SetGenerator.WebUI.Controllers
         {
             var g = _gigRepository.GetSingle(id);
 
-            DeleteGig(g);
-            var songs = _gigRepository.GetList(g.BandId);
-            var vm = LoadGigViewModel(songs, id, null);
-            return Json(vm);
+            _gigRepository.Delete(g);
+
+            return Json(new
+            {
+                GigList = GetGigList(),
+                Success = true,
+            }, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
         public JsonResult SaveColumns(string columns)
         {
-            var cList = JsonConvert.DeserializeObject<IList<TableColumnDetail>>(columns);
-            var cols = new OrderedDictionary();
-            foreach (var c in cList)
-                cols.Add(c.Data, c.IsVisible);
-            _account.UpdateUserTablePreferences(_currentUserName, Constants.UserTable.GigId, cols);
-            return Json(null, JsonRequestBehavior.AllowGet);
+            _common.SaveColumns(columns, Constants.UserTable.GigId);
+            return Json(JsonRequestBehavior.AllowGet);
         }
 
         private int AddGig(GigDetail gig)
         {
             var g = new Gig
             {
-                DateGig = Convert.ToDateTime(gig.DateGig),
+                DateGig = Convert.ToDateTime(gig.Date),
                 Venue = gig.Venue,
                 Description = gig.Description,
-                BandId = gig.BandId,
+                BandId = _bandId,
                 UserCreateId = _currentUser.Id,
                 UserUpdateId = _currentUser.Id,
                 DateCreate = DateTime.Now,
@@ -159,19 +184,14 @@ namespace SetGenerator.WebUI.Controllers
             var gig = _gigRepository.GetSingle(gd.Id);
             if (gig != null)
             {
-                gig.DateGig = Convert.ToDateTime(gd.DateGig);
+                //gig.DateGig = Convert.ToDateTime(gd.Date);
                 gig.Venue = gd.Venue;
                 gig.Description = gd.Description;
-                gig.BandId = gd.BandId;
+                gig.BandId = _bandId;
                 gig.UserUpdateId = _currentUser.Id;
                 gig.DateUpdate = DateTime.Now;
             };
             _gigRepository.Update();
-        }
-
-        private void DeleteGig(Gig g)
-        {
-            _gigRepository.Delete(g);
         }
     }
 }

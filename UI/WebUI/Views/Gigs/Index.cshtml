@@ -4,454 +4,72 @@
 {
     Url.Action("Index", "Home");
 }
-@section scripts {
-<script type="text/javascript">
-    var HIGHLIGHT_ROW_COLOUR = "#e3e8ff";
-    var STRING_ALL = "<All>";
-    var STRING_NONE = "<None>";
-    var ADD_GIG_HEADER = "Add Gig";
-    var EDIT_GIG_HEADER = "Edit Gig";
-    var DEFAULT_BAND_ID = 1;
 
-    var _gigList = @Html.Raw(Json.Encode(Model.GigList));
-    var _userBandList = @Html.Raw(Json.Encode(Model.UserBandArrayList));
-    var _tableColumnList = @Html.Raw(Json.Encode(Model.TableColumnList));
- 
-    $(document).ready(function($) {
-        initDialogs();
-        $("#ddlSearchBands")[0].selectedIndex = 0;
-
-        ko.applyBindings(new GigViewModel());
-
-        $("button").button();
-        $("button").removeClass("ui-widget");
-    }); 
-   
-    function Gig(id, date, venue, desc, updateuser, updatedate) {
-        var self = this;
-
-        self.id = id;
-        self.date = date;
-        self.venue = venue;
-        self.description = desc;
-        self.updateuser = updateuser;
-        self.updatedate = updatedate;
-    }
-
-    function GigViewModel() {
-        var self = this;
-
-        self.gigs = ko.observableArray([]);
-        self.selectedBandId = ko.observable(_userBandList[0].Value);
-        self.bandList = ko.observableArray(_userBandList);
-        self.selectedGig = ko.observable();
-        self.selectedBandId = ko.observable(_userBandList[0].Value);
-        self.venueSearch = ko.observable('');
-        self.editFormHeader =  ko.observable('');
-
-        createGigArray(_gigList);
-
-        function createGigArray(list) {
-            self.gigs.removeAll();
-            $(list).each(function(index, value) {
-                pushGig(value);
-            });
-        };
-
-        self.columns = ko.computed(function() {
-            var arr = [];
-            $(_tableColumnList).each(function(index, value) {
-                arr.push({ title: value.Header, sortKey: value.Data, dataMember: value.Data, isVisible: ko.observable(value.IsVisible), alwaysVisible: value.AlwaysVisible, isMember: value.IsMember });
-            });
-            return arr;
-        });
-
-        function pushGig (value) {
-            self.gigs.push(new Gig(value.Id, value.DateGig, value.Venue, value.Description, value.UserUpdate, value.DateUpdate));
-        };
-
-        self.sort = function(header, event){
-            var sortKey = header.sortKey;
-
-            $(self.columns()).each(function(index, value){
-                if (value.sortKey == sortKey) {
-                    self.gigs.sort(function(a,b){
-                        return a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : a[sortKey] == b[sortKey] ? 0 : 0;
-                    });
-                }
-            });
-        };
-
-        self.gigsTable = self.gigs;
-
-        self.filteredGigs = ko.computed(function() {
-            return ko.utils.arrayFilter(self.gigs(), function(s) {
-                return true;
-                //return (
-                //            (self.memberSearch() == STRING_ALL || s.singer == self.memberSearch()) &&
-                //            ((self.titleSearch().length == 0 || s.title.toLowerCase().indexOf(self.titleSearch().toLowerCase()) != -1)) &&
-                //            ((self.keySearch().length == 0 || s.key.toLowerCase().indexOf(self.keySearch().toLowerCase()) != -1))
-                //        );
-            });
-        });
-
-        self.gigsTable = ko.computed(function() {
-            return self.filteredGigs();
-        });
-
-        self.showEditDialog = function(s) {
-            self.highlightRow(s);
-            self.showGigEditDialog(s);
-        };
-
-        self.deleteSelectedGig = function(g) {
-            deleteGig(g.id);
-        };
-
-        self.showDeleteDialog = function(g) {
-            self.highlightRow(g);
-            self.showGigDeleteDialog(g);
-        };
-
-        self.showGigDeleteDialog = function(row) {
-            //if (row.id > 0) {
-            //    dlgDelete.dialog('open');
-            //    $("#btnDelete").unbind('click');
-            //    $("#btnDelete").click(function() {
-            //        self.deleteGig(row.id);
-            //    });
-            //}
-        };
-
-        self.showNotDoneYetDialog = function(row) {
-            ////if (row.id > 0) {
-            ////    dlgNotDoneYet.dialog("open");
-            ////    $("#btnOK").unbind('click');
-            ////    $("#btnOK").click(function() {
-            ////        dlgNotDoneYet.dialog("close");
-            ////    });
-            ////}
-        };
-
-        self.showGigEditDialog = function(row) {
-            if (row.id > 0) {
-                self.editFormHeader(EDIT_GIG_HEADER);
-                var gig = self.getGig(row.id);
-                self.selectedGig(gig);
-
-                $("#txtDate").val(gig.date);
-                $("#txtVenue").val(gig.venue);
-                $("#txtDescription").val(gig.description);
-                $("#txtVenue").focus();
-            } else {
-                self.editFormHeader(ADD_GIG_HEADER);
-                self.selectedGig([]);
-                $("#txtDate").val(getCurrentDate());
-                $("#txtVenue").val('');
-                $("#txtDescription").val('');
-                $("#txtTitle").focus();
-            }
-            dlgEdit.dialog("open");
-
-            $("#btnSave").unbind('click');
-            $("#btnSave").click(function () {
-                $("#validation-container").html("");
-                $("#validation-container").hide();
-                self.saveGig(row.id > 0);
-            });
-
-            $("#gig-edit-form").closest(".ui-dialog")
-                .removeClass("ui-widget")
-                .removeClass("ui-widget-content")
-                .removeClass("ui-dialog-content")
-                .addClass("ui-dialog-custom");
-        };
-
-        self.getGig = function(gigid) {
-            var gig = null;
-
-            ko.utils.arrayForEach(self.gigs(), function(item) {
-                if (item.id == gigid) {
-                    gig = item;
-                }
-            });
-            return gig;
-        };
-
-        self.highlightRow = function(row) {
-            if (row == null) return;
-            var id = row.id;
-            var table = $("#tblGig");
-            var rows = $("#tblGig tr:gt(0)");
-            rows.each(function() {
-                $(this).css("background-color", "#ffffff");
-            });
-
-            var r = table.find("#row_" + id);
-            r.css("background-color", HIGHLIGHT_ROW_COLOUR);
-            $("#tblGig").attr('tr:hover', HIGHLIGHT_ROW_COLOUR);
-        };
-
-        //---------------------------------------------- CONTROLLER (BEGIN) -------------------------------------------------------
-
-        self.saveGig = function(edit) {
-            var gig = self.getGigFromDialog(edit);
-            var jsonData = JSON.stringify(gig);
-
-            $("body").css("cursor", "wait");
-
-            $.ajax({
-                type: "POST",
-                url: "Gig/Save/",
-                data: { gig: jsonData },
-                dataType: "json",
-                traditional: true,
-                failure: function(data) {
-                    dlgEdit.dialog('close');
-                    $("body").css("cursor", "default");
-                    $("#validation-container").html("");
-                },
-                success: function(data) {
-                    if (data.Success) {
-                        _gigList = data.GigList;
-                        createGigArray(_gigList);
-                        self.selectedGig(self.getGig(data.SelectedId));
-                        dlgEdit.dialog('close');
-                        self.highlightRow(self.selectedGig());
-                    } else {
-                        if (data.ErrorMessages.length > 0) {
-                            $("#validation-container").show();
-                            $("#validation-container").html("");
-                            $("body").css("cursor", "default");
-                            var html = "<ul>";
-                            for (var i = 0; i < data.ErrorMessages.length; i++) {
-                                var message = data.ErrorMessages[i];
-                                html = html + "<li>" + message + "</li>";
-                            }
-                            html = html + "</ul>";
-                            $("#validation-container").append(html);
-                        }
-                    }
-                    $("body").css("cursor", "default");
-                }
-            });
-        };
-
-        self.deleteGig = function(gigid) {
-            $("body").css("cursor", "wait");
-
-            $.ajax({
-                type: "POST",
-                url: "Gig/Delete/",
-                data: { id: gigid },
-                dataType: "json",
-                traditional: true,
-                failure: function() {
-                    dlgDelete.dialog('close');
-                    $("body").css("cursor", "default");
-                },
-                success: function(data) {
-                    if (data.Success) {
-                        _gigList = data.GigList;
-                        createGigArray(_gigList);
-                        dlgDelete.dialog('close');
-                    }
-                    $("body").css("cursor", "default");
-                }
-            });
-        };
-
-        self.saveColumns = function() {
-            var jsonData = JSON.stringify(self.getColumns());
-            $.ajax({
-                type: "POST",
-                url: "Gig/SaveColumns/",
-                data: { columns: jsonData },
-                dataType: "json",
-                traditional: true,
-                failure: function() {
-                    dlgColumns.dialog('close');
-                },
-                success: function() {
-                    dlgColumns.dialog('close');
-                }
-            });
-        };
-
-        //---------------------------------------------- CONTROLLER (END) -------------------------------------------------------
-
-        self.getColumns = function() {
-            var arr = [];
-            $(self.columns()).each(function(index, value) {
-                arr.push({ Header: value.title, Data: value.dataMember, IsVisible: value.isVisible() });
-            });
-            return arr;
-        };
-
-        self.getGigFromDialog = function(edit) {
-            var date = $("#txtDate").val();
-            var venue = $.trim($("#txtVenue").val());
-            var desc = $.trim($("#txtDescription").val());
-
-            if (edit) id = self.selectedGig().id;
-            else  id = 0;
-
-            return { Id: self.selectedGig().id, BandId: self.selectedBandId(), DateGig: date, Venue: venue, Description: desc };
-        };
-    };
-
-
-    //---------------------------------------------- VIEW MODEL (END) -----------------------------------------------------
-
-    //---------------------------------------------- GENERAL (BEGIN) ------------------------------------------------------
-
-    ko.utils.stringStartsWith = function(string, startsWith) {
-        string = string || "";
-        if (startsWith.length > string.length) return false;
-        return string.substring(0, startsWith.length) === startsWith;
-    };
-
-    function getValue(list, id, dataMember, valueMember)
-    {
-        var name = '';
-        $(list).each(function(index, item) {
-            if (item[valueMember] == id){
-                name = item[dataMember];
-                return name;
-            }
-        });
-        return name;
-    }
-
-    //--------------------------------------------- DIALOG (BEGIN) ----------------------------------------------------
-
-    function initDialogs() {
-        dlgEdit= initDialog("gig-edit-form");
-        dlgColumns = initDialog("gig-column-form");
-        dlgDelete = initDialog("gig-delete-form");
-        dlgNotDoneYet = initDialog("not-done-yet-form");
-        bindDialogEvents();
-    }
-
-    function initDialog(formName) {
-        var dlg = $("#" + formName).dialog({
-                        modal: true,
-                        open: function() { $(".ui-dialog-titlebar").hide(); },
-                        width: 'auto',
-                        resizable: false,
-                        autoOpen: false
-                    });
-        return dlg;
-    }
-
-    function bindDialogEvents() {
-        $("#btnCancelDelete").click(function () {
-            dlgDelete.dialog("close");
-        });
-
-        $("#btnCancelColumns").click(function () {
-            dlgColumns.dialog("close");
-        });
-
-        $("#btnCancel").click(function () {
-            dlgEdit.dialog("close");
-            $("#validation-container").html("");
-            $("#validation-container").hide();
-        });
-        $("#txtDate").datepicker();
-    }
-
-    function getCurrentDate() {
-        var today = new Date();
-        var dd = today.getDate();
-        var mm = today.getMonth() + 1;
-
-        var yyyy = today.getFullYear();
-        if(dd < 10){
-            dd = '0' + dd;}
-        if(mm < 10){
-            mm = '0' + mm;}
-        today = mm + '/' + dd + '/' + yyyy;
-        return today;
-    }
-</script>
+@{
+    ViewBag.Title = "Gigs";
 }
 
-<div id="menu-gig">
-    <ul id="jsddm-gig">
-        <li class ="filter-menu-link">
-            <a href="#" data-bind="click: showEditDialog">Add New</a>
-        </li>
-        <li class="filter-menu-input">
-            From: <input type="text" id="txtFromDate" style="width:35px; height: 21px;" />
-        </li>
-        <li class="filter-menu-input">
-            To:<input type="text" id="txtToDate" style="width:35px; height: 21px;" />
-        </li>
-        <li class="filter-menu-input">
-            Venue:
-            <input type="text" id="txtSearchVenue" data-bind="value: venueSearch, valueUpdate: 'keyup'" style="width:150px; height: 21px;" />
-        </li>
-        <li class="filter-menu-show-hide-cols">
-            <a href="javascript:;" data-bind="click: showColumnDialog">Show/Hide Columns</a>
-        </li>
-    </ul>
-</div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        gigs.index.init();
+    });
+</script>
 
-<div id="gig-table-container">
-    <table class="table-main" id="tblGig">
-        <thead>
-            <tr>
-                <th></th>
-                <th></th>
-                <th></th>
-                <!-- ko foreach: columns -->
-                <th data-bind="visible: isVisible, click: $parent.sort, text: title, attr: { id: 'gig-col-' + dataMember } "></th>
-                <!-- /ko -->
-        </thead>
-
-        <tbody data-bind="foreach: gigsTable">
-            <tr data-bind="click: $parent.highlightRow, attr: {id: 'row_' +  id}">
-                <td class="table-edit"><a href="javascript:;" data-bind="click: $parent.showEditDialog"><img src="~/Content/images/edit.png" alt="" /></a></td>
-                <td class="table-edit"><a href="javascript:;" data-bind="click: $parent.showDeleteDialog"><img src="~/Content/images/trash.png" alt="" /></a></td>
-                <td class="table-edit"><a href="javascript:;" data-bind="click: $parent.showNotDoneYetDialog">Sets</a></td>
-                <!-- ko foreach: $parent.columns -->
-                <td data-bind="text: $parent[dataMember], visible: isVisible"></td>
-                <!-- /ko -->
-            </tr>
-        </tbody>
-    </table>
-</div>
-
-<div id="dialog-wrapper-gig" style="display: none;">
-    <div id='gig-edit-form'>
-        <div class='dialog-header'>
-            <h2 data-bind="text: editFormHeader()"></h2>
-            <div id='save-cancel-button-container'><span><button id='btnSave' type='button'>Save</button><button id='btnCancel' type='button'>Cancel</button></span></div>
-        </div>
-        <div class='input-container'><div class='input-label'>Date</div><div class='input-subcontainer'><input type='text' id='txtDate' class='gig-date' /></div></div>
-        <div class='input-container'><div class='input-label'>Venue</div><div class='input-subcontainer'><input type='text' id='txtVenue' maxlength="50" class='gig-venue' /></div></div>
-        <div class='input-container'><div class='input-label'>Description</div><div class='input-subcontainer'><input type='text' id='txtDescription' maxlength="200" class='gig-description' /></div></div>
-        <div class='validation-container' id='validation-container'></div>
-    </div>
-
-    <div class='delete-form' id='gig-delete-form'>
-        <div class='dialog-header'><h2 data-bind="text: 'Delete Gig?'"></h2></div>
-        <div id='delete-cancel-button-container'><button id='btnDelete' type='button'>Delete</button><button id='btnCancelDelete' type='button'>Cancel</button></div>
-    </div>
-
-    <div id='gig-column-form'>
-        <div id='ok-column-button-container'><button id='btnOkColumns' type='button'>OK</button></div>
-        <ul data-bind="foreach: columns">
-            <li data-bind="if: !alwaysVisible">
-                <input type="checkbox" data-bind="checked: isVisible" /> <span data-bind="text: title"></span>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <ul class="nav nav-pills">
+            <li>
+                <input type="button" class="btn btn-success" value="Add Gig" data-bind="click: showEditDialog"/>
+            </li>
+            <li>
+                <input id="txtSearchVenue" type="text" class="form-control text-search" placeholder="Venue" data-bind="value: venueSearch, valueUpdate: 'keyup'" />
+            </li>
+            <li>
+                <input id="txtSearchFrom" type="text" class="form-control date-search" placeholder="From" />
+            </li>
+            <li>
+                <input id="txtSearchTo" type="text" class="form-control date-search" placeholder="To" />
+            </li>
+            <li style="float: right;">
+                <div id="ddlColumns" class="dropdown">
+                    <button class="btn btn-default dropdown-toggle" type="button" id="btnShowHideColumns" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        Show/Hide Columns
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="btnShowHideColumns" data-bind="foreach: columns">
+                        <li data-bind="if: !alwaysVisible">
+                            <div class="checkbox">
+                                <input type="checkbox" data-bind="checked: isVisible, attr: { id: 'chk_' + dataMember }" /> <label for="" data-bind="text: title"></label>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </li>
         </ul>
     </div>
-    
-    <div class='delete-form' id='not-done-yet-form'>
-        <div class='dialog-header'><h2 data-bind="text: 'Not Done Yet'"></h2></div>
-        <p>Feature not ready yet, dude.</p>
-        <div id='ok-button-container'><button id='btnOK' type='button'>OK</button></div>
+    <div class="panel-body">
+        <table class="table table-striped table-bordered table-hover" id="tblGig">
+            <thead>
+                <tr>
+                    <th class="col-glyphicon"></th>
+                    <th class="col-glyphicon"></th>
+                    <th class="col-link"></th>
+                    <!-- ko foreach: columns -->
+                    <th data-bind="visible: isVisible, click: $parent.sort, attr: { id: 'gig-col-' + dataMember } "><a href="#" data-bind="text: title"></a></th>
+                    <!-- /ko -->
+                </tr>
+            </thead>
+
+            <tbody data-bind="foreach: gigsTable">
+                <tr data-bind="click: $parent.highlightRow, attr: {id: 'row_' +  id}">
+                    <td class="table-edit"><a class="glyphicon glyphicon-remove" href="#" data-bind="click: $parent.showDeleteDialog"></a></td>
+                    <td class="table-edit"><a class="glyphicon glyphicon-pencil" href="#" data-bind="click: $parent.showEditDialog"></a></td>
+                    <td class="table-edit"><a href="#">Set List</a></td>
+                    <!-- ko foreach: $parent.columns -->
+                    <td data-bind="text: $parent[dataMember], visible: isVisible"></td>
+                    <!-- /ko -->
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>

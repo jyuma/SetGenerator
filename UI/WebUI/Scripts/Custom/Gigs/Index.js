@@ -1,70 +1,62 @@
 ﻿/*!
- * SetLists/Index.js
+ * Gigs/Index.js
  * Author: John Charlton
  * Date: 2015-05
  */
 ; (function ($) {
 
     var HIGHLIGHT_ROW_COLOUR = "#e3e8ff";
-    var STRING_ALL = "<All>";
 
-    setlists.index = {
-        init: function() {
+    gigs.index = {
+        init: function () {
 
             var lists = {
-                setlistList: [],
+                gigList: [],
                 tableColumnList: []
             };
 
             loadConfig();
 
-            ko.applyBindings(new SetListViewModel());
-
-            $("button").button();
-            $("button").removeClass("ui-widget");
+            ko.applyBindings(new GigViewModel());
 
             function loadConfig() {
                 $.ajax({
                     type: "GET",
-                    url: site.url + "SetLists/GetData/",
+                    url: site.url + "Gigs/GetData/",
                     dataType: "json",
                     traditional: true,
                     async: false,
-                    success: function(data) {
+                    success: function (data) {
                         $.extend(lists, data);
                     }
                 });
             }
 
-            function SetList(id, name, numsets, numsongs, updateuser, updatedate) {
+            function Gig(id, venue, description, date, updateuser, updatedate) {
                 var self = this;
 
                 self.id = id;
-                self.name = name;
-                self.numsets = numsets;
-                self.numsongs = numsongs;
+                self.venue = venue;
+                self.description = description;
+                self.date = date;
                 self.updateuser = updateuser;
                 self.updatedate = updatedate;
             }
 
-            function SetListViewModel() {
+            function GigViewModel() {
                 var self = this;
 
-                self.setlists = ko.observableArray([]);
-                self.selectedSetList = ko.observable();
-                self.nameSearch = ko.observable('');
-                self.memberSearch = ko.observable(STRING_ALL);
-                self.numSetsList = ko.observable([]);
-                self.selectedNumSets = ko.observable(3);
-                self.selectedNumSongs = ko.observable(10);
+                self.gigs = ko.observableArray([]);
+                self.selectedGig = ko.observable();
+                self.venueSearch = ko.observable('');
                 self.editFormHeader = ko.observable('');
 
-                createSetListArray(lists.setlistList);
+                createGigArray(lists.gigList);
 
-                function createSetListArray(list) {
-                    self.setlists.removeAll();
-                    $(list).each(function(index, value) {
-                        pushSetList(value);
+                function createGigArray(list) {
+                    self.gigs.removeAll();
+                    $(list).each(function (index, value) {
+                        pushGig(value);
                     });
                 };
 
@@ -72,96 +64,96 @@
                     self.saveColumns();
                 });
 
-                self.columns = ko.computed(function() {
+                self.columns = ko.computed(function () {
                     var arr = [];
-                    $(lists.tableColumnList).each(function(index, value) {
+                    $(lists.tableColumnList).each(function (index, value) {
                         arr.push({ title: value.Header, sortKey: value.Data, dataMember: value.Data, isVisible: ko.observable(value.IsVisible), alwaysVisible: value.AlwaysVisible, isMember: value.IsMember });
                     });
                     return arr;
                 });
 
-                function pushSetList(value) {
-                    self.setlists.push(new SetList(value.Id, value.Name, value.NumSets, value.NumSongs, value.UserUpdate, value.DateUpdate));
+                function pushGig(value) {
+                    self.gigs.push(new Gig(value.Id, value.Venue, value.Description, value.Date, value.UserUpdate, value.DateUpdate));
                 };
 
-                self.selectedSetList(self.setlists()[0]);
+                self.selectedGig(self.gigs()[0]);
 
-                self.sort = function(header) {
+                self.sort = function (header) {
                     var sortKey = header.sortKey;
 
-                    $(self.columns()).each(function(index, value) {
-                        if (value.sortKey == sortKey) {
-                            self.setlists.sort(function(a, b) {
+                    $(self.columns()).each(function (index, value) {
+                        if (value.sortKey === sortKey) {
+                            self.gigs.sort(function (a, b) {
                                 return a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : a[sortKey] === b[sortKey] ? 0 : 0;
                             });
                         }
                     });
                 };
 
-                self.filteredSetLists = ko.computed(function() {
-                    return ko.utils.arrayFilter(self.setlists(), function(sl) {
+                self.filteredGigs = ko.computed(function () {
+                    return ko.utils.arrayFilter(self.gigs(), function (g) {
                         return (
-                            (self.nameSearch().length === 0 || sl.name.toLowerCase().indexOf(self.nameSearch().toLowerCase()) !== -1)
+                            (self.venueSearch().length === 0 || g.venue.toLowerCase().indexOf(self.venueSearch().toLowerCase()) !== -1)
                         );
                     });
                 });
 
-                self.setlistsTable = ko.computed(function() {
-                    return self.filteredSetLists();
+                self.gigsTable = ko.computed(function () {
+                    return self.filteredGigs();
                 });
 
-                self.showEditDialog = function(row) {
+                self.showEditDialog = function (row) {
                     var id = row.id;
 
                     if (id > 0) {
                         self.highlightRow(row);
                     }
 
-                    self.showSetListEditDialog(row);
+                    self.showGigEditDialog(row);
                 };
 
-                self.deleteSelectedSetList = function(row) {
-                    deleteSetList(row.id);
+                self.deleteSelectedGig = function (row) {
+                    deleteGig(row.id);
                 };
 
-                self.showDeleteDialog = function(row) {
+                self.showDeleteDialog = function (row) {
                     self.highlightRow(row);
-                    self.showSetListDeleteDialog(row);
+                    self.showGigDeleteDialog(row);
                 };
 
-                self.showSetListDeleteDialog = function(row) {
-                    var id = (typeof row.id !== "undefined" ? row.id: 0);
+                self.showGigDeleteDialog = function (row) {
+                    var id = (typeof row.id !== "undefined" ? row.id : 0);
                     if (id <= 0) return;
-                    var sl = self.getSetList(id);
+                    var g = self.getGig(id);
 
                     dialog.custom.showModal({
-                        title: "Delete Set List?",
-                        message: "This will permanently delete the set list '" + sl.name + "'.",
-                        callback : function () {
-                            return self.deleteSetList(row.id);
+                        title: "Delete Gig?",
+                        message: "This will permanently delete the gig for venue '" + g.venue + "' on " + g.date + ".",
+                        callback: function () {
+                            return self.deleteGig(row.id);
                         },
                         width: 500
                     });
                 };
 
-                self.showSetListEditDialog = function (row) {
+                self.showGigEditDialog = function (row) {
                     var id = (typeof row.id !== "undefined" ? row.id : 0);
                     var title;
                     var message;
 
                     if (id > 0) {
-                        title = "Edit Set List";
-                        var setlist = self.getSetList(id);
-                        self.selectedSetList(setlist);
+                        title = "Edit Gig";
+                        var gig = self.getGig(id);
+                        self.selectedGig(gig);
                     } else {
-                        title = "Generate Set List";
-                        self.selectedSetList([]);
+                        title = "Add Gig";
+                        self.selectedGig([]);
                     }
 
                     $.ajax({
                         type: "GET",
                         async: false,
-                        url: site.url + "SetLists/GetSetListEditView/" + id,
+                        url: site.url + "Gigs/GetGigEditView/" + id,
                         success: function (data) {
                             message = data;
                         }
@@ -170,102 +162,88 @@
                     dialog.custom.showModal({
                         title: title,
                         message: message,
-                        focusElement: "txtName",
+                        focusElement: "txtVenue",
                         callback: function () {
                             $("#validation-container").html("");
                             $("#validation-container").hide();
-                            return self.saveSetList(id > 0);
+                            return self.saveGig();
                         },
-                        width: 250
+                        width: 400
                     });
                 };
 
-                self.getSetList = function(setlistid) {
-                    var setlist = null;
+                self.getGig = function (gigid) {
+                    var gig = null;
 
-                    ko.utils.arrayForEach(self.setlists(), function(item) {
-                        if (item.id == setlistid) {
-                            setlist = item;
+                    ko.utils.arrayForEach(self.gigs(), function (item) {
+                        if (item.id === gigid) {
+                            gig = item;
                         }
                     });
 
-                    return setlist;
+                    return gig;
                 };
 
-                self.highlightRow = function(row) {
+                self.highlightRow = function (row) {
                     if (row == null) return;
                     var id = row.id;
-                    var table = $("#tblSetList");
-                    var rows = $("#tblSetList tr:gt(0)");
-                    rows.each(function() {
+                    var table = $("#tblGig");
+                    var rows = $("#tblGig tr:gt(0)");
+                    rows.each(function () {
                         $(this).css("background-color", "#ffffff");
                     });
 
                     var r = table.find("#row_" + id);
                     r.css("background-color", HIGHLIGHT_ROW_COLOUR);
-                    $("#tblSetList").attr("tr:hover", HIGHLIGHT_ROW_COLOUR);
+                    $("#tblGig").attr("tr:hover", HIGHLIGHT_ROW_COLOUR);
                 };
 
-                self.getSetListDetailFromDialog = function(edit) {
-                    var name = $.trim($("#txtName").val());
-                    var numsets = parseInt($("#ddlNumSets").val());
-                    var numsongs = parseInt($("#ddlNumSongs").val());
-                    var id;
+                self.getGigDetailFromDialog = function () {
+                    var venue = $.trim($("#txtVenue").val());
+                    var description = $.trim($("#txtDescription").val());
+                    var date = $("#dtDateGig").val();
 
-                    if(edit) id = self.selectedSetList().id;
-                    else id = 0;
-
-                    return { Id: id, Name: name, NumSets: numsets, NumSongs: numsongs
+                    return {
+                        Id: self.selectedGig().id, Venue: venue, Description: description, DateGig: date
                     };
                 };
 
                 self.getColumns = function () {
-                    var arr =[];
-                    $(self.columns()).each(function(index, value) {
+                    var arr = [];
+                    $(self.columns()).each(function (index, value) {
                         arr.push({
-                        Header: value.title, Data: value.dataMember, IsVisible: value.isVisible()
+                            Header: value.title, Data: value.dataMember, IsVisible: value.isVisible()
                         });
                     });
                     return arr;
                 };
 
-                self.showSets = function(set) {
-                    var id = set.id;
-                    window.location.href = site.url + "SetLists/" +id + "/Sets";
-                }
-
                 //---------------------------------------------- CONTROLLER (BEGIN) -------------------------------------------------------
 
-                self.saveSetList = function(edit) {
-                    var setlistdetail = self.getSetListDetailFromDialog(edit);
-                    var jsonData = JSON.stringify(setlistdetail);
-                    var url;
+                self.saveGig = function () {
+                    var gigdetail = self.getGigDetailFromDialog();
+                    var jsonData = JSON.stringify(gigdetail);
                     var result;
 
                     $("body").css("cursor", "wait");
 
-                    if (!edit)
-                        url = site.url + "SetLists/Generate/";
-                    else
-                        url = site.url + "SetLists/Save/";
-
                     $.ajax({
                         type: "POST",
                         async: false,
-                        url: url,
-                        data: { setListDetail: jsonData },
+                        url: site.url + "Gigs/Save/",
+                        data: { gig: jsonData },
                         dataType: "json",
                         traditional: true,
-                        failure: function() {
+                        failure: function () {
                             $("body").css("cursor", "default");
                             $("#validation-container").html("");
                         },
-                        success: function(data) {
+                        success: function (data) {
                             if (data.Success) {
-                                lists.setlistList = data.SetlistList;
-                                createSetListArray(lists.setlistList);
-                                self.selectedSetList(self.getSetList(data.SelectedId));
-                                self.highlightRow(self.selectedSetList());
+                                lists.gigList = data.GigList;
+                                createGigArray(lists.gigList);
+                                self.selectedGig(self.getGig(data.SelectedId));
+                                self.highlightRow(self.selectedGig());
                                 result = true;
                             } else {
                                 if (data.ErrorMessages.length > 0) {
@@ -289,22 +267,22 @@
                     return result;
                 };
 
-                self.deleteSetList = function(id) {
+                self.deleteGig = function (id) {
                     $("body").css("cursor", "wait");
 
                     $.ajax({
                         type: "POST",
-                        url: site.url + "SetLists/Delete/",
+                        url: site.url + "Gigs/Delete/",
                         data: { id: id },
                         dataType: "json",
                         traditional: true,
-                        failure: function() {
+                        failure: function () {
                             $("body").css("cursor", "default");
                         },
-                        success: function(data) {
+                        success: function (data) {
                             if (data.Success) {
-                                lists.setlistList = data.SetlistList;
-                                createSetListArray(lists.setlistList);
+                                lists.gigList = data.gigList;
+                                createGigArray(lists.gigList);
                             }
                             $("body").css("cursor", "default");
                         }
@@ -313,11 +291,11 @@
                     return true;
                 };
 
-                self.saveColumns = function() {
+                self.saveColumns = function () {
                     var jsonData = JSON.stringify(self.getColumns());
                     $.ajax({
                         type: "POST",
-                        url: site.url + "SetLists/SaveColumns/",
+                        url: site.url + "Gigs/SaveColumns/",
                         data: { columns: jsonData },
                         dataType: "json",
                         traditional: true
@@ -329,7 +307,7 @@
 
             //---------------------------------------------- VIEW MODEL (END) -----------------------------------------------------
 
-            ko.utils.stringStartsWith = function(string, startsWith) {
+            ko.utils.stringStartsWith = function (string, startsWith) {
                 string = string || "";
                 if (startsWith.length > string.length) return false;
                 return string.substring(0, startsWith.length) === startsWith;
