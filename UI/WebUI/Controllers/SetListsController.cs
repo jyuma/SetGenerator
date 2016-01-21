@@ -111,7 +111,7 @@ namespace SetGenerator.WebUI.Controllers
             {
                 reportPath = "~/Reports/Sets_Key_Singer.rdlc";
             }
-            else if (showKey && !showSinger)
+            else if (showKey && !showSinger && showMembers)
             {
                 reportPath = "~/Reports/Sets_Key_Members.rdlc";
             }
@@ -123,11 +123,11 @@ namespace SetGenerator.WebUI.Controllers
             {
                 reportPath = "~/Reports/Sets_Members.rdlc";
             }
-            else if (!showKey && showSinger)
+            else if (!showKey && showSinger && !showMembers)
             {
                 reportPath = "~/Reports/Sets_Singer.rdlc";
             }
-            else if (showKey)
+            else if (showKey && showMembers && showSinger)
             {
                 reportPath = "~/Reports/Sets_Key_Singer_Members.rdlc";
             }
