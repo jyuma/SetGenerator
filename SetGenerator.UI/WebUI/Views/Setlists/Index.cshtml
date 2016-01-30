@@ -1,0 +1,69 @@
+﻿@model SetGenerator.WebUI.ViewModels.SetlistViewModel
+
+@if (!Request.IsAuthenticated)
+{
+    Url.Action("Index", "Home");
+}
+
+@{
+    ViewBag.Title = "Manage Setlists";
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        setlists.index.init();
+    });
+</script>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <ul class="nav nav-pills">
+            <li>
+                <input type="button" class="btn btn-success" value="Generate New" data-bind="click: showEditDialog" />
+            </li>
+            <li>
+                <input type="text" class="form-control text-search" placeholder="Name" data-bind="value: nameSearch, valueUpdate: 'keyup'" />
+            </li>
+            <li style="float: right;">
+                <div id="ddlColumns" class="dropdown">
+                    <button class="btn btn-default dropdown-toggle" type="button" id="btnShowHideColumns" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        Show/Hide Columns
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="btnShowHideColumns" data-bind="foreach: columns">
+                        <li data-bind="if: !alwaysVisible">
+                            <div>
+                                <input type="checkbox" data-bind="checked: isVisible, attr: { id: 'chk_' + dataMember }" /> <label for="" data-bind="text: title"></label>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="panel-body">
+        <table class="table table-striped table-bordered table-hover" id="tblSetlist">
+            <thead>
+                <tr>
+                    <th class="col-glyphicon"></th>
+                    <th class="col-glyphicon"></th>
+                    <th class="col-link"></th>
+                    <!-- ko foreach: columns -->
+                    <th data-bind="visible: isVisible, click: $parent.sort, attr: { id: 'setlist-col-' + dataMember } "><a href="#" data-bind="text: title"></a></th>
+                    <!-- /ko -->
+                </tr>
+            </thead>
+
+            <tbody data-bind="foreach: setlistsTable">
+                <tr data-bind="click: $parent.highlightRow, attr: {id: 'row_' +  id}">
+                    <td class="table-edit"><a class="glyphicon glyphicon-remove" href="#" data-bind="click: $parent.showDeleteDialog"></a></td>
+                    <td class="table-edit"><a class="glyphicon glyphicon-pencil" href="#" data-bind="click: $parent.showEditDialog"></a></td>
+                    <td class="table-edit"><a data-bind="attr: { href: 'Setlists/' + id + '/Sets/' }, click: $parent.showSets">View Sets</a></td>
+                    <!-- ko foreach: $parent.columns -->
+                    <td data-bind="text: $parent[dataMember], visible: isVisible"></td>
+                    <!-- /ko -->
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

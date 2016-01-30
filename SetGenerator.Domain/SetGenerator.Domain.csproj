@@ -1,0 +1,189 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{DC3EC3C4-73C9-42B7-AEF8-C043E3B250AD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SetGenerator.Domain</RootNamespace>
+    <AssemblyName>SetGenerator.Domain</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="FluentNHibernate, Version=2.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FluentNHibernate.2.0.3.0\lib\net40\FluentNHibernate.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Iesi.Collections, Version=4.0.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Iesi.Collections.4.0.0.4000\lib\net40\Iesi.Collections.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NHibernate, Version=4.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NHibernate.4.0.4.4000\lib\net40\NHibernate.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Entities\Band.cs" />
+    <Compile Include="Entities\EntityAuditBase.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\EntityBase.cs" />
+    <Compile Include="Entities\Genre.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Gig.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Instrument.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Key.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\KeyName.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Member.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\MemberInstrument.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Set.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Setlist.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Song.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\SongMemberInstrument.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Table.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\TableColumn.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\Tempo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\User.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\UserBand.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\UserPreferenceTableColumn.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Entities\UserPreferenceTableMember.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappings\BandMap.cs" />
+    <Compile Include="Mappings\GenreMap.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappings\GigMap.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappings\InstrumentMap.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappings\KeyMap.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappings\KeyNameMap.cs" />
+    <Compile Include="Mappings\MemberInstrumentMap.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappings\MemberMap.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappings\SetlistMap.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappings\SetMap.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappings\SongMap.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappings\SongMemberInstrumentMap.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappings\TableColumnMap.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappings\TableMap.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappings\TempoMap.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappings\UserBandMap.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappings\UserMap.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappings\UserPreferenceTableColumnMap.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Mappings\UserPreferenceTableMemberMap.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.Config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
