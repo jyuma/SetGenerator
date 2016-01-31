@@ -8,6 +8,7 @@ namespace SetGenerator.Data.Repositories
 {
     public interface IMemberRepository : IRepositoryBase<Member>
     {
+        IEnumerable<Member> GetByBandId(int bandId);
         IEnumerable<string> GetNameList(int bandId);
         ArrayList GetNameArrayList(int bandId);
     }
@@ -18,15 +19,25 @@ namespace SetGenerator.Data.Repositories
             : base(session)
         {
         }
-    
+
+        public IEnumerable<Member> GetByBandId(int bandId)
+        {
+            var list = Session.QueryOver<Member>()
+                .Where(x => x.Band.Id == bandId)
+                .List()
+                .OrderBy(x => x.FirstName);
+
+            return list;
+        }
+
         public IEnumerable<string> GetNameList(int bandId)
         {
-            var list = GetAll()
+            var list = Session.QueryOver<Member>()
                 .Where(x => x.Band.Id == bandId)
+                .List()
                 .Distinct()
                 .OrderBy(x => x.FirstName)
-                .Select(x => x.FirstName)
-                .ToArray();
+                .Select(x => x.FirstName);
 
             return list;
         }

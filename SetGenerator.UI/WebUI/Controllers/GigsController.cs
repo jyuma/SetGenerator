@@ -13,17 +13,20 @@ namespace SetGenerator.WebUI.Controllers
 {
     public class GigsController : Controller
     {
+        private readonly IBandRepository _bandRepository;
         private readonly IGigRepository _gigRepository;
         private readonly IAccount _account;
         private readonly int _bandId = 1;
         private readonly User _currentUser;
         private readonly CommonSong _common;
 
-        public GigsController(  IGigRepository gigRepository,
+        public GigsController(  IBandRepository bandRepository,
+                                IGigRepository gigRepository,
                                 IMemberRepository memberRepository,
                                 IKeyRepository keyRepository,
                                 IAccount account)
         {
+            _bandRepository = bandRepository;
             _gigRepository = gigRepository;
             _account = account;
 
@@ -45,8 +48,11 @@ namespace SetGenerator.WebUI.Controllers
             var bandId = Convert.ToInt32(Session["BandId"]);
             var vm = new
             {
-                gigList = GetGigList(),
-                tableColumnList = _common.GetTableColumnList(_currentUser.UserPreferenceTableColumns, _currentUser.UserPreferenceTableMembers, Constants.UserTable.GigId, bandId)
+                GigList = GetGigList(),
+                TableColumnList = _common.GetTableColumnList(
+                    _currentUser.UserPreferenceTableColumns,
+                    _currentUser.UserPreferenceTableMembers.Where(x => x.Member.Band.Id == bandId),
+                    Constants.UserTable.GigId)
             };
 
             return Json(vm, JsonRequestBehavior.AllowGet);
@@ -55,7 +61,7 @@ namespace SetGenerator.WebUI.Controllers
         private IEnumerable<GigDetail> GetGigList()
         {
             var bandId = Convert.ToInt32(Session["BandId"]);
-            var gigList = _gigRepository.GetAll().Where(x => x.Band.Id == bandId);
+            var gigList = _gigRepository.GetByBandId(bandId);
 
             var result = gigList.Select(gig => new GigDetail
             {
@@ -162,16 +168,18 @@ namespace SetGenerator.WebUI.Controllers
             return Json(JsonRequestBehavior.AllowGet);
         }
 
-        private int AddGig(GigDetail gig)
+        private int AddGig(GigDetail gigDetail)
         {
+            var band = _bandRepository.Get(gigDetail.BandId);
+
             var g = new Gig
             {
-                DateGig = Convert.ToDateTime(gig.DateGig),
-                Venue = gig.Venue,
-                Description = gig.Description,
-                //BandId = _bandId,
-                UserCreateId = _currentUser.Id,
-                UserUpdateId = _currentUser.Id,
+                DateGig = Convert.ToDateTime(gigDetail.DateGig),
+                Venue = gigDetail.Venue,
+                Description = gigDetail.Description,
+                Band = band,
+                UserCreate = _currentUser,
+                UserUpdate = _currentUser,
                 DateCreate = DateTime.Now,
                 DateUpdate = DateTime.Now
             };
@@ -179,18 +187,19 @@ namespace SetGenerator.WebUI.Controllers
             return _gigRepository.Add(g);
         }
 
-        private void UpdateGig(GigDetail gd)
+        private void UpdateGig(GigDetail gigDetail)
         {
-            var gig = _gigRepository.Get(gd.Id);
+            var gig = _gigRepository.Get(gigDetail.Id);
+
             if (gig != null)
             {
-                gig.DateGig = Convert.ToDateTime(gd.DateGig);
-                gig.Venue = gd.Venue;
-                gig.Description = gd.Description;
-                //gig.BandId = _bandId;
-                gig.UserUpdateId = _currentUser.Id;
+                gig.DateGig = Convert.ToDateTime(gigDetail.DateGig);
+                gig.Venue = gigDetail.Venue;
+                gig.Description = gigDetail.Description;
+                gig.UserUpdate = _currentUser;
                 gig.DateUpdate = DateTime.Now;
             };
+
             _gigRepository.Update(gig);
         }
     }

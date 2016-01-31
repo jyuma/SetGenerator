@@ -32,6 +32,7 @@ namespace SetGenerator.Data.Repositories
             return GetAll()
                 .OrderBy(x => x.KeyName.Id)
                 .Select(x => x.KeyName)
+                .Distinct()
                 .ToArray();
         }
 

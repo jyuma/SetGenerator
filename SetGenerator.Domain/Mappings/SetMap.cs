@@ -14,7 +14,8 @@ namespace SetGenerator.Domain.Mappings
             Map(m => m.Sequence).Column("Sequence");
             References(m => m.Setlist).Column("SetlistId");
             References(m => m.Song).Column("SongId");
-            HasMany(m => m.Songs);
+
+            HasMany(m => m.Songs).Cascade.All(); ;
         }
     }
 }

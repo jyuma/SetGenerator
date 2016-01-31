@@ -9,6 +9,8 @@
     var HIGHLIGHT_ROW_COLOUR = "#e3e8ff";
     var STRING_ALL = "<All>";
     var STRING_ALL_SINGERS = "All Singers";
+    var STRING_ALL_GENRES = "All Genres";
+    var STRING_ALL_TEMPOS = "All Tempos";
     var STRING_NONE = "<None>";
     var LISTTYPE_ALIST = "A List";
     var LISTTYPE_DISABLED = "Shitcan";
@@ -19,10 +21,12 @@
             var _memberNameList;
 
             var lists = {
-                songList: [],
-                memberArrayList: [],
-                keyListFull: [],
-                tableColumnList: []
+                SongList: [],
+                MemberArrayList: [],
+                KeyListFull: [],
+                GenreArrayList: [],
+                TempoArrayList: [],
+                TableColumnList: []
             };
 
             loadConfig();
@@ -56,7 +60,7 @@
                 self.name = detail.Name + self.sharpflatnatdesc + (detail.MajorMinor === 1 ? "m" : "");
             }
 
-            function Song(id, title, keydetail, singerid, composer, neverclose, neveropen, disabled, updateuser, updatedate, instrumentmemberdetails) {
+            function Song(id, title, keydetail, singerid, genreid, tempoid, composer, neverclose, neveropen, disabled, updateuser, updatedate, instrumentmemberdetails) {
                 var self = this;
 
                 self.id = id;
@@ -64,18 +68,22 @@
                 self.keyid = keydetail.Id;
                 self.keydetail = new SongKeyDetail(keydetail);
                 self.singerid = singerid;
+                self.genreid = genreid;
+                self.tempoid = tempoid;
                 self.composer = composer;
                 self.neverclose = neverclose;
                 self.neveropen = neveropen;
                 self.disabled = disabled;
-                self.singer = getValue(lists.memberArrayList, singerid, 'Display', 'Value');
+                self.singer = getValue(lists.MemberArrayList, singerid, "Display", "Value");
+                self.genre = getValue(lists.GenreArrayList, genreid, "Display", "Value");
+                self.tempo = getValue(lists.TempoArrayList, tempoid, "Display", "Value");
                 self.key = self.keydetail.name;
                 self.updateuser = updateuser;
                 self.updatedate = updatedate;
                 self.memberInstruments = [];
 
                 $(instrumentmemberdetails).each(function (index, value) {
-                    var memberName = getValue(lists.memberArrayList, value.MemberId, "Display", "Value").toLowerCase();
+                    var memberName = getValue(lists.MemberArrayList, value.MemberId, "Display", "Value").toLowerCase();
                     self[memberName] = getValue(instrumentmemberdetails, value.InstrumentId, "InstrumentName", "InstrumentId");
                 });
 
@@ -91,9 +99,11 @@
                 self.memberNameList = ko.observableArray(_memberNameList);
                 self.showDisabled = ko.observable(false);
                 self.selectedSong = ko.observable();
-                self.memberSearch = ko.observable(STRING_ALL);
-                self.keySearch = ko.observable('');
-                self.titleSearch = ko.observable('');
+                self.memberSearch = ko.observable(STRING_ALL_SINGERS);
+                self.genreSearch = ko.observable(STRING_ALL_GENRES);
+                self.tempoSearch = ko.observable(STRING_ALL_TEMPOS);
+                self.keySearch = ko.observable("");
+                self.titleSearch = ko.observable("");
                 self.listTypeSearch = ko.observable(LISTTYPE_ALIST);
 
                 createSongArray();
@@ -104,7 +114,7 @@
 
                 self.columns = ko.computed(function () {
                     var arr = [];
-                    $(lists.tableColumnList).each(function (index, value) {
+                    $(lists.TableColumnList).each(function (index, value) {
                         arr.push({ title: value.Header, sortKey: value.Data, dataMember: value.Data, isVisible: ko.observable(value.IsVisible), alwaysVisible: value.AlwaysVisible, isMember: value.IsMember });
                     });
                     return arr;
@@ -113,7 +123,7 @@
                 self.memberArrayList = ko.computed(function () {
                     var arr = [];
                     arr.push({ Value: 0, Display: STRING_NONE });
-                    $(lists.memberArrayList).each(function (index, value) {
+                    $(lists.MemberArrayList).each(function (index, value) {
                         arr.push({ Value: value.Value, Display: value.Display });
                     });
                     return arr;
@@ -128,6 +138,42 @@
                     return arr;
                 });
 
+                self.genreArrayList = ko.computed(function () {
+                    var arr = [];
+                    
+                    $(lists.GenreArrayList).each(function (index, value) {
+                        arr.push({ Value: value.Value, Display: value.Display });
+                    });
+                    return arr;
+                });
+
+                self.genreNameSearchList = ko.computed(function () {
+                    var arr = [];
+                    arr.push(STRING_ALL_GENRES);
+                    $(lists.GenreArrayList).each(function (index, value) {
+                        arr.push(value.Display);
+                    });
+                    return arr;
+                });
+
+                self.tempoArrayList = ko.computed(function () {
+                    var arr = [];
+                    
+                    $(lists.TempoArrayList).each(function (index, value) {
+                        arr.push({ Value: value.Value, Display: value.Display });
+                    });
+                    return arr;
+                });
+
+                self.tempoNameSearchList = ko.computed(function () {
+                    var arr = [];
+                    arr.push(STRING_ALL_TEMPOS);
+                    $(lists.TempoArrayList).each(function (index, value) {
+                        arr.push(value.Display);
+                    });
+                    return arr;
+                });
+
                 self.listTypeSearchList = ko.computed(function () {
                     var arr = [];
                     arr.push(LISTTYPE_ALIST);
@@ -137,7 +183,7 @@
 
                 function createSongArray() {
                     self.songs.removeAll();
-                    $(lists.songList).each(function (index, value) {
+                    $(lists.SongList).each(function (index, value) {
                         if (value.Disabled && self.showDisabled()) {
                             pushSong(value);
                         }
@@ -148,7 +194,7 @@
                 };
 
                 function pushSong(value) {
-                    self.songs.push(new Song(value.Id, value.Title, value.KeyDetail, value.SingerId, value.Composer, value.NeverClose, value.NeverOpen, value.Disabled, value.UserUpdate, value.DateUpdate, value.SongMemberInstrumentDetails));
+                    self.songs.push(new Song(value.Id, value.Title, value.KeyDetail, value.SingerId, value.GenreId, value.TempoId, value.Composer, value.NeverClose, value.NeverOpen, value.Disabled, value.UserUpdate, value.DateUpdate, value.SongMemberInstrumentDetails));
                 };
 
                 self.songsTable = self.songs;
@@ -174,6 +220,8 @@
                     return ko.utils.arrayFilter(self.songs(), function (s) {
                         return (
                                 (self.memberSearch() === STRING_ALL_SINGERS || s.singer === self.memberSearch())
+                                && (self.genreSearch() === STRING_ALL_GENRES || s.genre === self.genreSearch())
+                                && (self.tempoSearch() === STRING_ALL_TEMPOS || s.tempo === self.tempoSearch())
                                 && ((self.titleSearch().length === 0 || s.title.toLowerCase().indexOf(self.titleSearch().toLowerCase()) !== -1))
                                 && ((self.keySearch().length === 0 || s.key.toLowerCase().indexOf(self.keySearch().toLowerCase()) !== -1))
                         );
@@ -331,7 +379,7 @@
                         },
                         success: function (data) {
                             if (data.Success) {
-                                lists.songList = data.SongList;
+                                lists.SongList = data.SongList;
                                 createSongArray();
                                 self.selectedSong(self.getSong(data.SelectedId));
                                 self.highlightRow(self.selectedSong());
@@ -372,7 +420,7 @@
                         },
                         success: function (data) {
                             if (data.Success) {
-                                lists.songList = data.SongList;
+                                lists.SongList = data.SongList;
                                 createSongArray();
                             }
                             $("body").css("cursor", "default");
@@ -396,7 +444,7 @@
                         },
                         success: function (data) {
                             if (data.Success) {
-                                lists.songList = data.SongList;
+                                lists.SongList = data.SongList;
                                 createSongArray();
                             }
                             $("body").css("cursor", "default");
@@ -408,7 +456,7 @@
                 self.saveColumns = function () {
                     var jsonData = JSON.stringify(self.getColumns());
                     var selfColumns = self.getColumns();        // after changes
-                    var tableColumns = lists.tableColumnList;   // before changes
+                    var tableColumns = lists.TableColumnList;   // before changes
                     var isDifference = false;
 
                     $(selfColumns).each(function (index, value) {
@@ -440,6 +488,8 @@
                 self.getSongFromDialog = function () {
                     var title = $.trim($("#txtTitle").val());
                     var singerid = $("#ddlSinger").val();
+                    var genreid = $("#ddlGenre").val();
+                    var tempoid = $("#ddlTempo").val();
                     var nameid = parseInt($("#ddlKey").val());
                     var sharpflatnat = parseInt($("#ddlSharpFlatNatural").val());
                     var majminor = parseInt($("#ddlMajorMinor").val());
@@ -455,7 +505,7 @@
                         var instrumentid = $(this).find("select[name=ddlMemberInstrument_" + memberid + "]").val();
                         meminstdetails.push({ MemberId: memberid, InstrumentId: instrumentid });
                     });
-                    return { Id: self.selectedSong().id, Title: title, SingerId: singerid, KeyId: keyid, Composer: composer, NeverClose: neverclose, NeverOpen: neveropen, Disabled: disabled, SongMemberInstrumentDetails: meminstdetails };
+                    return { Id: self.selectedSong().id, Title: title, SingerId: singerid, KeyId: keyid, GenreId: genreid, TempoId: tempoid, Composer: composer, NeverClose: neverclose, NeverOpen: neveropen, Disabled: disabled, SongMemberInstrumentDetails: meminstdetails };
                 };
             };
 
@@ -465,7 +515,7 @@
 
             function getKeyId(nameid, sharpflatnat, majminor) {
                 var id = 0;
-                $(lists.keyListFull).each(function (index, value) {
+                $(lists.KeyListFull).each(function (index, value) {
                     if (value.NameId === nameid && value.SharpFlatNatural === sharpflatnat && value.MajorMinor === majminor) {
                         id = value.Id;
                     }

@@ -14,7 +14,7 @@ namespace SetGenerator.Domain.Entities
         public virtual Genre Genre { get; set; }
         public virtual Tempo Tempo { get; set; }
         public virtual bool IsDisabled { get; set; }
-        public virtual IEnumerable<SongMemberInstrument> SongMemberInstruments { get; set; }
+        public virtual IList<SongMemberInstrument> SongMemberInstruments { get; set; }
         public virtual User UserUpdate { get; set; }
         public virtual User UserCreate { get; set; }
     }

@@ -38,7 +38,17 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="label label-default">Composer</div>
-                <input type="text" id="txtComposer" name="txtComposer" class="form-control" value="@Model.Composer" maxlength="100" list="dlComposers" />
+                <input type="text" id="txtComposer" name="txtComposer" class="form-control" value="@Model.Composer" maxlength="100" list="dlComposers"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-5">
+                <div class="label label-default">Genre</div>
+                @Html.DropDownList("ddlGenre", @Model.Genres, new { @class = "form-control" })
+            </div>
+            <div class="col-sm-5">
+                <div class="label label-default">Tempo</div>
+                @Html.DropDownList("ddlTempo", @Model.Tempos, new { @class = "form-control" })
             </div>
         </div>
         <div class="row">

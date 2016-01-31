@@ -18,7 +18,7 @@ namespace SetGenerator.WebUI.Common
 
         public CommonSong( IAccount account, 
                                     IKeyRepository keyRepository, 
-                                    IMemberRepository memberRepository, 
+                                    IMemberRepository memberRepository,
                                     string currentUserName)
         {
             _keyRepository = keyRepository;
@@ -67,7 +67,7 @@ namespace SetGenerator.WebUI.Common
             }).ToArray();
         }
 
-        public ICollection<TableColumnDetail> GetTableColumnList(IEnumerable<UserPreferenceTableColumn> columns, IEnumerable<UserPreferenceTableMember> members, int userTableId, int bandId)
+        public ICollection<TableColumnDetail> GetTableColumnList(IEnumerable<UserPreferenceTableColumn> columns, IEnumerable<UserPreferenceTableMember> members, int userTableId)
         {
             var list = new List<TableColumnDetail>();
 
@@ -84,7 +84,6 @@ namespace SetGenerator.WebUI.Common
 
             list.AddRange(members
                 .Where(x => x.Table.Id == userTableId)
-                .Where(x => x.Band.Id == bandId)
                 .Select(tc => new TableColumnDetail
             {
                 Header = tc.Member.FirstName,

@@ -26,9 +26,9 @@ namespace SetGenerator.Domain.Mappings
             Map(m => m.TwoFactorEnabled).Column("TwoFactorEnabled");
             Map(m => m.AccessFailedCount).Column("AccessFailedCount");
 
-            HasMany(m => m.UserBands);
-            HasMany(m => m.UserPreferenceTableColumns);
-            HasMany(m => m.UserPreferenceTableMembers);
+            HasMany(m => m.UserBands).Cascade.All(); ;
+            HasMany(m => m.UserPreferenceTableColumns).Cascade.All(); ;
+            HasMany(m => m.UserPreferenceTableMembers).Cascade.All();
         }
     }
 }

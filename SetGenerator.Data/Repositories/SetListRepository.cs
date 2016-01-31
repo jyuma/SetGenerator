@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using SetGenerator.Domain.Entities;
 using NHibernate;
 
@@ -6,6 +7,7 @@ namespace SetGenerator.Data.Repositories
 {
     public interface ISetlistRepository : IRepositoryBase<Setlist>
     {
+        IEnumerable<Gig> GetByBandId(int bandId);
         Setlist GetByName(int bandId, string name);
     }
 
@@ -14,6 +16,16 @@ namespace SetGenerator.Data.Repositories
         public SetlistRepository(ISession session)
             : base(session)
         {
+        }
+
+        public IEnumerable<Gig> GetByBandId(int bandId)
+        {
+            var list = Session.QueryOver<Gig>()
+                .Where(x => x.Band.Id == bandId)
+                .List()
+                .OrderBy(x => x.Venue);
+
+            return list;
         }
 
         public Setlist GetByName(int bandId, string name)

@@ -15,7 +15,8 @@ namespace SetGenerator.Domain.Mappings
             Map(m => m.Initials).Column("Initials");
             References(m => m.DefaultInstrument).Column("DefaultInstrumentId");
             References(m => m.Band).Column("BandId");
-            HasMany(x => x.MemberInstruments);
+
+            HasMany(x => x.MemberInstruments).Cascade.All(); ;
         }
     }
 }

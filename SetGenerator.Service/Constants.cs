@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SetGenerator.Service
+﻿namespace SetGenerator.Service
 {
     public class Constants
     {
+        // selectlist text
+        public struct SelectListText
+        {
+            public const string NoneSelected = "<None>";
+        }
+
         // validation
         public const int MinPassowrdLength = 4;
         public const int MaxAccountNumberLength = 20;

@@ -5,11 +5,10 @@ namespace SetGenerator.WebUI.ViewModels
     public class SongDetail
     {
         public int Id { get; set; }
-        public int BandId { get; set; }
         public string Title { get; set; }
         public int KeyId { get; set; }
         public SongKeyDetail KeyDetail { get; set; }
-        public int? SingerId { get; set; }
+        public int SingerId { get; set; }
         public bool NeverOpen { get; set; }
         public bool NeverClose { get; set; }
         public bool Disabled { get; set; }
@@ -24,7 +23,7 @@ namespace SetGenerator.WebUI.ViewModels
     public class SongMemberInstrumentDetail
     {
         public int MemberId { get; set; }
-        public int? InstrumentId { get; set; }
+        public int InstrumentId { get; set; }
         public string InstrumentAbbrev { get; set; }
         public string InstrumentName { get; set; }
     }
@@ -73,5 +72,17 @@ namespace SetGenerator.WebUI.ViewModels
         public int SelectedId { get; set; }
         public List<string> ErrorMessages { get; set; }
         public bool Success { get; set; }
+    }
+
+    public class SongGenre
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
+
+    public class SongTempo
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }

@@ -9,8 +9,9 @@ namespace SetGenerator.Data.Repositories
     {
         IList<Song> GetAList(int bandId);
         Song GetByTitle(int bandId, string title);
+        IEnumerable<Song> GetByBandId(int bandId);
         IEnumerable<string> GetComposerList(int bandId);
-        //IEnumerable<SongMemberInstrument> GetMemberInstrumentList(int bandId);
+        IEnumerable<SongMemberInstrument> GetMemberInstrumentList(int songId);
     }
 
     public class SongRepository : RepositoryBase<Song>, ISongRepository
@@ -40,31 +41,44 @@ namespace SetGenerator.Data.Repositories
 
         public Song GetByTitle(int bandId, string title)
         {
-            var s = GetAll()
+            var song = GetAll()
                 .Where(x => x.Band.Id == bandId)
                 .FirstOrDefault(x => x.Title == title);
-            return s;
+
+            return song;
+        }
+
+        public IEnumerable<Song> GetByBandId(int bandId)
+        {
+            var list = Session.QueryOver<Song>()
+                .Where(x => x.Band.Id == bandId)
+                .List()
+                .OrderBy(x => x.Title);
+
+            return list;
         }
 
         public IEnumerable<string> GetComposerList(int bandId)
         {
-            var list = GetAll()
+            var list = Session.QueryOver<Song>()
                 .Where(x => x.Band.Id == bandId)
-                .Where(x => x.Composer.Length > 0)
+                .Where(x => x.Composer != null)
+                .List()
+                .OrderBy(x => x.Composer)
                 .Select(x => x.Composer)
                 .Distinct()
-                .ToList();
+                .ToArray();
+
             return list;
         }
 
+        public IEnumerable<SongMemberInstrument> GetMemberInstrumentList(int songId)
+        {
+            var list = Get(songId)
+                .SongMemberInstruments
+                .ToList();
 
-        //public IEnumerable<SongMemberInstrument> GetMemberInstrumentList(int bandId)
-        //{
-        //    var list = GetAll()
-        //        .Where(x => x.Band.Id == bandId)
-        //        .ToArray();
-
-        //    return list;
-        //}
+            return list;
+        }
     }
 }
