@@ -25,6 +25,7 @@ namespace SetGenerator.Domain.Mappings
             Map(m => m.PhoneNumberConfirmed).Column("PhoneNumberConfirmed");
             Map(m => m.TwoFactorEnabled).Column("TwoFactorEnabled");
             Map(m => m.AccessFailedCount).Column("AccessFailedCount");
+            Map(m => m.DefaultBandId).Column("DefaultBandId");
 
             HasMany(m => m.UserBands).Cascade.All(); ;
             HasMany(m => m.UserPreferenceTableColumns).Cascade.All(); ;

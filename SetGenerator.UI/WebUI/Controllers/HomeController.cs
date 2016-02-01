@@ -1,7 +1,6 @@
-﻿using Newtonsoft.Json;
-using SetGenerator.Domain;
-using SetGenerator.Service;
+﻿using SetGenerator.Service;
 using SetGenerator.WebUI.ViewModels;
+using SetGenerator.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -12,7 +11,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
-using SetGenerator.Domain.Entities;
+using Newtonsoft.Json;
 using Constants = SetGenerator.Service.Constants;
 
 namespace SetGenerator.WebUI.Controllers
@@ -281,14 +280,16 @@ namespace SetGenerator.WebUI.Controllers
 
         private IEnumerable<Band> GetBands()
         {
+            var user = _account.GetUserByUserName(System.Web.HttpContext.Current.User.Identity.Name);
             var userBands = _account.GetUserBands(System.Web.HttpContext.Current.User.Identity.Name);
+
             if (userBands != null)
             {
                 if (userBands.Any())
                 {
                     if (Session["BandId"] == null)
                     {
-                        Session["BandId"] = userBands.First().Id;
+                        Session["BandId"] = user.DefaultBandId;
                     }
                 }
             }

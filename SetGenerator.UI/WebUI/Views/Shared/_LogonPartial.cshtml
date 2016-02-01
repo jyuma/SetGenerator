@@ -16,7 +16,7 @@
                     <span>
                         @if (Session["Bands"] != null)
                         {
-                            @Html.DropDownList("ddlUserBand", new SelectList((IEnumerable)Session["Bands"], "Id", "Name", Session["BandId"]), new {@onchange = "shared._layout.setCurrentBand()" })
+                            @Html.DropDownList("ddlUserBand", new SelectList((IEnumerable)Session["Bands"], "Id", "Name", Session["BandId"]), new { @class="filter-bold", @onchange = "shared._layout.setCurrentBand()" })
                         }
                         @Html.ActionLink("Welcome " + User.Identity.GetUserName() + "! ", "Manage", "Account", routeValues: null, htmlAttributes: new { title = "Manage" })
                     </span>

@@ -17,23 +17,19 @@ namespace SetGenerator.Service
         long CreateUser(string username, string email, string password, int bandId, string ip, string browser);
         void DeleteUser(int id);
         void UpdateUserDisabled(string uname, bool disabled);
-        //void UpdateUserProfile(long userId, string username, string emailAddress);
-        //void UpdateUserPassword(long userId, string password);
         void UpdateUserTablePreferences(string userName, int tableId, OrderedDictionary cols);
         User GetUserByUserName(string username);
         ICollection<Band> GetUserBands(string uname = null);
-        //ArrayList GetUserBandArrayList(string uname);
         User GetUser(int userId);
         List<string> ValidateLogin(string username, string password);
         List<string> ValidateProfile(string username, string email);
         List<string> ValidateRegister(string username, string email, string password, string confirmPassword);
         List<string> ValidateChangePassword(string password, string confirmPassword);
-        //bool IsAdminAccessDenied(string ipAddress);
-        //void AddAdminAccessDenied(string ipAddress);
     }
 
     public class Account : IAccount
     {
+        private const int DefaultBandId = 4;  // Stetson Brothers
         private readonly IUserRepository _userRepository;
         private readonly ITableColumnRepository _tableColumnRepository;
         private readonly IMemberRepository _memberRepository;
@@ -102,9 +98,6 @@ namespace SetGenerator.Service
 
         public long CreateUser(string username, string email, string password, int bandId, string ip, string browser)
         {
-            //string uname = (username.Length > 20)
-            //                   ? username.Substring(0, Constants.MaxAccountNumberLength)
-            //                   : username;
             var u = new User
                 {
                     UserName = username,
@@ -116,7 +109,7 @@ namespace SetGenerator.Service
                     UserPreferenceTableColumns = GetUserPreferenceTableColumns(),
                     UserPreferenceTableMembers = GetUserPreferenceTableMembers(bandId),
                     IsDisabled = false,
-                    //Bands = GetUserBands()
+                    DefaultBandId = DefaultBandId
                 };
             _userRepository.Add(u);
             u = GetUserByUserName(username);
@@ -151,13 +144,13 @@ namespace SetGenerator.Service
 
             var list = members.Select(m => new UserPreferenceTableMember
                                                {
-                                                   //TableId = Constants.UserTable.SongId, 
+                                                   Table = _tableColumnRepository.GetTable(Constants.UserTable.SongId), 
                                                    Member = m, IsVisible = true
                                                }).ToList();
 
             list.AddRange(members.Select(m => new UserPreferenceTableMember
                                                   {
-                                                      //TableId = Constants.UserTable.SetId, 
+                                                      Table = _tableColumnRepository.GetTable(Constants.UserTable.SetId), 
                                                       Member = m, IsVisible = true
                                                   }));
             return list;
@@ -240,7 +233,6 @@ namespace SetGenerator.Service
 
         public void DeleteUser(int id)
         {
-            //var u = _userRepository.Get(id);
             _userRepository.Delete(id);
         }
 

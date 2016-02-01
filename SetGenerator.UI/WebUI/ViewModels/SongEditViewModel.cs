@@ -17,7 +17,7 @@ namespace SetGenerator.WebUI.ViewModels
         public SelectList KeyNames { get; set; }
         public SelectList SharpFlatNatural{ get; set; }
         public SelectList MajorMinor { get; set; }
-        public SelectList Members { get; set; }
+        public SelectList Singers { get; set; }
         public SelectList Genres { get; set; }
         public SelectList Tempos { get; set; }
         public bool NeverOpen { get; set; }

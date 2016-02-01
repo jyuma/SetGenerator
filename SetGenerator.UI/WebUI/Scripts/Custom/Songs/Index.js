@@ -17,11 +17,12 @@
     songs.index = {
         init: function () {
 
-            var _memberNameList;
+            var _singerNameList;
 
             var lists = {
                 SongList: [],
                 MemberArrayList: [],
+                SingerArrayList: [],
                 KeyListFull: [],
                 GenreArrayList: [],
                 TempoArrayList: [],
@@ -29,7 +30,7 @@
             };
 
             loadConfig();
-            loadMemberNameList();
+            loadSingerNameList();
 
             ko.applyBindings(new SongViewModel());
 
@@ -73,7 +74,7 @@
                 self.neverclose = neverclose;
                 self.neveropen = neveropen;
                 self.disabled = disabled;
-                self.singer = getValue(lists.MemberArrayList, singerid, "Display", "Value");
+                self.singer = getValue(lists.SingerArrayList, singerid, "Display", "Value");
                 self.genre = getValue(lists.GenreArrayList, genreid, "Display", "Value");
                 self.tempo = getValue(lists.TempoArrayList, tempoid, "Display", "Value");
                 self.key = self.keydetail.name;
@@ -95,10 +96,10 @@
                 var self = this;
 
                 self.songs = ko.observableArray([]);
-                self.memberNameList = ko.observableArray(_memberNameList);
+                self.singerNameList = ko.observableArray(_singerNameList);
                 self.showDisabled = ko.observable(false);
                 self.selectedSong = ko.observable();
-                self.memberSearch = ko.observable(STRING_ALL_SINGERS);
+                self.singerSearch = ko.observable(STRING_ALL_SINGERS);
                 self.genreSearch = ko.observable(STRING_ALL_GENRES);
                 self.tempoSearch = ko.observable(STRING_ALL_TEMPOS);
                 self.keySearch = ko.observable("");
@@ -128,10 +129,19 @@
                     return arr;
                 });
 
+                self.singerArrayList = ko.computed(function () {
+                    var arr = [];
+                    arr.push({ Value: 0, Display: STRING_NONE });
+                    $(lists.SingerArrayList).each(function (index, value) {
+                        arr.push({ Value: value.Value, Display: value.Display });
+                    });
+                    return arr;
+                });
+
                 self.singerNameSearchList = ko.computed(function () {
                     var arr = [];
                     arr.push(STRING_ALL_SINGERS);
-                    $(_memberNameList).each(function (index, value) {
+                    $(_singerNameList).each(function (index, value) {
                         arr.push(value);
                     });
                     return arr;
@@ -218,7 +228,7 @@
                 self.filteredSongs = ko.computed(function () {
                     return ko.utils.arrayFilter(self.songs(), function (s) {
                         return (
-                                (self.memberSearch() === STRING_ALL_SINGERS || s.singer === self.memberSearch())
+                                (self.singerSearch() === STRING_ALL_SINGERS || s.singer === self.singerSearch())
                                 && (self.genreSearch() === STRING_ALL_GENRES || s.genre === self.genreSearch())
                                 && (self.tempoSearch() === STRING_ALL_TEMPOS || s.tempo === self.tempoSearch())
                                 && ((self.titleSearch().length === 0 || s.title.toLowerCase().indexOf(self.titleSearch().toLowerCase()) !== -1))
@@ -548,8 +558,8 @@
 
             //---------------------------------------------- GENERAL (END) ------------------------------------------------------
 
-            function loadMemberNameList() {
-                var url = site.url + "Songs/GetMemberNameList/";
+            function loadSingerNameList() {
+                var url = site.url + "Songs/GetSingerNameList/";
 
                 $.ajax({
                     url: url,
@@ -558,7 +568,7 @@
                     async: false,
                     cache: false,
                     success: function (result) {
-                        _memberNameList = result;
+                        _singerNameList = result;
                     }
                 });
             }

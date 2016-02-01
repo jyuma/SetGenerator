@@ -18,10 +18,6 @@ body {
     /*background: url('Images/background.png') repeat center;*/
 }
 
-input[type=text], input[type=password] {
-    width: 400px;
-}
-
 /* Home main image */
 #registerLink {
     padding-right: 5px;
@@ -73,20 +69,25 @@ input[type=text], input[type=password] {
 
 #ddlUserBand {
     border-radius: 4px;
-    font-weight:200;
+    font-weight: 600;
     height: 30px;
     color: #555;
     border: 1px solid #ccc;
+    padding-right: 4px;
+    option 
+        {
+        font-weight: 400;
+    }
+}
+
+/* Login Form */
+#UserName, #Password {
+    width: 300px;
 }
 
 /* Search Menu Items */
-.dropdown-placeholder {
-    color: @colourGrey;
-}
-
-.form-control.filter-bold {
+.filter-bold {
     option {
-        color: @colourBlack;
         font-weight: normal;
     }
 }
@@ -119,6 +120,7 @@ input[type=text], input[type=password] {
 .input-date {
     width: 90px;
 }
+
 .container-fluid {
     margin-right: 30px;
 }
@@ -127,12 +129,15 @@ input[type=text], input[type=password] {
     margin-bottom: 5px;
 }
 
-.panel {
-    margin: 0;
-    .panel-body {
-        padding: 0;
-    }
-} 
+.modal-body
+{
+    .panel {
+        margin: 0;
+        .panel-body {
+            padding: 0;
+        }
+    } 
+}
 
 table {
     .col-glyphicon {

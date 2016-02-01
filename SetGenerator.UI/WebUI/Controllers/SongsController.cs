@@ -75,6 +75,7 @@ namespace SetGenerator.WebUI.Controllers
             {
                 SongList = GetSongList(),
                 MemberArrayList = _bandRepository.GetMemberNameArrayList(bandId),
+                SingerArrayList = _bandRepository.GetSingerNameArrayList(bandId),
                 KeyListFull = GetKeyListFull(),
                 GenreArrayList = _songRepository.GetGenreArrayList(),
                 TempoArrayList = _songRepository.GetTempoArrayList(),
@@ -180,10 +181,10 @@ namespace SetGenerator.WebUI.Controllers
                     new { Value = 2 , Display = "b" }
                 }, "Value", "Display", (song != null) ? song.Key.SharpFlatNatural : 0),
 
-                Members = new SelectList(
+                Singers = new SelectList(
                     new Collection<object>{ new { Value = 0, Display = "<None>" }}.ToArray()
                         .Union(bandMembers
-                        .Select(m => new { Value = m.Id, Display = m.FirstName })).ToArray()
+                        .Select(m => new { Value = m, Display = m })).ToArray()
                     , "Value", "Display", (song != null) 
                         ? (song.Singer != null) 
                             ? song.Singer.Id 
@@ -306,10 +307,10 @@ namespace SetGenerator.WebUI.Controllers
 
         // --- for the search dropdown
         [HttpGet]
-        public ActionResult GetMemberNameList()
+        public ActionResult GetSingerNameList()
         {
             var bandId = Convert.ToInt32(Session["BandId"]);
-            var list = _bandRepository.GetMemberNameList(bandId);
+            var list = _bandRepository.GetSingerNameList(bandId);
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 

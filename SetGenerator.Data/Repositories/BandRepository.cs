@@ -12,8 +12,9 @@ namespace SetGenerator.Data.Repositories
 
         // Member
         IEnumerable<Member> GetMembers(int bandId);
-        IEnumerable<string> GetMemberNameList(int bandId);
+        IEnumerable<string> GetSingerNameList(int bandId);
         ArrayList GetMemberNameArrayList(int bandId);
+        ArrayList GetSingerNameArrayList(int bandId);
     }
 
     public class BandRepository : RepositoryBase<Band>, IBandRepository
@@ -36,7 +37,7 @@ namespace SetGenerator.Data.Repositories
         }
 
 
-        // Member
+        // Member / Singer
 
         public IEnumerable<Member> GetMembers(int bandId)
         {
@@ -48,16 +49,11 @@ namespace SetGenerator.Data.Repositories
             return list;
         }
 
-        public IEnumerable<string> GetMemberNameList(int bandId)
+        public IEnumerable<string> GetSingerNameList(int bandId)
         {
-            var list = Session.QueryOver<Member>()
-                .Where(x => x.Band.Id == bandId)
-                .List()
-                .Distinct()
-                .OrderBy(x => x.FirstName)
-                .Select(x => x.FirstName);
+            var singers = GetBandSingers(bandId);
 
-            return list;
+            return singers.Select(x => x.Value);
         }
 
         public ArrayList GetMemberNameArrayList(int bandId)
@@ -73,6 +69,35 @@ namespace SetGenerator.Data.Repositories
                 al.Add(new { Value = m.Id, Display = m.FirstName });
 
             return al;
+        }
+
+        public ArrayList GetSingerNameArrayList(int bandId)
+        {
+            var singers = GetBandSingers(bandId);
+            var al = new ArrayList();
+
+            foreach (var s in singers)
+                al.Add(new { Value = s.Key, Display = s.Value });
+
+            return al;
+        }
+
+        private Dictionary<int, string> GetBandSingers(int bandId)
+        {
+            Member memberAlias = null;
+
+            return Session.QueryOver<Song>()
+                .Where(x => x.Band.Id == bandId)
+                .JoinAlias(x => x.Singer, () => memberAlias)
+                .Where(x => x.Singer.Id == memberAlias.Id)
+                .List()
+                .Select(x => new
+                {
+                    x.Singer.Id,
+                    x.Singer.FirstName
+                })
+                .Distinct()
+                .ToDictionary(x => x.Id, y => y.FirstName);
         }
     }
 }
