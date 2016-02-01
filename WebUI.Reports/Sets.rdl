@@ -489,9 +489,9 @@
         <TablixRowHierarchy>
           <TablixMembers>
             <TablixMember>
-              <Group Name="Number">
+              <Group Name="SetNumber">
                 <GroupExpressions>
-                  <GroupExpression>=Fields!Number.Value</GroupExpression>
+                  <GroupExpression>=Fields!SetNumber.Value</GroupExpression>
                 </GroupExpressions>
                 <PageBreak>
                   <BreakLocation>Between</BreakLocation>
@@ -668,7 +668,7 @@
         <DataSourceName>SetGenerator</DataSourceName>
         <QueryParameters>
           <QueryParameter Name="@setlistId">
-            <Value>41</Value>
+            <Value>5</Value>
             <rd:UserDefined>true</rd:UserDefined>
           </QueryParameter>
           <QueryParameter Name="@userId">
@@ -696,8 +696,8 @@
           <DataField>NumSets</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
-        <Field Name="Number">
-          <DataField>Number</DataField>
+        <Field Name="SetNumber">
+          <DataField>SetNumber</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
         <Field Name="Sequence">
@@ -744,7 +744,7 @@
       <DataType>Integer</DataType>
       <DefaultValue>
         <Values>
-          <Value>1</Value>
+          <Value>5</Value>
         </Values>
       </DefaultValue>
       <Prompt>setlistId</Prompt>

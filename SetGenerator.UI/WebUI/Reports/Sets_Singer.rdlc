@@ -198,9 +198,9 @@
         <TablixRowHierarchy>
           <TablixMembers>
             <TablixMember>
-              <Group Name="Number">
+              <Group Name="SetNumber">
                 <GroupExpressions>
-                  <GroupExpression>=Fields!Number.Value</GroupExpression>
+                  <GroupExpression>=Fields!SetNumber.Value</GroupExpression>
                 </GroupExpressions>
                 <PageBreak>
                   <BreakLocation>Between</BreakLocation>
@@ -408,8 +408,8 @@
           <DataField>NumSets</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
-        <Field Name="Number">
-          <DataField>Number</DataField>
+        <Field Name="SetNumber">
+          <DataField>SetNumber</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
         <Field Name="Sequence">

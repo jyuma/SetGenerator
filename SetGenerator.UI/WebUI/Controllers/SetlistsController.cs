@@ -1,11 +1,10 @@
 ﻿using SetGenerator.Service;
 using SetGenerator.WebUI.Common;
-using SetGenerator.WebUI.Extensions;
 using SetGenerator.WebUI.ViewModels;
 using SetGenerator.Data.Repositories;
 using SetGenerator.Domain.Entities;
-using SetGenerator.WebUI.Reports.SetsTableAdapters;
 using SetGenerator.WebUI.Helpers;
+using SetGenerator.WebUI.Reports.SetsTableAdapters;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

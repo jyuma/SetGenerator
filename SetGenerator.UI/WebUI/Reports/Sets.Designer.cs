@@ -287,7 +287,7 @@ namespace SetGenerator.WebUI.Reports {
             
             private global::System.Data.DataColumn columnNumSets;
             
-            private global::System.Data.DataColumn columnNumber;
+            private global::System.Data.DataColumn columnSetNumber;
             
             private global::System.Data.DataColumn columnSequence;
             
@@ -374,9 +374,9 @@ namespace SetGenerator.WebUI.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn NumberColumn {
+            public global::System.Data.DataColumn SetNumberColumn {
                 get {
-                    return this.columnNumber;
+                    return this.columnSetNumber;
                 }
             }
             
@@ -489,14 +489,14 @@ namespace SetGenerator.WebUI.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public GetSetlistRow AddGetSetlistRow(long Id, int IsSpare, string Name, int NumSets, int Number, int Sequence, string Title, string Key, string Singer, bool ShowMember, bool ShowKey, bool ShowSinger, string Member, string Instrument) {
+            public GetSetlistRow AddGetSetlistRow(long Id, int IsSpare, string Name, int NumSets, int SetNumber, int Sequence, string Title, string Key, string Singer, bool ShowMember, bool ShowKey, bool ShowSinger, string Member, string Instrument) {
                 GetSetlistRow rowGetSetlistRow = ((GetSetlistRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Id,
                         IsSpare,
                         Name,
                         NumSets,
-                        Number,
+                        SetNumber,
                         Sequence,
                         Title,
                         Key,
@@ -509,13 +509,6 @@ namespace SetGenerator.WebUI.Reports {
                 rowGetSetlistRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowGetSetlistRow);
                 return rowGetSetlistRow;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public GetSetlistRow FindById(long Id) {
-                return ((GetSetlistRow)(this.Rows.Find(new object[] {
-                            Id})));
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -539,7 +532,7 @@ namespace SetGenerator.WebUI.Reports {
                 this.columnIsSpare = base.Columns["IsSpare"];
                 this.columnName = base.Columns["Name"];
                 this.columnNumSets = base.Columns["NumSets"];
-                this.columnNumber = base.Columns["Number"];
+                this.columnSetNumber = base.Columns["SetNumber"];
                 this.columnSequence = base.Columns["Sequence"];
                 this.columnTitle = base.Columns["Title"];
                 this.columnKey = base.Columns["Key"];
@@ -562,8 +555,8 @@ namespace SetGenerator.WebUI.Reports {
                 base.Columns.Add(this.columnName);
                 this.columnNumSets = new global::System.Data.DataColumn("NumSets", typeof(int), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnNumSets);
-                this.columnNumber = new global::System.Data.DataColumn("Number", typeof(int), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnNumber);
+                this.columnSetNumber = new global::System.Data.DataColumn("SetNumber", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnSetNumber);
                 this.columnSequence = new global::System.Data.DataColumn("Sequence", typeof(int), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnSequence);
                 this.columnTitle = new global::System.Data.DataColumn("Title", typeof(string), null, global::System.Data.MappingType.Element);
@@ -582,16 +575,12 @@ namespace SetGenerator.WebUI.Reports {
                 base.Columns.Add(this.columnMember);
                 this.columnInstrument = new global::System.Data.DataColumn("Instrument", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnInstrument);
-                this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
-                                this.columnId}, true));
-                this.columnId.AllowDBNull = false;
                 this.columnId.ReadOnly = true;
-                this.columnId.Unique = true;
                 this.columnIsSpare.ReadOnly = true;
                 this.columnName.ReadOnly = true;
                 this.columnName.MaxLength = 100;
                 this.columnNumSets.ReadOnly = true;
-                this.columnNumber.ReadOnly = true;
+                this.columnSetNumber.ReadOnly = true;
                 this.columnSequence.ReadOnly = true;
                 this.columnTitle.ReadOnly = true;
                 this.columnTitle.MaxLength = 50;
@@ -750,7 +739,12 @@ namespace SetGenerator.WebUI.Reports {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public long Id {
                 get {
-                    return ((long)(this[this.tableGetSetlist.IdColumn]));
+                    try {
+                        return ((long)(this[this.tableGetSetlist.IdColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Id\' in table \'GetSetlist\' is DBNull.", e);
+                    }
                 }
                 set {
                     this[this.tableGetSetlist.IdColumn] = value;
@@ -807,17 +801,17 @@ namespace SetGenerator.WebUI.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public int Number {
+            public int SetNumber {
                 get {
                     try {
-                        return ((int)(this[this.tableGetSetlist.NumberColumn]));
+                        return ((int)(this[this.tableGetSetlist.SetNumberColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'Number\' in table \'GetSetlist\' is DBNull.", e);
+                        throw new global::System.Data.StrongTypingException("The value for column \'SetNumber\' in table \'GetSetlist\' is DBNull.", e);
                     }
                 }
                 set {
-                    this[this.tableGetSetlist.NumberColumn] = value;
+                    this[this.tableGetSetlist.SetNumberColumn] = value;
                 }
             }
             
@@ -967,6 +961,18 @@ namespace SetGenerator.WebUI.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsIdNull() {
+                return this.IsNull(this.tableGetSetlist.IdColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetIdNull() {
+                this[this.tableGetSetlist.IdColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsIsSpareNull() {
                 return this.IsNull(this.tableGetSetlist.IsSpareColumn);
             }
@@ -1003,14 +1009,14 @@ namespace SetGenerator.WebUI.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsNumberNull() {
-                return this.IsNull(this.tableGetSetlist.NumberColumn);
+            public bool IsSetNumberNull() {
+                return this.IsNull(this.tableGetSetlist.SetNumberColumn);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetNumberNull() {
-                this[this.tableGetSetlist.NumberColumn] = global::System.Convert.DBNull;
+            public void SetSetNumberNull() {
+                this[this.tableGetSetlist.SetNumberColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1285,7 +1291,7 @@ namespace SetGenerator.WebUI.Reports.SetsTableAdapters {
             tableMapping.ColumnMappings.Add("IsSpare", "IsSpare");
             tableMapping.ColumnMappings.Add("Name", "Name");
             tableMapping.ColumnMappings.Add("NumSets", "NumSets");
-            tableMapping.ColumnMappings.Add("Number", "Number");
+            tableMapping.ColumnMappings.Add("SetNumber", "SetNumber");
             tableMapping.ColumnMappings.Add("Sequence", "Sequence");
             tableMapping.ColumnMappings.Add("Title", "Title");
             tableMapping.ColumnMappings.Add("Key", "Key");
