@@ -23,7 +23,7 @@ namespace SetGenerator.NHibernateTests
                 .Mappings(m => m.FluentMappings.Add<MemberInstrumentMap>())
                 .Mappings(m => m.FluentMappings.Add<MemberMap>())
                 .Mappings(m => m.FluentMappings.Add<SetlistMap>())
-                .Mappings(m => m.FluentMappings.Add<SetMap>())
+                .Mappings(m => m.FluentMappings.Add<SetSongMap>())
                 .Mappings(m => m.FluentMappings.Add<SongMap>())
                 .Mappings(m => m.FluentMappings.Add<SongMemberInstrumentMap>())
                 .Mappings(m => m.FluentMappings.Add<TableColumnMap>())

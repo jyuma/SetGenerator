@@ -11,11 +11,14 @@ namespace SetGenerator.Domain.Mappings
 
             Id(x => x.Id).Column("Id");
             Map(m => m.Name).Column("Name");
-            References(m => m.Band, "BandId").Column("Id");
+            References(m => m.Band).Column("BandId");
             References(m => m.UserCreate).Column("UserCreateId");
             References(m => m.UserUpdate).Column("UserUpdateId");
 
-            HasMany(m => m.Sets);
+            HasMany(m => m.SetSongs)
+                .Cascade.All()
+                .Inverse()
+                .Cascade.DeleteOrphan();
         }
     }
 }

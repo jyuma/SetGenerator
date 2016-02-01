@@ -29,13 +29,13 @@
     <div class="panel-body">
         <ul class="nav nav-pills">
             <!-- ko foreach: setNumberList -->
-            <li><button class="btn btn-success" data-bind="text: 'Set ' + number, value: $parent.selectedSetNumber(), click: $parent.showSet, attr: { id: 'set_' + number }"></button></li>
+            <li><button class="btn btn-success" data-bind="text: 'Set ' + setnumber, value: $parent.selectedSetNumber(), click: $parent.showSet, attr: { id: 'set_' + setnumber }"></button></li>
             <!-- /ko -->
             <li><button class="btn btn-warning" data-bind="text: 'Spares', value: selectedSetNumber(), click: showSet "></button></li>
             <li style="float: right;">
                 <div id="ddlColumns" class="dropdown">
                     <button class="btn btn-default dropdown-toggle" type="button" id="btnShowHideColumns" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                        Show/Hide Columns
+                        Columns
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="btnShowHideColumns" data-bind="foreach: columns">

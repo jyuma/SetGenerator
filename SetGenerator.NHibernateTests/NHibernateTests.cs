@@ -106,10 +106,6 @@ namespace SetGenerator.NHibernateTests
                     .List()
                     .FirstOrDefault();
 
-                var sets = setlist.Sets.ToArray();
-                var songs = sets.First().Songs;
-
-                Assert.AreEqual(songs.First().Title, "Chloe");
             }
         }
     }

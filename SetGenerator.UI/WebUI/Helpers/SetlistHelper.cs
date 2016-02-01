@@ -1,31 +1,41 @@
-﻿using SetGenerator.Service;
-using SetGenerator.WebUI.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using NHibernate.Mapping;
+using SetGenerator.Data.Repositories;
 using SetGenerator.Domain.Entities;
+using SetGenerator.Service;
+using SetGenerator.WebUI.ViewModels;
 
-namespace SetGenerator.WebUI.Extensions
+namespace SetGenerator.WebUI.Helpers
 {
-    public static class SongExtensions
+    public class SetlistHelper
     {
-        public static Setlist GenerateSets(this IList<Song> songs, SetlistDetail setlistDetail, int bandId, long userId)
+        private readonly IBandRepository _bandRepository;
+
+        public SetlistHelper(IBandRepository bandRepository)
         {
-            var sets = new List<SetSong>();
+            _bandRepository = bandRepository;
+        }
+
+        public Setlist GenerateSets(IEnumerable<Song> masterSongList, SetlistDetail setlistDetail, int bandId, User currentUser)
+        {
+            //var sets = new List<Set>();
             Setlist setlist = null;
 
-            if (songs != null)
+            if (masterSongList != null)
             {
-                var defaultsingerid = songs[0].Band.DefaultSinger.Id;
+                var songs = masterSongList.ToArray();
+                var defaultsingerid = songs.First().Band.DefaultSinger.Id;
                 setlist = new Setlist
                 {
-                    //BandId = bandId,
+                    Band = _bandRepository.Get(bandId),
                     Name = setlistDetail.Name,
                     DateCreate = DateTime.Now,
                     DateUpdate = DateTime.Now,
-                    //UserCreate.Id = userId,
-                    //UserUpdate.Id = userId
+                    UserCreate = currentUser,
+                    UserUpdate = currentUser,
+                    SetSongs = new Collection<SetSong>()
                 };
 
                 var numsets = setlistDetail.NumSets;
@@ -38,24 +48,30 @@ namespace SetGenerator.WebUI.Extensions
                     var singercount = 0;
                     var instrcount = 0;
 
-                    // for each song per set
+                    // for each set song
                     for (var song = 1; song <= numsongs; song++)
                     {
                         seq++;
-                        var lastOrDefault = sets.LastOrDefault();
+                        var lastOrDefault = setlist.SetSongs.LastOrDefault();
 
                         var lastsingerid = 0;
                         IList<SongMemberInstrument> lastinstruments = null;
+
                         if (lastOrDefault != null)
                         {
-                            lastsingerid = lastOrDefault.Song.Singer.Id > 0 ? lastOrDefault.Song.Singer.Id : 0;
+                            lastsingerid = lastOrDefault.Song.Singer != null ? lastOrDefault.Song.Singer.Id : 0;
                             lastinstruments = lastOrDefault.Song.SongMemberInstruments.ToList();
                         }
+
                         var nextsong = GetNextSong(songs, setlist.SetSongs, defaultsingerid, (seq == numsongs), seq, singercount, lastsingerid, instrcount, lastinstruments);
-                        if (lastsingerid == nextsong.Singer.Id)
-                            singercount++;
-                        else
-                            singercount = 1;
+
+                        if (nextsong.Singer != null)
+                        {
+                            if (lastsingerid == nextsong.Singer.Id)
+                                singercount++;
+                            else
+                                singercount = 1;
+                        }
 
                         var isSameInstrumentation = IsSameInstrumentation(lastinstruments, nextsong.SongMemberInstruments);
                         if (isSameInstrumentation)
@@ -65,9 +81,10 @@ namespace SetGenerator.WebUI.Extensions
 
                         setlist.SetSongs.Add(new SetSong
                         {
+                            Setlist = setlist,
                             SetNumber = setnum,
                             Sequence = seq,
-                            Song = nextsong,
+                            Song = nextsong
                         });
                     }
                 }
@@ -88,7 +105,7 @@ namespace SetGenerator.WebUI.Extensions
             return returnval;
         }
 
-        private static Song GetNextSong(ICollection<Song> songs, IEnumerable<SetSong> setsongs, int defaultsingerid, bool islastsong, int seq, int singercount, int lastsingerid, int instrcount, IEnumerable<SongMemberInstrument> lastinstruments)
+        private static Song GetNextSong(IEnumerable<Song> songs, IEnumerable<SetSong> setsongs, int defaultsingerid, bool islastsong, int seq, int singercount, int lastsingerid, int instrcount, IEnumerable<SongMemberInstrument> lastinstruments)
         {
             var rnd = new Random();
 
@@ -128,9 +145,12 @@ namespace SetGenerator.WebUI.Extensions
                             break;
                     }
 
-                    if (lastsingerid != s.Singer.Id)
+                    if (s.Singer != null)
                     {
-                        break;
+                        if (lastsingerid != s.Singer.Id)
+                        {
+                            break;
+                        }
                     }
 
                     if (numAttempts == 1000)
@@ -156,10 +176,12 @@ namespace SetGenerator.WebUI.Extensions
             return dicSongs[validIds[idx]];
         }
 
-        private static int[] GetValidIds(ICollection<Song> songs, IEnumerable<SetSong> setsongs, int instrcount, IEnumerable<SongMemberInstrument> lastinstruments)
+        private static int[] GetValidIds(IEnumerable<Song> songs, IEnumerable<SetSong> setsongs, int instrcount, IEnumerable<SongMemberInstrument> lastinstruments)
         {
             var eligibleSongs = new List<Song>();
-            var usedSongs = setsongs.Select(x => x.Song.Id);
+            var usedSongs = setsongs != null 
+                ? setsongs.Select(x => x.Song.Id)
+                : new Collection<int>();
 
             if (lastinstruments != null)
             {

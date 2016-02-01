@@ -10,11 +10,10 @@ namespace SetGenerator.Domain.Mappings
             Table("Gig");
 
             Id(x => x.Id).Column("Id");
-            Map(m => m.Name).Column("Name");
             Map(m => m.DateGig).Column("DateGig");
             Map(m => m.Venue).Column("Venue");
             Map(m => m.Description).Column("Description");
-            References(m => m.Setlist).Column("SetlistId");
+            References(m => m.Setlist).Column("SetlistId").Nullable();
             References(m => m.Band).Column("BandId");
             References(m => m.UserCreate).Column("UserCreateId");
             References(m => m.UserUpdate).Column("UserUpdateId");

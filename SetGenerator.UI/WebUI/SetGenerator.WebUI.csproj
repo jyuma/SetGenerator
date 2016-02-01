@@ -276,6 +276,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Sets.xsd</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\SetlistHelper.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\BandViewModel.cs" />
     <Compile Include="ViewModels\GigEditViewModel.cs" />

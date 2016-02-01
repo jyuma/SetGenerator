@@ -6,8 +6,6 @@ namespace SetGenerator.Domain.Entities
     {
         public virtual Band Band { get; set; }
         public virtual string Name { get; set; }
-        public virtual User UserUpdate { get; set; }
-        public virtual User UserCreate { get; set; }
-        public virtual IEnumerable<Set> Sets { get; set; }
+        public virtual IList<SetSong> SetSongs { get; set; }
     }
 }

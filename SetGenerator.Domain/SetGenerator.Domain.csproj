@@ -83,7 +83,7 @@
     <Compile Include="Entities\MemberInstrument.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Entities\Set.cs">
+    <Compile Include="Entities\SetSong.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Entities\Setlist.cs">
@@ -139,7 +139,7 @@
     <Compile Include="Mappings\SetlistMap.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Mappings\SetMap.cs">
+    <Compile Include="Mappings\SetSongMap.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Mappings\SongMap.cs">

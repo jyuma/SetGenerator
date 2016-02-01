@@ -168,14 +168,15 @@ namespace SetGenerator.WebUI.Controllers
 
         private int AddGig(GigDetail gigDetail)
         {
-            var band = _bandRepository.Get(gigDetail.BandId);
+            var bandId = Convert.ToInt32(Session["BandId"]);
+            var band = _bandRepository.Get(bandId);
 
             var g = new Gig
             {
+                Band = band,
                 DateGig = Convert.ToDateTime(gigDetail.DateGig),
                 Venue = gigDetail.Venue,
                 Description = gigDetail.Description,
-                Band = band,
                 UserCreate = _currentUser,
                 UserUpdate = _currentUser,
                 DateCreate = DateTime.Now,

@@ -8,8 +8,8 @@ namespace SetGenerator.Data.Repositories
 {
     public interface ISongRepository : IRepositoryBase<Song>
     {
-        IList<Song> GetAList(int bandId);
         Song GetByTitle(int bandId, string title);
+        IEnumerable<Song> GetAList(int bandId);
         IEnumerable<Song> GetByBandId(int bandId);
         IEnumerable<string> GetComposerList(int bandId);
         IEnumerable<SongMemberInstrument> GetMemberInstrumentList(int songId);
@@ -38,27 +38,20 @@ namespace SetGenerator.Data.Repositories
         {
         }
 
-        public IList<Song> GetAList(int bandId)
+        public IEnumerable<Song> GetAList(int bandId)
         {
-            var list = GetAll()
-                 //.Include("Key")
-                 //.Include("Key.KeyName")
-                 //.Include("User")
-                 //.Include("User1")
-                 //.Include("Song")
-                 //.Include("Tempo")
-                 //.Include("SongMemberInstruments")
-                 //.Include("SongMemberInstruments.Instrument")
+            var list = GetByBandId(bandId)
                  .Where(x => x.Band.Id == bandId)
                  .Where(x => x.IsDisabled == false)
                  .OrderBy(x => x.Title)
-                 .ToList();
+                 .ToArray();
+
             return list;
         }
 
         public Song GetByTitle(int bandId, string title)
         {
-            var song = GetAll()
+            var song = GetByBandId(bandId)
                 .Where(x => x.Band.Id == bandId)
                 .FirstOrDefault(x => x.Title == title);
 

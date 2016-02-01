@@ -7,7 +7,7 @@ namespace SetGenerator.Data.Repositories
 {
     public interface ISetlistRepository : IRepositoryBase<Setlist>
     {
-        IEnumerable<Gig> GetByBandId(int bandId);
+        IEnumerable<Setlist> GetByBandId(int bandId);
         Setlist GetByName(int bandId, string name);
     }
 
@@ -18,12 +18,12 @@ namespace SetGenerator.Data.Repositories
         {
         }
 
-        public IEnumerable<Gig> GetByBandId(int bandId)
+        public IEnumerable<Setlist> GetByBandId(int bandId)
         {
-            var list = Session.QueryOver<Gig>()
+            var list = Session.QueryOver<Setlist>()
                 .Where(x => x.Band.Id == bandId)
                 .List()
-                .OrderBy(x => x.Venue);
+                .OrderBy(x => x.Name);
 
             return list;
         }

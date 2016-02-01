@@ -3,19 +3,17 @@ using FluentNHibernate.Mapping;
 
 namespace SetGenerator.Domain.Mappings
 {
-    public sealed class SetMap : ClassMap<Set>
+    public sealed class SetSongMap : ClassMap<SetSong>
     {
-        public SetMap()
+        public SetSongMap()
         {
-            Table("Set");
+            Table("SetSong");
 
             Id(x => x.Id).Column("Id");
-            Map(m => m.Number).Column("Number");
+            Map(m => m.SetNumber).Column("SetNumber");
             Map(m => m.Sequence).Column("Sequence");
             References(m => m.Setlist).Column("SetlistId");
             References(m => m.Song).Column("SongId");
-
-            HasMany(m => m.Songs).Cascade.All(); ;
         }
     }
 }

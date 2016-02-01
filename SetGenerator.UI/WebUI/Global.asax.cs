@@ -24,9 +24,6 @@ namespace SetGenerator.WebUI
             kernel.Bind<IGigRepository>().To<GigRepository>();
             kernel.Bind<IMemberRepository>().To<MemberRepository>();
             kernel.Bind<IInstrumentRepository>().To<InstrumentRepository>();
-            kernel.Bind<IGenreRepository>().To<GenreRepository>();
-            kernel.Bind<ITempoRepository>().To<TempoRepository>();
-            kernel.Bind<IKeyRepository>().To<KeyRepository>();
             kernel.Bind<IValidationRules>().To<ValidationRules>();
             kernel.Bind<IUserRepository>().To<UserRepository>();
             kernel.Bind<ITableColumnRepository>().To<TableColumnRepository>();

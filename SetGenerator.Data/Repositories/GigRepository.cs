@@ -26,6 +26,5 @@ namespace SetGenerator.Data.Repositories
 
             return list;
         }
-
     }
 }

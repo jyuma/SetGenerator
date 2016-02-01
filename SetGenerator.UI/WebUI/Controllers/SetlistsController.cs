@@ -1,8 +1,11 @@
-﻿using Newtonsoft.Json;
-using SetGenerator.Service;
+﻿using SetGenerator.Service;
 using SetGenerator.WebUI.Common;
 using SetGenerator.WebUI.Extensions;
 using SetGenerator.WebUI.ViewModels;
+using SetGenerator.Data.Repositories;
+using SetGenerator.Domain.Entities;
+using SetGenerator.WebUI.Reports.SetsTableAdapters;
+using SetGenerator.WebUI.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,9 +15,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.Reporting.WebForms;
-using SetGenerator.Data.Repositories;
-using SetGenerator.Domain.Entities;
-using SetGenerator.WebUI.Reports.SetsTableAdapters;
+using Newtonsoft.Json;
 using Constants = SetGenerator.Service.Constants;
 
 namespace SetGenerator.WebUI.Controllers
@@ -160,7 +161,7 @@ namespace SetGenerator.WebUI.Controllers
                 SongList = GetSongList(setlist),
                 SpareList = GetSpareList(setlist),
                 MemberArrayList = _bandRepository.GetMemberNameArrayList(bandId),
-                SetNumberList = setlist.Sets.Select(x => x.Number).Distinct().ToArray(),
+                SetNumberList = setlist.SetSongs.Select(x => x.SetNumber).Distinct().ToArray(),
                 TableColumnList = _common.GetTableColumnList(
                         _currentUser.UserPreferenceTableColumns,
                         _currentUser.UserPreferenceTableMembers.Where(x => x.Member.Band.Id == bandId),
@@ -203,7 +204,6 @@ namespace SetGenerator.WebUI.Controllers
             var result = setlistList.Select(setlist => new SetlistDetail
             {
                 Id = setlist.Id,
-                BandId = setlist.Band.Id,
                 Name = setlist.Name,
                 UserUpdate = setlist.UserUpdate.UserName,
                 DateUpdate = setlist.DateUpdate.ToShortDateString(),
@@ -232,12 +232,12 @@ namespace SetGenerator.WebUI.Controllers
                 SetlistId = id,
                 Name = (setlist != null) ? setlist.Name : string.Empty,
                 ToalSetsList = new SelectList(new Collection<int> { 1, 2, 3 },
-                    (setlist != null) 
-                    ? setlist.Sets.Max(x => x.Number) 
+                    (setlist != null)
+                    ? setlist.SetSongs.Max(x => x.SetNumber) 
                     : 3),
                 TotalSongsPerSetlist = new SelectList(new Collection<int> { 8, 9, 10, 11, 12, 13, 14, 15 }, 
-                    (setlist != null) 
-                    ? setlist.Sets.Count(x => x.Number == 1)
+                    (setlist != null)
+                    ? setlist.SetSongs.Count(x => x.SetNumber == 1)
                     : 10)
             };
 
@@ -290,8 +290,9 @@ namespace SetGenerator.WebUI.Controllers
             List<string> msgs = ValidateSetlist(detail.Name, (detail.NumSets * detail.NumSongs), true);
             if (msgs == null)
             {
+                var generator = new SetlistHelper(_bandRepository);
                 var songs = _songRepository.GetAList(bandId);
-                var setlist = songs.GenerateSets(detail, bandId, _currentUser.Id);
+                var setlist = generator.GenerateSets(songs, detail, bandId, _currentUser);
                 selectedId = _setlistRepository.Add(setlist);
             }
 
@@ -340,7 +341,7 @@ namespace SetGenerator.WebUI.Controllers
         private IEnumerable<SetSongDetail> GetSpareList(Setlist setlist)
         {
             var bandId = Convert.ToInt32(Session["BandId"]);
-            var setSongIds = setlist.Sets.Select(x => x.Song.Id);
+            var setSongIds = setlist.SetSongs.Select(x => x.Song.Id);
             var allAListSongs = _songRepository.GetAList(bandId);
 
             return allAListSongs
@@ -349,45 +350,39 @@ namespace SetGenerator.WebUI.Controllers
                 var songMemberInstrumentList = GetSongMemberInstrumentDetails(x.SongMemberInstruments);
                 return new SetSongDetail
                 {
-                    Number = 0,
+                    SetNumber = 0,
                     Id = x.Id,
                     Title = x.Title,
                     KeyId = x.Key.Id,
                     KeyDetail = GetSongKeyDetail(x.Key),
-                    SingerId = x.Singer.Id,
+                    SingerId = (x.Singer != null) ? x.Singer.Id : 0,
                     Composer = x.Composer,
                     NeverClose = x.NeverClose,
                     NeverOpen = x.NeverOpen,
                     Disabled = x.IsDisabled,
-                    UserUpdate = x.UserUpdate.UserName,
-                    DateUpdate = x.DateUpdate.ToShortDateString(),
                     SongMemberInstrumentDetails = songMemberInstrumentList
                 };
             }).ToArray();
         }
 
-        private IEnumerable<SetSongDetail> GetSongList(Setlist setlist)
+        private static IEnumerable<SetSongDetail> GetSongList(Setlist setlist)
         {
-            var bandId = Convert.ToInt32(Session["BandId"]);
-
-            return setlist.Sets.Select(x =>
+            return setlist.SetSongs.Select(x =>
             {
                 var songMemberInstrumentList = GetSongMemberInstrumentDetails(x.Song.SongMemberInstruments);
 
                 return new SetSongDetail
                 {
-                    Number = x.Number,
+                    SetNumber = x.SetNumber,
                     Id = x.Song.Id,
                     Title = x.Song.Title,
                     KeyId = x.Song.Key.Id,
                     KeyDetail = GetSongKeyDetail(x.Song.Key),
-                    SingerId = x.Song.Singer.Id,
+                    SingerId = (x.Song.Singer != null) ? x.Song.Singer.Id : 0,
                     Composer = x.Song.Composer,
                     NeverClose = x.Song.NeverClose,
                     NeverOpen = x.Song.NeverOpen,
                     Disabled = x.Song.IsDisabled,
-                    UserUpdate = x.Song.UserUpdate.UserName,
-                    DateUpdate = x.Song.DateUpdate.ToShortDateString(),
                     SongMemberInstrumentDetails = songMemberInstrumentList
                 };
             }).ToArray();
@@ -407,7 +402,8 @@ namespace SetGenerator.WebUI.Controllers
 
         private int AddSetlist(SetlistDetail setlist)
         {
-            var band = _bandRepository.Get(setlist.BandId);
+            var bandId = Convert.ToInt32(Session["BandId"]);
+            var band = _bandRepository.Get(bandId);
 
             var sl = new Setlist
             {

@@ -343,10 +343,9 @@ namespace SetGenerator.WebUI.Controllers
                 UserCreate = _currentUser,
                 UserUpdate = _currentUser,
                 DateCreate = DateTime.Now,
-                DateUpdate = DateTime.Now
+                DateUpdate = DateTime.Now,
+                SongMemberInstruments = new List<SongMemberInstrument>()
             };
-
-            newSong.SongMemberInstruments = new List<SongMemberInstrument>();
 
             foreach (var mi in songDetail.SongMemberInstrumentDetails
                 .Where(mi => mi.InstrumentId > 0))

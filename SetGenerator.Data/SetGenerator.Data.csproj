@@ -58,16 +58,10 @@
     <Compile Include="Repositories\Entity.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Repositories\GenreRepository.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Repositories\GigRepository.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Repositories\InstrumentRepository.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Repositories\KeyRepository.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Repositories\MemberRepository.cs">
@@ -83,9 +77,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Repositories\TableColumnRepository.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Repositories\TempoRepository.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Repositories\UserRepository.cs">
