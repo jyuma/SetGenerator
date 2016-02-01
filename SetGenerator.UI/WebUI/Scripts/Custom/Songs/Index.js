@@ -7,10 +7,9 @@
 ; (function ($) {
 
     var HIGHLIGHT_ROW_COLOUR = "#e3e8ff";
-    var STRING_ALL = "<All>";
-    var STRING_ALL_SINGERS = "All Singers";
-    var STRING_ALL_GENRES = "All Genres";
-    var STRING_ALL_TEMPOS = "All Tempos";
+    var STRING_ALL_SINGERS = "Singers";
+    var STRING_ALL_GENRES = "Genres";
+    var STRING_ALL_TEMPOS = "Tempos";
     var STRING_NONE = "<None>";
     var LISTTYPE_ALIST = "A List";
     var LISTTYPE_DISABLED = "Shitcan";

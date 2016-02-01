@@ -151,6 +151,7 @@ namespace SetGenerator.WebUI.Controllers
         private SongEditViewModel LoadSongEditViewModel(int id)
         {
             var bandId = Convert.ToInt32(Session["BandId"]);
+            var band = _bandRepository.Get(bandId);
             var song = _songRepository.Get(id);
             var bandMembers = _bandRepository.GetMembers(bandId).ToArray();
 
@@ -161,9 +162,11 @@ namespace SetGenerator.WebUI.Controllers
                 NeverOpen = (song != null) && song.NeverOpen,
                 NeverClose = (song != null) && song.NeverClose,
                 Composers = _songRepository.GetComposerList(bandId),
+
                 KeyNames = new SelectList(
                     _songRepository.GetKeyNameArrayList(), 
                     "Value", "Display", (song != null) ? song.Key.Id : 0),
+
                 MajorMinor = new SelectList(new Collection<object>
                 {
                     new { Value = 0 , Display = "Major" },
@@ -182,7 +185,10 @@ namespace SetGenerator.WebUI.Controllers
                         .Union(bandMembers
                         .Select(m => new { Value = m.Id, Display = m.FirstName })).ToArray()
                     , "Value", "Display", (song != null) 
-                    ? (song.Singer != null) ? song.Singer.Id : 0 : 0),
+                        ? (song.Singer != null) 
+                            ? song.Singer.Id 
+                            : 0
+                        : (band.DefaultSinger) != null ? band.DefaultSinger.Id : 0),
 
                 Genres = new SelectList(_songRepository.GetAllGenres()
                          .Select(m => new { Value = m.Id, Display = m.Name }), 

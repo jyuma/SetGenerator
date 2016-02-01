@@ -24,6 +24,7 @@ namespace SetGenerator.WebUI
             commonStylesBundle.Include(
                      "~/Content/bootstrap.css",
                      "~/Content/bootstrap-theme.css",
+                     "~/Content/bootstrap-dialog.css",
                      "~/Content/bootstrap-datepicker.css",
                      "~/Content/Site.less");
             commonStylesBundle.Builder = nullBuilder;
@@ -66,6 +67,7 @@ namespace SetGenerator.WebUI
             var bootstrapScriptsBundle = new Bundle("~/bundles/BootstrapScripts");
             bootstrapScriptsBundle.Include(
                      "~/Scripts/bootstrap.js",
+                     "~/Scripts/bootstrap-dialog.js",
                      "~/Scripts/bootstrap-datepicker.js",
                      "~/Scripts/respond.js");
             bootstrapScriptsBundle.Builder = nullBuilder;

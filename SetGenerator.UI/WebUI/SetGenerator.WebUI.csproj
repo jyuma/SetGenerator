@@ -294,6 +294,7 @@
     <Content Include="Content\bootstrap-datetimepicker-build.min.css">
       <DependentUpon>bootstrap-datetimepicker-build.css</DependentUpon>
     </Content>
+    <Content Include="Content\bootstrap-dialog.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -318,6 +319,7 @@
     <Content Include="Content\images\Thumbs.db" />
     <Content Include="Scripts\bootstrap-datepicker.js" />
     <Content Include="Scripts\bootstrap-datepicker.min.js" />
+    <Content Include="Scripts\bootstrap-dialog.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\Custom\Dialog\Dialog.js" />
@@ -336,6 +338,7 @@
     <Content Include="Reports\Sets.xsc">
       <DependentUpon>Sets.xsd</DependentUpon>
     </Content>
+    <Content Include="Content\bootstrap-dialog.less" />
     <None Include="Reports\Sets.xsd">
       <SubType>Designer</SubType>
       <Generator>MSDataSetGenerator</Generator>
