@@ -181,7 +181,7 @@ namespace SetGenerator.Data.Repositories
 
         public ArrayList GetTempoArrayList()
         {
-            var tempos = Session.QueryOver<Genre>()
+            var tempos = Session.QueryOver<Tempo>()
                 .List();
 
             var al = new ArrayList();
