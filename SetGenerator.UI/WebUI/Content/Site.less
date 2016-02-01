@@ -1,5 +1,5 @@
 ﻿/* Body texture */
-@colourBlack: #222222;
+@colourBlack: #555;
 @colourBlackSelected: #8a8a8a;
 @colourIvoryHover: #f3f1f1;
 @colourIvory: #e9e4e4;
@@ -16,6 +16,10 @@
 body {
     margin: 0;
     /*background: url('Images/background.png') repeat center;*/
+}
+
+input[type=text], input[type=password] {
+    width: 400px;
 }
 
 /* Home main image */
@@ -68,13 +72,40 @@ body {
 }
 
 #ddlUserBand {
-    border-radius: 6px;
+    border-radius: 4px;
+    font-weight:200;
+    height: 30px;
+    color: #555;
+    border: 1px solid #ccc;
 }
 
 /* Search Menu Items */
+.dropdown-placeholder {
+    color: @colourGrey;
+}
+
+.form-control.filter-bold {
+    option {
+        color: @colourBlack;
+        font-weight: normal;
+    }
+}
+
+.form-control.filter {
+    option:first-child {
+        color: @colourGrey;
+    }
+    option:not(:nth-child(1)) {
+        color: @colourBlack;
+    }
+}
 
 #txtSearchKey {
     width: 55px;
+}
+
+#txtSearchTitle {
+    width: 200px;
 }
 
 .date-search {

@@ -3,6 +3,10 @@ body {
   margin: 0;
   /*background: url('Images/background.png') repeat center;*/
 }
+input[type=text],
+input[type=password] {
+  width: 400px;
+}
 /* Home main image */
 #registerLink {
   padding-right: 5px;
@@ -28,7 +32,7 @@ body {
   font-weight: 400;
 }
 .glyphicon {
-  color: #222222;
+  color: #555555;
 }
 .glyphicon-new-window {
   color: #47a447;
@@ -43,11 +47,31 @@ body {
   color: #ed9c28;
 }
 #ddlUserBand {
-  border-radius: 6px;
+  border-radius: 4px;
+  font-weight: 200;
+  height: 30px;
+  color: #555;
+  border: 1px solid #ccc;
 }
 /* Search Menu Items */
+.dropdown-placeholder {
+  color: #8b8a8a;
+}
+.form-control.filter-bold option {
+  color: #555555;
+  font-weight: normal;
+}
+.form-control.filter option:first-child {
+  color: #8b8a8a;
+}
+.form-control.filter option:not(:nth-child(1)) {
+  color: #555555;
+}
 #txtSearchKey {
   width: 55px;
+}
+#txtSearchTitle {
+  width: 200px;
 }
 .date-search {
   width: 80px;
@@ -83,7 +107,7 @@ table td {
   cursor: default;
 }
 .datepicker > table > thead {
-  color: #222222;
+  color: #555555;
   background-color: #ffffff;
 }
 .navbar {

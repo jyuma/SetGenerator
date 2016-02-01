@@ -22,22 +22,22 @@
                 <input type="button" class="btn btn-success" value="Add Song" data-bind="click: showSongEditDialog" />
             </li>
             <li>
-                <select class="form-control" data-bind="options: listTypeSearchList(), value: listTypeSearch"></select>
+                <select class="form-control filter-bold" data-bind="options: listTypeSearchList(), value: listTypeSearch, style: { fontWeight: 'bold' }"></select>
             </li>
             <li>
-                <select class="form-control" data-bind="options: singerNameSearchList(), value: memberSearch"></select>
+                <select class="form-control filter" data-bind="options: singerNameSearchList(), value: memberSearch, style: { color: memberSearch() != 'Singer' ? '#555' : '#8b8a8a' }"></select>
             </li>
             <li>
-                <select class="form-control" data-bind="options: genreNameSearchList(), value: genreSearch"></select>
+                <select class="form-control filter" data-bind="options: genreNameSearchList(), value: genreSearch, style: { color: genreSearch() != 'Genre' ? '#555' : '#8b8a8a' }" "></select>
             </li>
             <li>
-                <select class="form-control" data-bind="options: tempoNameSearchList(), value: tempoSearch"></select>
+                <select class="form-control filter" data-bind="options: tempoNameSearchList(), value: tempoSearch, style: { color: tempoSearch() != 'Tempo' ? '#555' : '#8b8a8a' }" "></select>
             </li>
             <li>
                 <input class="form-control" type="text" id="txtSearchKey" placeholder="Key" data-bind="value: keySearch, valueUpdate: 'keyup'" maxlength="3" />
             </li>
             <li>
-                <input class="form-control text-search" type="text" placeholder="Title" data-bind="value: titleSearch, valueUpdate: 'keyup'"/>
+                <input class="form-control" id="txtSearchTitle" type="text" placeholder="Title" data-bind="value: titleSearch, valueUpdate: 'keyup'" />
             </li>
             <li style="float: right; margin-right: 5px;">
                 <div id="ddlColumns" class="dropdown">
