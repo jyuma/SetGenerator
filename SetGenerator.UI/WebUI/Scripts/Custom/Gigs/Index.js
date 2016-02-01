@@ -11,8 +11,8 @@
         init: function () {
 
             var lists = {
-                gigList: [],
-                tableColumnList: []
+                GigList: [],
+                TableColumnList: []
             };
 
             loadConfig();
@@ -51,7 +51,7 @@
                 self.venueSearch = ko.observable('');
                 self.editFormHeader = ko.observable('');
 
-                createGigArray(lists.gigList);
+                createGigArray(lists.GigList);
 
                 function createGigArray(list) {
                     self.gigs.removeAll();
@@ -66,7 +66,7 @@
 
                 self.columns = ko.computed(function () {
                     var arr = [];
-                    $(lists.tableColumnList).each(function (index, value) {
+                    $(lists.TableColumnList).each(function (index, value) {
                         arr.push({ title: value.Header, sortKey: value.Data, dataMember: value.Data, isVisible: ko.observable(value.IsVisible), alwaysVisible: value.AlwaysVisible, isMember: value.IsMember });
                     });
                     return arr;
@@ -240,8 +240,8 @@
                         },
                         success: function (data) {
                             if (data.Success) {
-                                lists.gigList = data.GigList;
-                                createGigArray(lists.gigList);
+                                lists.GigList = data.GigList;
+                                createGigArray(lists.GigList);
                                 self.selectedGig(self.getGig(data.SelectedId));
                                 self.highlightRow(self.selectedGig());
                                 result = true;
@@ -281,8 +281,8 @@
                         },
                         success: function (data) {
                             if (data.Success) {
-                                lists.gigList = data.GigList;
-                                createGigArray(lists.gigList);
+                                lists.GigList = data.GigList;
+                                createGigArray(lists.GigList);
                             }
                             $("body").css("cursor", "default");
                         }
@@ -294,7 +294,7 @@
                 self.saveColumns = function() {
                     var jsonData = JSON.stringify(self.getColumns());
                     var selfColumns = self.getColumns();        // after changes
-                    var tableColumns = lists.tableColumnList;   // before changes
+                    var tableColumns = lists.TableColumnList;   // before changes
                     var isDifference = false;
 
                     $(selfColumns).each(function (index, value) {

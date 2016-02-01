@@ -53,7 +53,7 @@ body {
   width: 80px;
 }
 .text-search {
-  width: 300px;
+  width: 200px;
 }
 .input-date {
   width: 90px;
@@ -64,9 +64,11 @@ body {
 .row {
   margin-bottom: 5px;
 }
-.panel-heading,
-.panel-body {
-  padding: 5px 10px 5px 10px;
+.panel {
+  margin: 0;
+}
+.panel .panel-body {
+  padding: 0;
 }
 table .col-glyphicon {
   width: 10px;
@@ -74,20 +76,8 @@ table .col-glyphicon {
 table .col-link {
   width: 90px;
 }
-table th {
-  /*background-color: @colourGrey;*/
-  /*color: @colourTableHeaderText;*/
-}
-table th a,
-table th a:link,
-table th span {
-  /*color: @colourIvory;*/
-}
 table th a:link {
   text-decoration: none;
-}
-table th a:hover {
-  /*color: @colourWhite;*/
 }
 table td {
   cursor: default;

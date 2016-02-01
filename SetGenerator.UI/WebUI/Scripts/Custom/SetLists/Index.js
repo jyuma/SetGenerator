@@ -12,8 +12,8 @@
         init: function() {
 
             var lists = {
-                setlistList: [],
-                tableColumnList: []
+                SetlistList: [],
+                TableColumnList: []
             };
 
             loadConfig();
@@ -59,7 +59,7 @@
                 self.selectedNumSongs = ko.observable(10);
                 self.editFormHeader = ko.observable('');
 
-                createSetlistArray(lists.setlistList);
+                createSetlistArray(lists.SetlistList);
 
                 function createSetlistArray(list) {
                     self.setlists.removeAll();
@@ -74,7 +74,7 @@
 
                 self.columns = ko.computed(function() {
                     var arr = [];
-                    $(lists.tableColumnList).each(function(index, value) {
+                    $(lists.TableColumnList).each(function(index, value) {
                         arr.push({ title: value.Header, sortKey: value.Data, dataMember: value.Data, isVisible: ko.observable(value.IsVisible), alwaysVisible: value.AlwaysVisible, isMember: value.IsMember });
                     });
                     return arr;
@@ -262,8 +262,8 @@
                         },
                         success: function(data) {
                             if (data.Success) {
-                                lists.setlistList = data.SetlistList;
-                                createSetlistArray(lists.setlistList);
+                                lists.SetlistList = data.SetlistList;
+                                createSetlistArray(lists.SetlistList);
                                 self.selectedSetlist(self.getSetlist(data.SelectedId));
                                 self.highlightRow(self.selectedSetlist());
                                 result = true;
@@ -303,8 +303,8 @@
                         },
                         success: function(data) {
                             if (data.Success) {
-                                lists.setlistList = data.SetlistList;
-                                createSetlistArray(lists.setlistList);
+                                lists.SetlistList = data.SetlistList;
+                                createSetlistArray(lists.SetlistList);
                             }
                             $("body").css("cursor", "default");
                         }
@@ -316,7 +316,7 @@
                 self.saveColumns = function() {
                     var jsonData = JSON.stringify(self.getColumns());
                     var selfColumns = self.getColumns();        // after changes
-                    var tableColumns = lists.tableColumnList;   // before changes
+                    var tableColumns = lists.TableColumnList;   // before changes
                     var isDifference = false;
 
                     $(selfColumns).each(function (index, value) {

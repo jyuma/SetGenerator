@@ -22,8 +22,6 @@ namespace SetGenerator.WebUI.Controllers
 
         public GigsController(  IBandRepository bandRepository,
                                 IGigRepository gigRepository,
-                                IMemberRepository memberRepository,
-                                IKeyRepository keyRepository,
                                 IAccount account)
         {
             _bandRepository = bandRepository;
@@ -33,7 +31,7 @@ namespace SetGenerator.WebUI.Controllers
             var currentUserName = GetCurrentSessionUser();
             if (currentUserName.Length > 0)
                 _currentUser = _account.GetUserByUserName(currentUserName);
-            _common = new CommonSong(account, keyRepository, memberRepository, currentUserName);
+            _common = new CommonSong(account, currentUserName);
         }
 
         [Authorize]

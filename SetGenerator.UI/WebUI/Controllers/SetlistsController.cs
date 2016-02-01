@@ -25,7 +25,6 @@ namespace SetGenerator.WebUI.Controllers
         private readonly IBandRepository _bandRepository;
         private readonly ISetlistRepository _setlistRepository;
         private readonly ISongRepository _songRepository;
-        private readonly IMemberRepository _memberRepository;
         private readonly IValidationRules _validationRules;
 
         private readonly User _currentUser;
@@ -34,8 +33,6 @@ namespace SetGenerator.WebUI.Controllers
         public SetlistsController(  IBandRepository bandRepository, 
                                     ISetlistRepository setlistRepository, 
                                     ISongRepository songRepository, 
-                                    IMemberRepository memberRepository,
-                                    IKeyRepository keyRepository,
                                     IAccount account, 
                                     IValidationRules validationRules)
         {
@@ -45,9 +42,8 @@ namespace SetGenerator.WebUI.Controllers
             _bandRepository = bandRepository;
             _setlistRepository = setlistRepository;
             _songRepository = songRepository;
-            _memberRepository = memberRepository;
             _validationRules = validationRules;
-            _common = new CommonSong(account, keyRepository, memberRepository, currentUserName);
+            _common = new CommonSong(account, currentUserName);
         }
 
         [Authorize]
@@ -162,8 +158,8 @@ namespace SetGenerator.WebUI.Controllers
             {
                 Name = setlist.Name,
                 SongList = GetSongList(setlist),
-                UnusedSongList = GetUnusedSongList(setlist),
-                MemberArrayList = _memberRepository.GetNameArrayList(bandId),
+                SpareList = GetSpareList(setlist),
+                MemberArrayList = _bandRepository.GetMemberNameArrayList(bandId),
                 SetNumberList = setlist.Sets.Select(x => x.Number).Distinct().ToArray(),
                 TableColumnList = _common.GetTableColumnList(
                         _currentUser.UserPreferenceTableColumns,
@@ -341,7 +337,7 @@ namespace SetGenerator.WebUI.Controllers
             return _validationRules.ValidateSetlist(bandId, name, numSongs, addNew);
         }
 
-        private IEnumerable<SetSongDetail> GetUnusedSongList(Setlist setlist)
+        private IEnumerable<SetSongDetail> GetSpareList(Setlist setlist)
         {
             var bandId = Convert.ToInt32(Session["BandId"]);
             var setSongIds = setlist.Sets.Select(x => x.Song.Id);

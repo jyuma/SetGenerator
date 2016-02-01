@@ -19,12 +19,12 @@
             $.extend(config, options);
 
             var lists = {
-                setlistName: "",
-                songList: [],
-                unusedSongList: [],
-                memberArrayList: [],
-                setNumberList: [],
-                tableColumnList: []
+                SetlistName: "",
+                SongList: [],
+                SpareList: [],
+                MemberArrayList: [],
+                SetNumberList: [],
+                TableColumnList: []
             };
 
             loadConfig();
@@ -62,13 +62,13 @@
                 self.neverclose = neverclose;
                 self.neveropen = neveropen;
                 self.disabled = disabled;
-                self.singer = getValue(lists.memberArrayList, singerid, 'Display', 'Value');
+                self.singer = getValue(lists.MemberArrayList, singerid, "Display", "Value");
                 self.key = self.keydetail.name;
                 self.memberInstruments = [];
 
                 $(instrumentmemberdetails).each(function (index, value) {
-                    var memberName = getValue(lists.memberArrayList, value.MemberId, 'Display', 'Value').toLowerCase();
-                    self[memberName] = getValue(instrumentmemberdetails, value.InstrumentId, 'InstrumentAbbrev', 'InstrumentId');
+                    var memberName = getValue(lists.MemberArrayList, value.MemberId, "Display", "Value").toLowerCase();
+                    self[memberName] = getValue(instrumentmemberdetails, value.InstrumentId, "InstrumentAbbrev", "InstrumentId");
                 });
 
                 self.memberInstrumentDetails = instrumentmemberdetails;
@@ -96,12 +96,12 @@
                 self.selectedSetNumber = ko.observable(1);
                 self.header = ko.computed(function () {
                     if (self.selectedSetNumber() > 0)
-                        return lists.setlistName + " - Set " + self.selectedSetNumber();
+                        return lists.SetlistName.bold() + " - Set " + self.selectedSetNumber();
                     else
                         return "Unused Songs";
                 });
 
-                createSongArray(lists.songList);
+                createSongArray(lists.SongList);
 
                 $("#ddlColumns").on("hidden.bs.dropdown", function () {
                     self.saveColumns();
@@ -109,7 +109,7 @@
 
                 self.columns = ko.computed(function () {
                     var arr = [];
-                    $(lists.tableColumnList).each(function (index, value) {
+                    $(lists.TableColumnList).each(function (index, value) {
                         arr.push({ title: value.Header, sortKey: value.Data, dataMember: value.Data, isVisible: ko.observable(value.IsVisible), alwaysVisible: value.AlwaysVisible, isMember: value.IsMember });
                     });
                     return arr;
@@ -117,7 +117,7 @@
 
                 self.setNumberList = ko.computed(function () {
                     var arr = [];
-                    $(lists.setNumberList).each(function (index, value) {
+                    $(lists.SetNumberList).each(function (index, value) {
                         arr.push({ number: value });
                     });
                     return arr;
@@ -134,7 +134,7 @@
                         });
                     }
                     else {
-                        $(lists.unusedSongList).each(function (index, value) {
+                        $(lists.SpareList).each(function (index, value) {
                             pushSong(value);
                         });
                     }
@@ -147,7 +147,7 @@
                 self.showSet = function (row) {
                     if (row.number > 0) self.selectedSetNumber(row.number);
                     else self.selectedSetNumber(0);
-                    createSongArray(lists.songList);
+                    createSongArray(lists.SongList);
 
                 };
 
@@ -170,7 +170,7 @@
                 self.saveColumns = function () {
                     var jsonData = JSON.stringify(self.getColumns());
                     var selfColumns = self.getColumns();        // after changes
-                    var tableColumns = lists.tableColumnList;   // before changes
+                    var tableColumns = lists.TableColumnList;   // before changes
                     var isDifference = false;
 
                     $(selfColumns).each(function (index, value) {
@@ -213,7 +213,7 @@
 
 
             function getValue(list, id, dataMember, valueMember) {
-                var name = '';
+                var name = "";
                 $(list).each(function (index, item) {
                     if (item[valueMember] == id) {
                         name = item[dataMember];

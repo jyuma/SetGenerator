@@ -20,37 +20,25 @@ namespace SetGenerator.WebUI.Controllers
 
         private readonly IBandRepository _bandRepository;
         private readonly ISongRepository _songRepository;
-        private readonly IMemberRepository _memberRepository;
         private readonly IInstrumentRepository _instrumentRepository;
-        private readonly IKeyRepository _keyRepository;
-        private readonly IGenreRepository _genreRepository;
-        private readonly ITempoRepository _tempoRepository;
         private readonly IValidationRules _validationRules;
         private readonly IAccount _account;
         private readonly CommonSong _common;
 
         public SongsController( IBandRepository bandRepository, 
                                 ISongRepository songRepository, 
-                                IMemberRepository memberRepository, 
-                                IKeyRepository keyRepository,
                                 IInstrumentRepository instrumentRepository,
-                                IGenreRepository genreRepository,
-                                ITempoRepository tempoRepository,
                                 IValidationRules validationRules, 
                                 IAccount account)
         {
             _bandRepository = bandRepository;
             _songRepository = songRepository;
-            _memberRepository = memberRepository;
             _instrumentRepository = instrumentRepository;
-            _genreRepository = genreRepository;
-            _tempoRepository = tempoRepository;
-            _keyRepository = keyRepository;
             _validationRules = validationRules;
             _account = account;
             _currentUserName = GetCurrentSessionUser();
 
-            _common = new CommonSong(account, keyRepository, memberRepository, _currentUserName);
+            _common = new CommonSong(account, _currentUserName);
 
             if (_currentUserName.Length > 0)
                 _currentUser = _account.GetUserByUserName(_currentUserName);
@@ -86,10 +74,10 @@ namespace SetGenerator.WebUI.Controllers
             var vm = new
             {
                 SongList = GetSongList(),
-                MemberArrayList = _memberRepository.GetNameArrayList(bandId),
-                KeyListFull = _common.GetKeyListFull(),
-                GenreArrayList = _genreRepository.GetArrayList(),
-                TempoArrayList = _tempoRepository.GetArrayList(),
+                MemberArrayList = _bandRepository.GetMemberNameArrayList(bandId),
+                KeyListFull = GetKeyListFull(),
+                GenreArrayList = _songRepository.GetGenreArrayList(),
+                TempoArrayList = _songRepository.GetTempoArrayList(),
                 TableColumnList = _common.GetTableColumnList(
                     _currentUser.UserPreferenceTableColumns,
                     _currentUser.UserPreferenceTableMembers.Where(x => x.Member.Band.Id == bandId),
@@ -140,6 +128,20 @@ namespace SetGenerator.WebUI.Controllers
             return list;
         }
 
+        private IEnumerable<SongKeyDetail> GetKeyListFull()
+        {
+            var keys = _songRepository.GetKeyListFull();
+
+            return keys.Select(key => new SongKeyDetail
+            {
+                Id = key.Id,
+                NameId = key.KeyName.Id,
+                Name = key.KeyName.Name,
+                SharpFlatNatural = key.SharpFlatNatural,
+                MajorMinor = key.MajorMinor
+            }).ToArray();
+        }
+
         [HttpGet]
         public PartialViewResult GetSongEditView(int id)
         {
@@ -150,6 +152,7 @@ namespace SetGenerator.WebUI.Controllers
         {
             var bandId = Convert.ToInt32(Session["BandId"]);
             var song = _songRepository.Get(id);
+            var bandMembers = _bandRepository.GetMembers(bandId).ToArray();
 
             var vm = new SongEditViewModel
             {
@@ -159,7 +162,7 @@ namespace SetGenerator.WebUI.Controllers
                 NeverClose = (song != null) && song.NeverClose,
                 Composers = _songRepository.GetComposerList(bandId),
                 KeyNames = new SelectList(
-                    _keyRepository.GetNameArrayList(), 
+                    _songRepository.GetKeyNameArrayList(), 
                     "Value", "Display", (song != null) ? song.Key.Id : 0),
                 MajorMinor = new SelectList(new Collection<object>
                 {
@@ -176,20 +179,20 @@ namespace SetGenerator.WebUI.Controllers
 
                 Members = new SelectList(
                     new Collection<object>{ new { Value = 0, Display = "<None>" }}.ToArray()
-                        .Union(_memberRepository.GetByBandId(bandId)
+                        .Union(bandMembers
                         .Select(m => new { Value = m.Id, Display = m.FirstName })).ToArray()
                     , "Value", "Display", (song != null) 
                     ? (song.Singer != null) ? song.Singer.Id : 0 : 0),
 
-                Genres = new SelectList(_genreRepository.GetAll()
+                Genres = new SelectList(_songRepository.GetAllGenres()
                          .Select(m => new { Value = m.Id, Display = m.Name }), 
                          "Value", "Display", (song != null) ? song.Genre.Id : 0),
 
-                Tempos = new SelectList(_tempoRepository.GetAll()
+                Tempos = new SelectList(_songRepository.GetAllTempos()
                         .Select(m => new { Value = m.Id, Display = m.Name }),
                         "Value", "Display", (song != null) ? song.Tempo.Id : 0),
 
-                MemberInstruments = _memberRepository.GetByBandId(bandId)
+                MemberInstruments = bandMembers
                     .Select(m =>
                         new MemberInstrumentDetail
                         {
@@ -300,7 +303,7 @@ namespace SetGenerator.WebUI.Controllers
         public ActionResult GetMemberNameList()
         {
             var bandId = Convert.ToInt32(Session["BandId"]);
-            var list = _memberRepository.GetNameList(bandId);
+            var list = _bandRepository.GetMemberNameList(bandId);
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 
@@ -318,10 +321,10 @@ namespace SetGenerator.WebUI.Controllers
             var bandId = Convert.ToInt32(Session["BandId"]);
 
             var band = _bandRepository.Get(bandId);
-            var members = _memberRepository.GetByBandId(bandId).ToArray();
+            var members = _bandRepository.GetMembers(bandId).ToArray();
             var instruments = _instrumentRepository.GetAll();
-            var genre = _genreRepository.Get(songDetail.GenreId);
-            var tempo = _tempoRepository.Get(songDetail.TempoId);
+            var genre = _songRepository.GetGenre(songDetail.GenreId);
+            var tempo = _songRepository.GetTempo(songDetail.TempoId);
 
             var newSong = new Song
             {
@@ -330,7 +333,7 @@ namespace SetGenerator.WebUI.Controllers
                 Singer = songDetail.SingerId > 0
                     ? members.Single(x => x.Id == songDetail.SingerId)
                     : null,
-                Key = _keyRepository.Get(songDetail.KeyId),
+                Key = _songRepository.GetKey(songDetail.KeyId),
                 Composer = songDetail.Composer,
                 Genre = genre,
                 Tempo = tempo,
@@ -365,10 +368,10 @@ namespace SetGenerator.WebUI.Controllers
             var bandId = Convert.ToInt32(Session["BandId"]);
 
             var song = _songRepository.Get(songDetail.Id);
-            var members = _memberRepository.GetByBandId(bandId).ToArray();
+            var members = _bandRepository.GetMembers(bandId).ToArray();
             var instruments = _instrumentRepository.GetAll();
-            var genre = _genreRepository.Get(songDetail.GenreId);
-            var tempo = _tempoRepository.Get(songDetail.TempoId);
+            var genre = _songRepository.GetGenre(songDetail.GenreId);
+            var tempo = _songRepository.GetTempo(songDetail.TempoId);
 
             if (song != null)
             {
@@ -376,7 +379,7 @@ namespace SetGenerator.WebUI.Controllers
                 song.Singer = songDetail.SingerId > 0
                     ? members.Single(x => x.Id == songDetail.SingerId)
                     : null;
-                song.Key = _keyRepository.Get(songDetail.KeyId);
+                song.Key = _songRepository.GetKey(songDetail.KeyId);
                 song.Composer = songDetail.Composer;
                 song.Genre = genre;
                 song.Tempo = tempo;

@@ -82,7 +82,7 @@ body {
 }
 
 .text-search {
-    width: 300px;
+    width: 200px;
 }
 
 .input-date {
@@ -96,9 +96,12 @@ body {
     margin-bottom: 5px;
 }
 
-.panel-heading, .panel-body {
-    padding: 5px 10px 5px 10px;
-}
+.panel {
+    margin: 0;
+    .panel-body {
+        padding: 0;
+    }
+} 
 
 table {
     .col-glyphicon {
@@ -110,18 +113,11 @@ table {
     }
 
     th {
-        /*background-color: @colourGrey;*/
-        /*color: @colourTableHeaderText;*/
         a, a:link, span {
-            /*color: @colourIvory;*/
         }
 
         a:link {
             text-decoration: none;
-        }
-
-        a:hover {
-            /*color: @colourWhite;*/
         }
     }
     td {

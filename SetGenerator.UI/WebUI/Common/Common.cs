@@ -4,26 +4,19 @@ using SetGenerator.WebUI.ViewModels;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using SetGenerator.Data.Repositories;
 using SetGenerator.Domain.Entities;
 
 namespace SetGenerator.WebUI.Common
 {
     public class CommonSong
     {
-        private readonly IKeyRepository _keyRepository;
         private readonly IAccount _account;
-        private readonly IMemberRepository _memberRepository;
         private readonly string _currentUserName;
 
         public CommonSong( IAccount account, 
-                                    IKeyRepository keyRepository, 
-                                    IMemberRepository memberRepository,
-                                    string currentUserName)
+                           string currentUserName)
         {
-            _keyRepository = keyRepository;
             _account = account;
-            _memberRepository = memberRepository;
             _currentUserName = currentUserName;
         }
 
@@ -34,37 +27,6 @@ namespace SetGenerator.WebUI.Common
             foreach (var c in cList)
                 cols.Add(c.Data, c.IsVisible);
             _account.UpdateUserTablePreferences(_currentUserName, tableId, cols);
-        }
-
-        public IList<BandMemberDetail> GetBandMemberDetails(int bandId)
-        {
-            var list = new List<BandMemberDetail>();
-            var members = _memberRepository.GetAll().Where( x => x.Band.Id == bandId);
-
-            foreach (var m in members)
-            {
-                var bandmember = new BandMemberDetail { Id = m.Id, FirstName = m.FirstName, LastName = m.LastName, Initials = m.Initials, MemberInstrumentDetails = new List<BandMemberInstrumentDetail>() };
-                foreach (var smid in m.MemberInstruments.Select(i => new BandMemberInstrumentDetail { Id = i.Instrument.Id, Name = i.Instrument.Name, Abbreviation = i.Instrument.Abbreviation }))
-                {
-                    bandmember.MemberInstrumentDetails.Add(smid);
-                }
-                list.Add(bandmember);
-            }
-            return list;
-        }
-
-        public IEnumerable<SongKeyDetail> GetKeyListFull()
-        {
-            var keys = _keyRepository.GetAll();
-
-            return keys.Select(key => new SongKeyDetail
-            {
-                Id = key.Id,
-                NameId = key.KeyName.Id,
-                Name = key.KeyName.Name,
-                SharpFlatNatural = key.SharpFlatNatural,
-                MajorMinor = key.MajorMinor
-            }).ToArray();
         }
 
         public ICollection<TableColumnDetail> GetTableColumnList(IEnumerable<UserPreferenceTableColumn> columns, IEnumerable<UserPreferenceTableMember> members, int userTableId)
