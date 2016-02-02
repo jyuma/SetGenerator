@@ -23,6 +23,8 @@
                 SongList: [],
                 SpareList: [],
                 MemberArrayList: [],
+                GenreArrayList: [],
+                TempoArrayList: [],
                 SetNumberList: [],
                 TableColumnList: []
             };
@@ -49,7 +51,7 @@
                 });
             }
 
-            function Song(id, setnumber, title, keydetail, singerid, composer, neverclose, neveropen, disabled, instrumentmemberdetails) {
+            function Song(id, setnumber, title, keydetail, singerid, composer, genreid, tempoid, neverclose, neveropen, disabled, instrumentmemberdetails) {
                 var self = this;
 
                 self.id = id;
@@ -59,10 +61,14 @@
                 self.keydetail = new SongKeyDetail(keydetail);
                 self.singerid = singerid;
                 self.composer = composer;
+                self.genreid = genreid;
+                self.tempoid = tempoid;
                 self.neverclose = neverclose;
                 self.neveropen = neveropen;
                 self.disabled = disabled;
                 self.singer = getValue(lists.MemberArrayList, singerid, "Display", "Value");
+                self.genre = getValue(lists.GenreArrayList, genreid, "Display", "Value");
+                self.tempo = getValue(lists.TempoArrayList, tempoid, "Display", "Value");
                 self.key = self.keydetail.name;
                 self.memberInstruments = [];
 
@@ -93,12 +99,6 @@
                 self.songs = ko.observableArray([]);
                 self.selectedSong = ko.observable();
                 self.selectedSetNumber = ko.observable(1);
-                //self.header = ko.computed(function () {
-                //    if (self.selectedSetNumber() > 0)
-                //        return lists.SetlistName.bold() + " - Set " + self.selectedSetNumber();
-                //    else
-                //        return "Spares";
-                //});
 
                 createSongArray(lists.SongList);
 
@@ -140,7 +140,7 @@
                 };
 
                 function pushSong(value) {
-                    self.songs.push(new Song(value.Id, value.SetNumber, value.Title, value.KeyDetail, value.SingerId, value.Composer, value.NeverClose, value.NeverOpen, value.Disabled, value.SongMemberInstrumentDetails));
+                    self.songs.push(new Song(value.Id, value.SetNumber, value.Title, value.KeyDetail, value.SingerId, value.Composer, value.GenreId, value.TempoId, value.NeverClose, value.NeverOpen, value.Disabled, value.SongMemberInstrumentDetails));
                 };
 
                 self.showSet = function (row) {
@@ -206,7 +206,7 @@
             function GetSharpFlatNotation(sharpflatnat) {
                 var desc = "";
                 if (sharpflatnat > 0)
-                    desc = sharpflatnat == 1 ? "#" : "b";
+                    desc = sharpflatnat === 1 ? "#" : "b";
                 return desc;
             }
 
@@ -214,7 +214,7 @@
             function getValue(list, id, dataMember, valueMember) {
                 var name = "";
                 $(list).each(function (index, item) {
-                    if (item[valueMember] == id) {
+                    if (item[valueMember] === id) {
                         name = item[dataMember];
                         return name;
                     }

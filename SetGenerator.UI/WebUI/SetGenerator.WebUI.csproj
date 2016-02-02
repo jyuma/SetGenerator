@@ -330,8 +330,8 @@
     <Content Include="Scripts\Custom\Dialog\Dialog.js" />
     <Content Include="Scripts\Custom\Gigs\Index.js" />
     <Content Include="Scripts\Custom\Home\Index.js" />
-    <Content Include="Scripts\Custom\SetLists\Index.js" />
-    <Content Include="Scripts\Custom\SetLists\Sets.js" />
+    <Content Include="Scripts\Custom\Setlists\Index.js" />
+    <Content Include="Scripts\Custom\Setlists\Sets.js" />
     <Content Include="Scripts\Custom\Site\Namespace.js" />
     <Content Include="Scripts\Custom\Site\Session.js" />
     <Content Include="Scripts\Custom\Site\Site.js" />

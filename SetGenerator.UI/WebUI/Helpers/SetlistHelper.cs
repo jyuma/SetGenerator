@@ -20,7 +20,6 @@ namespace SetGenerator.WebUI.Helpers
 
         public Setlist GenerateSets(IEnumerable<Song> masterSongList, SetlistDetail setlistDetail, int bandId, User currentUser)
         {
-            //var sets = new List<Set>();
             Setlist setlist = null;
 
             if (masterSongList != null)
