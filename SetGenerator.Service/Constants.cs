@@ -35,8 +35,37 @@
             public const int SetlistId = 6;
         }
 
+        // user table
+        public struct Band
+        {
+            public const int Slugfest = 1;
+            public const int TheBeadles = 2;
+            public const int StetsonBrothers = 3;
+        }
         // Setlist
         public const int MinSongInstrumentationCount = 3;
         public const int MaxDefaultSingerCount = 3;
+    }
+
+    // song
+
+    public enum Tempo
+    {
+        Slow = 1,
+        Medium = 2,
+        Fast = 3
+    }
+
+    public enum Genre
+    {
+        Rock = 1,
+        Country = 2,
+        Blues = 3,
+        Jazz = 4,
+        Gospel = 5,
+        Waltz = 6,
+        RAndB = 7,
+        Surf = 8,
+        Ballad = 9
     }
 }

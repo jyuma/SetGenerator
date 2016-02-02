@@ -36,7 +36,6 @@ namespace SetGenerator.Data.Repositories
             return al;
         }
 
-
         // Member / Singer
 
         public IEnumerable<Member> GetMembers(int bandId)
