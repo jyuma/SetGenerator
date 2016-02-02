@@ -72,7 +72,7 @@
         <TablixBody>
           <TablixColumns>
             <TablixColumn>
-              <Width>0.37501in</Width>
+              <Width>0.60417in</Width>
             </TablixColumn>
             <TablixColumn>
               <Width>0.54167in</Width>
@@ -101,7 +101,7 @@
                             </TextRun>
                           </TextRuns>
                           <Style>
-                            <TextAlign>Center</TextAlign>
+                            <TextAlign>Left</TextAlign>
                           </Style>
                         </Paragraph>
                       </Paragraphs>
@@ -117,6 +117,7 @@
                         <PaddingBottom>2pt</PaddingBottom>
                       </Style>
                     </Textbox>
+                    <rd:Selected>true</rd:Selected>
                   </CellContents>
                 </TablixCell>
                 <TablixCell>
@@ -416,7 +417,7 @@
                     </SortExpression>
                   </SortExpressions>
                   <TablixHeader>
-                    <Size>5.21874in</Size>
+                    <Size>5.01041in</Size>
                     <CellContents>
                       <Textbox Name="Title">
                         <CanGrow>true</CanGrow>
@@ -459,7 +460,7 @@
         <DataSetName>Sets</DataSetName>
         <Left>0.05208in</Left>
         <Height>0.97916in</Height>
-        <Width>6.53126in</Width>
+        <Width>6.55209in</Width>
         <Style>
           <Border>
             <Style>None</Style>
