@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using SetGenerator.Domain.Entities;
+using SetGenerator.Service;
 
 namespace SetGenerator.WebUI.Helpers.Algorithms
 {
@@ -38,11 +39,11 @@ namespace SetGenerator.WebUI.Helpers.Algorithms
             
             Container.NumSets = numSets;
             Container.NumSongsPerSet = numSongsPerSet;
-            Container.KeyCount = 0;
+            Container.KeyCount = 1;
             Container.LastKeyId = 0;
-            Container.TempoCount = 0;
+            Container.TempoCount = 1;
             Container.LastTempoId = 0;
-            Container.GenreCount = 0;
+            Container.GenreCount = 1;
             Container.LastGenreId = 0;
             Container.MaxNumIds = 0;
             Container.ValidIds = null;
@@ -93,7 +94,7 @@ namespace SetGenerator.WebUI.Helpers.Algorithms
             var isNewSet = (Container.SongSequence == 1);
             var isLastSong = (Container.SongSequence == Container.NumSongsPerSet);
             Container.DicSongs = _masterSongList.ToDictionary(x => x.Id);
-            Container.ValidIds = GetValidIds();
+            Container.ValidIds = GetValidIds(isLastSong);
             Container.MaxNumIds = Container.ValidIds.GetUpperBound(0) + 1;
 
             //------ FIRST SONG -------
@@ -117,22 +118,27 @@ namespace SetGenerator.WebUI.Helpers.Algorithms
             return Container.DicSongs[Container.ValidIds[selectedIndex]];
         }
 
-        private static int[] GetValidIds()
+        private static int[] GetValidIds(bool isLastSong)
         {
-            var eligibleSongs = new List<Song>();
+            var selectedSongs = new List<Song>();
+
+            var eligibleSongs = isLastSong
+                ? _masterSongList.Where(x => x.NeverClose == false).ToList()
+                : _masterSongList;
+
             var usedSongs = _setSongs != null
                 ? _setSongs.Select(x => x.Song.Id)
                 : new Collection<int>();
 
-            eligibleSongs.AddRange(_masterSongList);
+            selectedSongs.AddRange(eligibleSongs);
 
-            var validIds = eligibleSongs
+            var validIds = selectedSongs
                 .Where(x => !usedSongs.Contains(x.Id))
                 .Select(x => x.Id)
                 .ToArray();
 
             if (validIds.Count() == 0)
-                validIds = _masterSongList
+                validIds = eligibleSongs
                    .Where(x => !usedSongs.Contains(x.Id))
                    .Select(x => x.Id)
                    .ToArray();
@@ -188,10 +194,18 @@ namespace SetGenerator.WebUI.Helpers.Algorithms
 
                 // apply rules in order of preference
                 if ((Container.LastKeyId != s.Key.Id)
-                    && (Container.LastTempoId != s.Tempo.Id)
-                    && (Container.LastGenreId != s.Genre.Id))
+                    && (Container.LastTempoId != s.Tempo.Id))
                 {
-                    rank = 1;
+                    if ((Container.GenreCount < 2) && 
+                        ((Constants.Genre) s.Genre.Id == Constants.Genre.Country ||
+                        (Constants.Genre) s.Genre.Id == Constants.Genre.Rock))
+                    {
+                        rank = 1;
+                    }
+                    else if (Container.LastGenreId != s.Genre.Id)
+                    {
+                        rank = 1;
+                    }
                 }
 
                 else if ((Container.LastKeyId != s.Key.Id)
