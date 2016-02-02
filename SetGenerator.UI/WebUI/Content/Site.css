@@ -59,6 +59,9 @@ body {
   width: 300px;
 }
 /* Search Menu Items */
+.form-control {
+  padding: 5px;
+}
 .filter-bold option {
   font-weight: normal;
 }
@@ -89,10 +92,13 @@ body {
 .row {
   margin-bottom: 5px;
 }
-.modal-body .panel {
+.login-form {
+  margin: 20px;
+}
+.panel {
   margin: 0;
 }
-.modal-body .panel .panel-body {
+.panel .panel-body {
   padding: 0;
 }
 table .col-glyphicon {

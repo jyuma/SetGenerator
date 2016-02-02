@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RptDataSource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="SetGenerator">
+  <ConnectionProperties>
+    <Extension>SQL</Extension>
+    <ConnectString>Data Source=YUMA-SERVER2008;Initial Catalog=SetGenerator</ConnectString>
+  </ConnectionProperties>
+  <DataSourceID>c8a419fa-6585-4638-9fe3-e5e73be173f8</DataSourceID>
+</RptDataSource>

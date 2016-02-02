@@ -37,7 +37,10 @@
                 <input class="form-control" type="text" id="txtSearchKey" placeholder="Key" data-bind="value: keySearch, valueUpdate: 'keyup'" maxlength="3" />
             </li>
             <li>
-                <input class="form-control" id="txtSearchTitle" type="text" placeholder="Title" data-bind="value: titleSearch, valueUpdate: 'keyup'" />
+                <input class="form-control" id="txtSearchTitle" type="text" placeholder="Title" data-bind="value: titleSearch, valueUpdate: 'keyup'"/>
+            </li>
+            <li>
+                <button class="btn btn-default" onclick="location.href='@Url.Action("Print", "Songs" )'"><span class="glyphicon glyphicon-print" aria-hidden="true"></span></button>
             </li>
             <li style="float: right; margin-right: 5px;">
                 <div id="ddlColumns" class="dropdown">

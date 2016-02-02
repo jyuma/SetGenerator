@@ -29,7 +29,7 @@ namespace SetGenerator.Service
 
     public class Account : IAccount
     {
-        private const int DefaultBandId = 4;  // Stetson Brothers
+        private const int DefaultBandId = 1;  // Default to 1 for now
         private readonly IUserRepository _userRepository;
         private readonly ITableColumnRepository _tableColumnRepository;
         private readonly IMemberRepository _memberRepository;

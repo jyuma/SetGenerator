@@ -3,13 +3,17 @@ using SetGenerator.Domain.Entities;
 using SetGenerator.Service;
 using SetGenerator.WebUI.Common;
 using SetGenerator.WebUI.ViewModels;
+using SetGenerator.WebUI.Reports.SongsTableAdapters;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
+using Microsoft.Reporting.WebForms;
 
 namespace SetGenerator.WebUI.Controllers
 {
@@ -66,8 +70,42 @@ namespace SetGenerator.WebUI.Controllers
             return model;
         }
 
+
+        [Authorize]
+        [HttpGet]
+        public FileResult Print()
+        {
+            var bandId = Convert.ToInt32(Session["BandId"]);
+            var rv = new ReportViewer { ProcessingMode = ProcessingMode.Local };
+            var ds = new GetAllSongsTableAdapter();
+            var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ReportConnectionString"].ConnectionString);
+            ds.Connection = connection;
+
+            string reportPath = "~/Reports/Songs.rdlc";
+
+            rv.LocalReport.ReportPath = Server.MapPath(reportPath);
+            rv.ProcessingMode = ProcessingMode.Local;
+
+            ReportDataSource rds = new ReportDataSource("Songs", (object)ds.GetData(bandId));
+            rv.LocalReport.DataSources.Add(rds);
+            rv.LocalReport.Refresh();
+
+            string mimeType = string.Empty;
+            string encoding = string.Empty;
+            string filenameExtension = string.Empty;
+            string[] streamids;
+            Warning[] warnings;
+            var streamBytes = rv.LocalReport.Render("PDF", null, out mimeType, out encoding, out filenameExtension, out streamids, out warnings);
+
+            var bandName = _bandRepository.Get(bandId);
+            var filename = bandName.Name + ".pdf";
+
+            return File(streamBytes, mimeType, filename);
+        }
+
         // for the knockout view model
         [HttpGet]
+        [Authorize]
         public JsonResult GetData()
         {
             var bandId = Convert.ToInt32(Session["BandId"]);
@@ -144,6 +182,7 @@ namespace SetGenerator.WebUI.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public PartialViewResult GetSongEditView(int id)
         {
             return PartialView("_SongEdit", LoadSongEditViewModel(id));
@@ -229,6 +268,7 @@ namespace SetGenerator.WebUI.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public JsonResult Save(string song)
         {
             var s = JsonConvert.DeserializeObject<SongDetail>(song);
@@ -258,6 +298,7 @@ namespace SetGenerator.WebUI.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public JsonResult Delete(int id)
         {
             _songRepository.Delete(id);
@@ -288,6 +329,7 @@ namespace SetGenerator.WebUI.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public JsonResult SaveColumns(string columns)
         {
             var cList = JsonConvert.DeserializeObject<IList<TableColumnDetail>>(columns);

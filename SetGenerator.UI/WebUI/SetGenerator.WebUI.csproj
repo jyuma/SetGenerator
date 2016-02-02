@@ -269,6 +269,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Sets.xsd</DependentUpon>
     </Compile>
+    <Compile Include="Reports\Songs.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Songs.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\BandViewModel.cs" />
     <Compile Include="ViewModels\GigEditViewModel.cs" />
@@ -346,6 +351,17 @@
     </None>
     <Content Include="Reports\Sets.xss">
       <DependentUpon>Sets.xsd</DependentUpon>
+    </Content>
+    <Content Include="Reports\Songs.xsc">
+      <DependentUpon>Songs.xsd</DependentUpon>
+    </Content>
+    <None Include="Reports\Songs.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>Songs.Designer.cs</LastGenOutput>
+    </None>
+    <Content Include="Reports\Songs.xss">
+      <DependentUpon>Songs.xsd</DependentUpon>
     </Content>
     <None Include="Scripts\jquery-2.2.0.intellisense.js" />
     <Content Include="Scripts\jquery-2.2.0.js" />
@@ -507,6 +523,7 @@
     <EmbeddedResource Include="Reports\Sets_Singer_Members.rdlc">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Reports\Songs.rdlc" />
     <None Include="Project_Readme.html" />
     <None Include="Properties\PublishProfiles\setgenerator.pubxml" />
     <EmbeddedResource Include="Reports\Sets.rdlc">
