@@ -70,7 +70,6 @@ namespace SetGenerator.WebUI.Controllers
             return model;
         }
 
-
         [Authorize]
         [HttpGet]
         public FileResult Print()

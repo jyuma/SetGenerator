@@ -13,6 +13,8 @@ namespace SetGenerator.Domain.Mappings
             Map(m => m.DateGig).Column("DateGig");
             Map(m => m.Venue).Column("Venue");
             Map(m => m.Description).Column("Description");
+            Map(m => m.DateCreate).Column("DateCreate");
+            Map(m => m.DateUpdate).Column("DateUpdate");
             References(m => m.Setlist).Column("SetlistId").Nullable();
             References(m => m.Band).Column("BandId");
             References(m => m.UserCreate).Column("UserCreateId");

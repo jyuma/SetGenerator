@@ -15,6 +15,8 @@ namespace SetGenerator.Domain.Mappings
             Map(m => m.NeverClose).Column("NeverClose");
             Map(m => m.NeverOpen).Column("NeverOpen");
             Map(m => m.IsDisabled).Column("IsDisabled");
+            Map(m => m.DateCreate).Column("DateCreate");
+            Map(m => m.DateUpdate).Column("DateUpdate");
             References(m => m.Genre).Column("GenreId");
             References(m => m.Tempo).Column("TempoId");
             References(m => m.Band).Column("BandId");
