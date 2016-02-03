@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using ServiceStack;
 using SetGenerator.Domain.Entities;
 using SetGenerator.Service;
 
@@ -19,6 +20,10 @@ namespace SetGenerator.WebUI.Helpers.Algorithms
             public static int SongSequence { get; set; }
             public static int CurrentSetNumber { get; set; }
 
+            public static bool IsNewSet { get; set; }
+            public static bool IsFirstSong { get; set; }
+            public static bool IsLastSong { get; set; }
+
             public static int KeyCount { get; set; }
             public static int LastKeyId { get; set; }
 
@@ -28,8 +33,6 @@ namespace SetGenerator.WebUI.Helpers.Algorithms
             public static int GenreCount { get; set; }
             public static int LastGenreId { get; set; }
 
-            public static int MaxNumIds { get; set; }
-            public static int[] ValidIds { get; set; }
             public static Dictionary<int, Song> DicSongs { get; set; }
         }
 
@@ -39,23 +42,23 @@ namespace SetGenerator.WebUI.Helpers.Algorithms
             
             Container.NumSets = numSets;
             Container.NumSongsPerSet = numSongsPerSet;
+            Container.IsNewSet = false;
+            Container.IsFirstSong = false;
+            Container.IsLastSong = false;
             Container.KeyCount = 1;
             Container.LastKeyId = 0;
             Container.TempoCount = 1;
             Container.LastTempoId = 0;
             Container.GenreCount = 1;
             Container.LastGenreId = 0;
-            Container.MaxNumIds = 0;
-            Container.ValidIds = null;
 
             _setSongs = new Collection<SetSong>();
 
             for (Container.CurrentSetNumber = 1; Container.CurrentSetNumber <= Container.NumSets; Container.CurrentSetNumber++)
             {
                 // for each set song
-                for (var song = 1; song <= Container.NumSongsPerSet; song++)
+                for (Container.SongSequence = 1; Container.SongSequence <= Container.NumSongsPerSet; Container.SongSequence++)
                 {
-                    Container.SongSequence++;
                     var lastOrDefault = _setSongs.LastOrDefault();
 
                     if (lastOrDefault != null)
@@ -90,143 +93,143 @@ namespace SetGenerator.WebUI.Helpers.Algorithms
 
         private static Song GetNextSong()
         {
-            int selectedIndex;
-            var isNewSet = (Container.SongSequence == 1);
-            var isLastSong = (Container.SongSequence == Container.NumSongsPerSet);
+            Container.IsNewSet = (Container.SongSequence == 1);
+            Container.IsLastSong = (Container.SongSequence == Container.NumSongsPerSet);
             Container.DicSongs = _masterSongList.ToDictionary(x => x.Id);
-            Container.ValidIds = GetValidIds(isLastSong);
-            Container.MaxNumIds = Container.ValidIds.GetUpperBound(0) + 1;
+            Song nextSong = null;
 
             //------ FIRST SONG -------
-            if (isNewSet)
+            if (Container.IsNewSet)
             {
-                selectedIndex = GetOpener();
+                nextSong = GetOpener();
             }
 
             //------ MIDDLE SONG -------
-            else if (!isLastSong)
+            else if (!Container.IsFirstSong && !Container.IsLastSong)
             {
-                selectedIndex = GetMiddle();
+                nextSong = GetMiddle();
             }
 
             //------ LAST SONG -------
-            else
+            else if (Container.IsLastSong)
             {
-                selectedIndex = GetCloser();
+                nextSong = GetCloser();
             }
 
-            return Container.DicSongs[Container.ValidIds[selectedIndex]];
+            return nextSong;
         }
 
-        private static int[] GetValidIds(bool isLastSong)
+        private static Dictionary<int, Song> GetEligibleUnusedSongs()
         {
-            var selectedSongs = new List<Song>();
+            IEnumerable<Song> eligibleSongs = new Collection<Song>();
 
-            var eligibleSongs = isLastSong
-                ? _masterSongList.Where(x => x.NeverClose == false).ToList()
-                : _masterSongList;
+            if (Container.IsFirstSong)
+            {
+                eligibleSongs = _masterSongList.Where(x => x.NeverOpen == false).ToArray();
+            }
+            else if (!Container.IsFirstSong && !Container.IsLastSong)
+            {
+                eligibleSongs = _masterSongList;
+            }
+            else if (Container.IsLastSong)
+            {
+                eligibleSongs = _masterSongList.Where(x => x.NeverClose == false).ToArray();
+            }
 
             var usedSongs = _setSongs != null
                 ? _setSongs.Select(x => x.Song.Id)
                 : new Collection<int>();
 
-            selectedSongs.AddRange(eligibleSongs);
+            var result = eligibleSongs
+                    .Where(x => !usedSongs.Contains(x.Id))
+                    .ToDictionary(x => x.Id, x => x);
 
-            var validIds = selectedSongs
-                .Where(x => !usedSongs.Contains(x.Id))
-                .Select(x => x.Id)
-                .ToArray();
-
-            if (validIds.Count() == 0)
-                validIds = eligibleSongs
-                   .Where(x => !usedSongs.Contains(x.Id))
-                   .Select(x => x.Id)
-                   .ToArray();
-
-            return validIds;
-        }
-
-        private static int GetOpener()
-        {
-            var rnd = new Random();
-            int idx;
-            var numAttempts = 0;
-
-            while (true)
+            if (result.Count == 0)
             {
-                numAttempts++;
-                idx = rnd.Next(0, Container.MaxNumIds);
-                if (Container.DicSongs[Container.ValidIds[idx]].NeverOpen == false)
-                    break;
-                if (numAttempts == 1000)
-                    break;
+                result = _masterSongList
+                    .Where(x => !usedSongs.Contains(x.Id))
+                    .ToDictionary(x => x.Id, x => x);
             }
-            return idx;
+
+            return result;
         }
 
-        private static int GetCloser()
+        private static Song GetOpener()
         {
-            Dictionary<int, Song> validSongs = Container.DicSongs
-                .Where(x => x.Value.NeverClose == false)
-                .ToDictionary(x => x.Key, x => x.Value);
+            var eligibleSongs = GetEligibleUnusedSongs();
 
-            return ApplyRules(validSongs);
+            var maxIds = eligibleSongs.Count;
+            var eligibleIds = eligibleSongs.Keys.Select(x => x).ToArray();
+            var rnd = new Random();
+            var idx = rnd.Next(0, maxIds);
+
+            return eligibleSongs[eligibleIds[idx]];
         }
 
-        private static int GetMiddle()
+        private static Song GetCloser()
         {
-            return ApplyRules(Container.DicSongs);
+            return ApplyRules();
         }
 
-        private static int ApplyRules(IDictionary<int, Song> validSongs)
+        private static Song  GetMiddle()
+        {
+            return ApplyRules();
+        }
+
+        private static Song ApplyRules()
         {
             var rnd = new Random();
             var rank = 0;
             var numAttempts = 0;
-            int idx;
+
+            var eligibleSongs = GetEligibleUnusedSongs();
+            var maxIds = eligibleSongs.Count;
+            var eligibleIds = eligibleSongs.Keys.Select(x => x).ToArray();
+
+            Song song;
 
             while (true)
             {
                 numAttempts++;
-                idx = rnd.Next(0, Container.MaxNumIds);
+                var idx = rnd.Next(0, maxIds);
 
-                var s = validSongs[Container.ValidIds[idx]]; 
+                song = eligibleSongs[eligibleIds[idx]]; 
 
                 // apply rules in order of preference
-                if ((Container.LastKeyId != s.Key.Id)
-                    && (Container.LastTempoId != s.Tempo.Id))
+                if ((Container.LastKeyId != song.Key.Id)
+                    && (Container.LastTempoId != song.Tempo.Id))
                 {
-                    if ((Container.GenreCount < 2) && 
-                        ((Constants.Genre) s.Genre.Id == Constants.Genre.Country ||
-                        (Constants.Genre) s.Genre.Id == Constants.Genre.Rock))
+                    if ((Container.GenreCount < 2) &&
+                        ((Constants.Genre)song.Genre.Id == Constants.Genre.Country ||
+                        (Constants.Genre)song.Genre.Id == Constants.Genre.Rock))
                     {
                         rank = 1;
                     }
-                    else if (Container.LastGenreId != s.Genre.Id)
+                    else if (Container.LastGenreId != song.Genre.Id)
                     {
                         rank = 1;
                     }
                 }
 
-                else if ((Container.LastKeyId != s.Key.Id)
-                    && (Container.LastTempoId != s.Tempo.Id))
+                else if ((Container.LastKeyId != song.Key.Id)
+                    && (Container.LastTempoId != song.Tempo.Id))
                 {
                     rank = 2;
                 }
 
-                else if ((Container.LastKeyId != s.Key.Id)
-                    && (Container.LastGenreId != s.Genre.Id))
+                else if ((Container.LastKeyId != song.Key.Id)
+                    && (Container.LastGenreId != song.Genre.Id))
                 {
                     rank = 3;
                 }
 
-                else if ((Container.LastKeyId != s.Key.Id))
+                else if ((Container.LastKeyId != song.Key.Id))
                 {
                     rank = 4;
                 }
 
-                else if ((Container.LastTempoId != s.Tempo.Id)
-                    && (Container.LastKeyId != s.Key.Id))
+                else if ((Container.LastTempoId != song.Tempo.Id)
+                    && (Container.LastKeyId != song.Key.Id))
                 {
                     rank = 5;
                 }
@@ -253,7 +256,7 @@ namespace SetGenerator.WebUI.Helpers.Algorithms
                     break;
                 }
             }
-            return idx; 
+            return song; 
         }
     }
 }
