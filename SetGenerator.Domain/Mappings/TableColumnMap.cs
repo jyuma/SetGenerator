@@ -13,6 +13,7 @@ namespace SetGenerator.Domain.Mappings
             Map(m => m.Name).Column("Name");
             Map(m => m.Data).Column("Data");
             Map(m => m.AlwaysVisible).Column("AlwaysVisible");
+            Map(m => m.Sequence).Column("Sequence");
             References(m => m.Table).Column("TableId");
         }
     }

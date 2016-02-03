@@ -5,26 +5,25 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>@ViewBag.Title</h2>
-
-<p class="text-success">@ViewBag.StatusMessage</p>
-<div class="row">
-    <div class="col-md-12">
-        @if (ViewBag.HasLocalPassword)
-        {
-            @Html.Partial("_ChangePasswordPartial")
-        }
-        else
-        {
-            @Html.Partial("_SetPasswordPartial")
-        }
-
-        @*<section id="externalLogins">
-            @Html.Action("RemoveAccountList")
-            @Html.Partial("_ExternalLoginsListPartial", new { Action = "LinkLogin", ReturnUrl = ViewBag.ReturnUrl })
-        </section>*@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3>@ViewBag.Title</h3>
+    </div>
+    <div class="panel-body panel-login">
+        <section id="loginForm" class="login-form">
+            <div class="row">
+                <div class="col-md-12">
+                    @(ViewBag.HasLocalPassword
+                          ? Html.Partial("_ChangePasswordPartial")
+                          : Html.Partial("_SetPasswordPartial"))
+                </div>
+            </div>
+        </section>
     </div>
 </div>
+
+<p class="text-success">@ViewBag.StatusMessage</p>
+
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }

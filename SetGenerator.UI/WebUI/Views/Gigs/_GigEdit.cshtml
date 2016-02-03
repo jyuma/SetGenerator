@@ -1,12 +1,19 @@
 ﻿
 @model SetGenerator.WebUI.ViewModels.GigEditViewModel
 
+<datalist id="dlVenues">
+    @foreach (var venue in @Model.Venues)
+    {
+        <option value="@venue"></option>
+    }
+</datalist>
+
 <div id="gig-edit-modal">
     <div class="panel">
         <div class="row">
             <div class="col-sm-12">
                 <div class="label label-default">Venue</div>
-                <input type="text" id="txtVenue" class="form-control" value="@Model.Venue" maxlength="100"/>
+                <input type="text" id="txtVenue" class="form-control" value="@Model.Venue" maxlength="100" list="dlVenues" />
             </div>
         </div>
         <div class="row">

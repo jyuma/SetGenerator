@@ -71,6 +71,8 @@
                 self.genreid = genreid;
                 self.tempoid = tempoid;
                 self.composer = composer;
+                self.neverClose = ko.observable(neverclose);
+                self.neverOpen = ko.observable(neveropen);
                 self.neverclose = neverclose;
                 self.neveropen = neveropen;
                 self.disabled = disabled;
@@ -105,6 +107,7 @@
                 self.keySearch = ko.observable("");
                 self.titleSearch = ko.observable("");
                 self.listTypeSearch = ko.observable(LISTTYPE_ALIST);
+                self.sortDescending = ko.observable(false);
 
                 createSongArray();
 
@@ -216,13 +219,29 @@
                 self.sort = function (header) {
                     var sortKey = header.sortKey;
 
-                    $(self.columns()).each(function (index, value) {
-                        if (value.sortKey == sortKey) {
-                            self.songs.sort(function (a, b) {
-                                return a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : a[sortKey] == b[sortKey] ? 0 : 0;
-                            });
-                        }
-                    });
+                    self.sortDescending(!self.sortDescending());
+
+                    if (self.sortDescending()) {
+                        $(self.columns()).each(function(index, value) {
+                            if (value.sortKey === sortKey) {
+                                self.songs.sort(function(a, b) {
+                                    return a[sortKey] > b[sortKey]
+                                        ? -1 : a[sortKey] < b[sortKey]
+                                        ? 1 : 0;
+                                });
+                            }
+                        });
+                    } else {
+                        $(self.columns()).each(function (index, value) {
+                            if (value.sortKey === sortKey) {
+                                self.songs.sort(function (a, b) {
+                                    return a[sortKey] < b[sortKey]
+                                        ? -1 : a[sortKey] > b[sortKey]
+                                        ? 1 : 0;
+                                });
+                            }
+                        });
+                    }
                 };
 
                 self.filteredSongs = ko.computed(function () {

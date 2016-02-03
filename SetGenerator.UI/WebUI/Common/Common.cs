@@ -35,6 +35,7 @@ namespace SetGenerator.WebUI.Common
 
             list.AddRange(columns
                 .Where(x => x.TableColumn.Table.Id == userTableId)
+                .OrderBy(x => x.TableColumn.Sequence)
                 .Select(tc => new TableColumnDetail
             {
                 Header = tc.TableColumn.Name,

@@ -15,22 +15,22 @@ namespace SetGenerator.WebUI.Controllers
     {
         private readonly IBandRepository _bandRepository;
         private readonly IGigRepository _gigRepository;
-        private readonly IAccount _account;
-        private readonly int _bandId = 1;
+        private readonly IValidationRules _validationRules;
         private readonly User _currentUser;
         private readonly CommonSong _common;
 
         public GigsController(  IBandRepository bandRepository,
                                 IGigRepository gigRepository,
+                                IValidationRules validationRules, 
                                 IAccount account)
         {
             _bandRepository = bandRepository;
             _gigRepository = gigRepository;
-            _account = account;
+            _validationRules = validationRules;
 
             var currentUserName = GetCurrentSessionUser();
             if (currentUserName.Length > 0)
-                _currentUser = _account.GetUserByUserName(currentUserName);
+                _currentUser = account.GetUserByUserName(currentUserName);
             _common = new CommonSong(account, currentUserName);
         }
 
@@ -100,6 +100,7 @@ namespace SetGenerator.WebUI.Controllers
 
         private GigEditViewModel LoadSetlistEditViewModel(int id)
         {
+            var bandId = Convert.ToInt32(Session["BandId"]);
             Gig gig = null;
 
             if (id > 0)
@@ -111,6 +112,7 @@ namespace SetGenerator.WebUI.Controllers
                 DateGig = (gig != null) ? gig.DateGig : DateTime.Now,
                 Venue = (gig != null) ? gig.Venue : string.Empty,
                 Description = (gig != null) ? gig.Description : string.Empty,
+                Venues = _gigRepository.GetVenueList(bandId)
             };
 
             return vm;
@@ -125,13 +127,13 @@ namespace SetGenerator.WebUI.Controllers
 
             if (gigId > 0)
             {
-                //msgs = ValidateGig(s.Title, false);
+                msgs = ValidateGig(g.Venue, g.DateGig, false);
                 if (msgs == null)
                     UpdateGig(g);
             }
             else
             {
-                //msgs = ValidateGig(s.Title, true);
+                msgs = ValidateGig(g.Venue, g.DateGig, true);
                 if (msgs == null)
                     gigId = AddGig(g);
             }
@@ -143,6 +145,13 @@ namespace SetGenerator.WebUI.Controllers
                 Success = (null == msgs),
                 ErrorMessages = msgs
             }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public List<string> ValidateGig(string venue, string dateGig, bool addNew)
+        {
+            var bandId = Convert.ToInt32(Session["BandId"]);
+            return _validationRules.ValidateGig(bandId, venue, Convert.ToDateTime(dateGig), addNew);
         }
 
         [HttpPost]
@@ -165,6 +174,15 @@ namespace SetGenerator.WebUI.Controllers
             _common.SaveColumns(columns, Constants.UserTable.GigId);
             return Json(JsonRequestBehavior.AllowGet);
         }
+
+        //// --- for the autocomplete
+        //[HttpGet]
+        //public ActionResult GetVenueList()
+        //{
+        //    var bandId = Convert.ToInt32(Session["BandId"]);
+        //    var list = _gigRepository.GetVenueList(bandId);
+        //    return Json(list, JsonRequestBehavior.AllowGet);
+        //}
 
         private int AddGig(GigDetail gigDetail)
         {

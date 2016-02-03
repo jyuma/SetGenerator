@@ -355,15 +355,6 @@ namespace SetGenerator.WebUI.Controllers
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 
-        // --- for the autocomplete
-        [HttpGet]
-        public ActionResult GetComposerList()
-        {
-            var bandId = Convert.ToInt32(Session["BandId"]);
-            var list = _songRepository.GetComposerList(bandId);
-            return Json(list, JsonRequestBehavior.AllowGet);
-        }
-
         private int AddSong(SongDetail songDetail)
         {
             var bandId = Convert.ToInt32(Session["BandId"]);

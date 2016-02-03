@@ -5,7 +5,13 @@
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new {id = "logoutForm", @class = "navbar-right"}))
     {
         @Html.AntiForgeryToken()
-            
+
+        <span class="band-dropdown">
+            @if (Session["Bands"] != null)
+            {
+            @Html.DropDownList("ddlUserBand", new SelectList((IEnumerable)Session["Bands"], "Id", "Name", Session["BandId"]), new { @class = "filter-bold", @onchange = "shared._layout.setCurrentBand()" })
+            }
+        </span>
         <text><strong>
                 @if (User.Identity.GetUserName() == "admin")
                 {
@@ -14,11 +20,7 @@
                 else
                 {
                     <span>
-                        @if (Session["Bands"] != null)
-                        {
-                            @Html.DropDownList("ddlUserBand", new SelectList((IEnumerable)Session["Bands"], "Id", "Name", Session["BandId"]), new { @class="filter-bold", @onchange = "shared._layout.setCurrentBand()" })
-                        }
-                        @Html.ActionLink("Welcome " + User.Identity.GetUserName() + "! ", "Manage", "Account", routeValues: null, htmlAttributes: new { title = "Manage" })
+                        @Html.ActionLink("Welcome " + User.Identity.GetUserName() + "! ", "Manage", "Account", routeValues: null, htmlAttributes: new {title = "Manage"})
                     </span>
                 }
                 <a href="javascript:document.getElementById('logoutForm').submit()">Fuck off</a>
