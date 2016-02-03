@@ -42,16 +42,16 @@ namespace SetGenerator.WebUI
 
             var customScriptsBundle = new Bundle("~/bundles/CustomScripts");
             customScriptsBundle.Include(
-                    "~/Scripts/Custom/Site/Site.js",
-                    "~/Scripts/Custom/Site/Session.js",
-                    "~/Scripts/Custom/Site/Namespace.js",
-                    "~/Scripts/Custom/Dialog/Dialog.js",
-                    "~/Scripts/Custom/Shared/_Layout.js",
-                    "~/Scripts/Custom/Home/Index.js",
-                    "~/Scripts/Custom/Songs/Index.js",
-                    "~/Scripts/Custom/Setlists/Index.js",
-                    "~/Scripts/Custom/Setlists/Sets.js",
-                    "~/Scripts/Custom/Gigs/Index.js");
+                    "~/Scripts/Site/Site.js",
+                    "~/Scripts/Site/Session.js",
+                    "~/Scripts/Site/Namespace.js",
+                    "~/Scripts/Dialog/Dialog.js",
+                    "~/Scripts/Shared/_Layout.js",
+                    "~/Scripts/Home/Index.js",
+                    "~/Scripts/Songs/Index.js",
+                    "~/Scripts/Setlists/Index.js",
+                    "~/Scripts/Setlists/Sets.js",
+                    "~/Scripts/Gigs/Index.js");
             customScriptsBundle.Builder = nullBuilder;
             customScriptsBundle.Transforms.Add(scriptTransformer);
             bundles.Add(customScriptsBundle);

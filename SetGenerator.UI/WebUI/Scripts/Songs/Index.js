@@ -18,6 +18,8 @@
         init: function () {
 
             var _singerNameList;
+            var _currentSortKey = "title";
+            var _sortDescending = false;
 
             var lists = {
                 SongList: [],
@@ -33,8 +35,6 @@
             loadSingerNameList();
 
             ko.applyBindings(new SongViewModel());
-
-            $("#song-table-container").show();
 
             function loadConfig() {
                 $.ajax({
@@ -82,6 +82,7 @@
                 self.key = self.keydetail.name;
                 self.updateuser = updateuser;
                 self.updatedate = updatedate;
+
                 self.memberInstruments = [];
 
                 $(instrumentmemberdetails).each(function (index, value) {
@@ -107,7 +108,6 @@
                 self.keySearch = ko.observable("");
                 self.titleSearch = ko.observable("");
                 self.listTypeSearch = ko.observable(LISTTYPE_ALIST);
-                self.sortDescending = ko.observable(false);
 
                 createSongArray();
 
@@ -193,6 +193,44 @@
                     return arr;
                 });
 
+                function pushSong(value) {
+                    self.songs.push(new Song(value.Id, value.Title, value.KeyDetail, value.SingerId, value.GenreId, value.TempoId, value.Composer, value.NeverClose, value.NeverOpen, value.Disabled, value.UserUpdate, value.DateUpdate, value.SongMemberInstrumentDetails));
+                };
+
+                self.sort = function (header) {
+                    var afterSave = typeof header.afterSave != "undefined" ? header.afterSave : false;
+                    var sortKey;
+
+                    if (!afterSave) {
+                        sortKey = header.sortKey;
+
+                        if (sortKey !== _currentSortKey) {
+                            _sortDescending = false;
+                        } else {
+                            _sortDescending = !_sortDescending;
+                        }
+                        _currentSortKey = sortKey;
+                    } else {
+                        sortKey = _currentSortKey;
+                    }
+
+                    $(self.columns()).each(function (index, value) {
+                        if (value.sortKey === sortKey) {
+                            self.songs.sort(function (a, b) {
+                                if (_sortDescending) {
+                                    return a[sortKey] > b[sortKey]
+                                        ? -1 : a[sortKey] < b[sortKey] || a.title > b.title
+                                        ? 1 : 0;
+                                } else {
+                                    return a[sortKey] < b[sortKey]
+                                        ? -1 : a[sortKey] > b[sortKey] || a.title > b.title
+                                        ? 1 : 0;
+                                }
+                            });
+                        }
+                    });
+                };
+
                 function createSongArray() {
                     self.songs.removeAll();
                     $(lists.SongList).each(function (index, value) {
@@ -205,44 +243,12 @@
                     });
                 };
 
-                function pushSong(value) {
-                    self.songs.push(new Song(value.Id, value.Title, value.KeyDetail, value.SingerId, value.GenreId, value.TempoId, value.Composer, value.NeverClose, value.NeverOpen, value.Disabled, value.UserUpdate, value.DateUpdate, value.SongMemberInstrumentDetails));
-                };
-
                 self.songsTable = self.songs;
 
                 self.memberInstrumentHeaders = [
                     { title: "Member", sortKey: "member" },
                     { title: "Instrument", sortKey: "instrument" }
                 ];
-
-                self.sort = function (header) {
-                    var sortKey = header.sortKey;
-
-                    self.sortDescending(!self.sortDescending());
-
-                    if (self.sortDescending()) {
-                        $(self.columns()).each(function(index, value) {
-                            if (value.sortKey === sortKey) {
-                                self.songs.sort(function(a, b) {
-                                    return a[sortKey] > b[sortKey]
-                                        ? -1 : a[sortKey] < b[sortKey]
-                                        ? 1 : 0;
-                                });
-                            }
-                        });
-                    } else {
-                        $(self.columns()).each(function (index, value) {
-                            if (value.sortKey === sortKey) {
-                                self.songs.sort(function (a, b) {
-                                    return a[sortKey] < b[sortKey]
-                                        ? -1 : a[sortKey] > b[sortKey]
-                                        ? 1 : 0;
-                                });
-                            }
-                        });
-                    }
-                };
 
                 self.filteredSongs = ko.computed(function () {
                     return ko.utils.arrayFilter(self.songs(), function (s) {
@@ -410,6 +416,7 @@
                                 lists.SongList = data.SongList;
                                 createSongArray();
                                 self.selectedSong(self.getSong(data.SelectedId));
+                                self.sort({ afterSave: true });
                                 self.highlightRow(self.selectedSong());
                                 result = true;
                             } else {
