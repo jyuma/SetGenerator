@@ -95,6 +95,7 @@
     <Compile Include="Entities\SongMemberInstrument.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Entities\SongMemberInstrumentMatch.cs" />
     <Compile Include="Entities\Table.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -148,6 +149,7 @@
     <Compile Include="Mappings\SongMemberInstrumentMap.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Mappings\SongMemberInstrumentMatchMap.cs" />
     <Compile Include="Mappings\TableColumnMap.cs">
       <SubType>Code</SubType>
     </Compile>

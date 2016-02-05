@@ -26,7 +26,6 @@ namespace SetGenerator.WebUI.Helpers
             if (masterSongList != null)
             {
                 var songs = masterSongList.ToArray();
-                var defaultSingerId = songs.First().Band.DefaultSinger.Id;
                 var numSets = setlistDetail.NumSets;
                 var numSetSongs = setlistDetail.NumSongs;
 
@@ -46,13 +45,13 @@ namespace SetGenerator.WebUI.Helpers
                 {
                     case Constants.Band.Slugfest:
                     {
-                        setSongs = Slugfest.Generate(numSets, numSetSongs, songs, defaultSingerId);
+                        setSongs = Slugfest.Generate(numSets, numSetSongs, songs);
                         break;
                     }
 
                     case Constants.Band.TheBeadles:
                     {
-                        setSongs = Slugfest.Generate(numSets, numSetSongs, songs, defaultSingerId);
+                        setSongs = Slugfest.Generate(numSets, numSetSongs, songs);
                         break;
                     }
 

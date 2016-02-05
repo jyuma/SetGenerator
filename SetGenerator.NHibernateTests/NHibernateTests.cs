@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using FluentNHibernate.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SetGenerator.Domain.Entities;
 
@@ -106,6 +107,21 @@ namespace SetGenerator.NHibernateTests
                     .List()
                     .FirstOrDefault();
 
+            }
+        }
+
+        [TestMethod]
+        public void GetSongMemberInstrumentationMatches()
+        {
+            using (var db = TestSessionFactory.OpenSession())
+            {
+                const int SongId_Chloe = 1;
+
+                var song = db.QueryOver<Song>().Where(x => x.Id == SongId_Chloe).SingleOrDefault();
+
+                var matches = song.SongMemberInstrumentMatches;
+
+                Assert.IsTrue(matches.Count == 0);
             }
         }
     }

@@ -13,9 +13,9 @@ namespace SetGenerator.Domain.Mappings
             Map(m => m.Name).Column("Name");
             References(m => m.DefaultSinger).Column("DefaultSingerId");
 
-            HasMany(m => m.Members).Cascade.All(); ;
-            HasMany(m => m.Songs).Cascade.All(); ;
-            HasMany(m => m.Gigs).Cascade.All(); ;
+            HasMany(m => m.Members).Cascade.All();
+            HasMany(m => m.Songs).Cascade.All();
+            HasMany(m => m.Gigs).Cascade.All();
         }
     }
 }

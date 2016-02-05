@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using ServiceStack;
 using SetGenerator.Domain.Entities;
 using SetGenerator.Service;
 
@@ -19,9 +18,9 @@ namespace SetGenerator.WebUI.Helpers.Algorithms
             public static int NumSongsPerSet { get; set; }
             public static int SongSequence { get; set; }
             public static int CurrentSetNumber { get; set; }
+            public static int DefaultSingerId { get; set; }
 
             public static bool IsNewSet { get; set; }
-            public static bool IsFirstSong { get; set; }
             public static bool IsLastSong { get; set; }
 
             public static int KeyCount { get; set; }
@@ -42,15 +41,15 @@ namespace SetGenerator.WebUI.Helpers.Algorithms
             
             Container.NumSets = numSets;
             Container.NumSongsPerSet = numSongsPerSet;
+            Container.DefaultSingerId = _masterSongList.First().Band.DefaultSinger.Id;
             Container.IsNewSet = false;
-            Container.IsFirstSong = false;
-            Container.IsLastSong = false;
             Container.KeyCount = 1;
             Container.LastKeyId = 0;
             Container.TempoCount = 1;
             Container.LastTempoId = 0;
             Container.GenreCount = 1;
             Container.LastGenreId = 0;
+            Container.DicSongs = _masterSongList.ToDictionary(x => x.Id);
 
             _setSongs = new Collection<SetSong>();
 
@@ -95,7 +94,6 @@ namespace SetGenerator.WebUI.Helpers.Algorithms
         {
             Container.IsNewSet = (Container.SongSequence == 1);
             Container.IsLastSong = (Container.SongSequence == Container.NumSongsPerSet);
-            Container.DicSongs = _masterSongList.ToDictionary(x => x.Id);
             Song nextSong = null;
 
             //------ FIRST SONG -------
@@ -105,7 +103,7 @@ namespace SetGenerator.WebUI.Helpers.Algorithms
             }
 
             //------ MIDDLE SONG -------
-            else if (!Container.IsFirstSong && !Container.IsLastSong)
+            else if (!Container.IsNewSet && !Container.IsLastSong)
             {
                 nextSong = GetMiddle();
             }
@@ -123,11 +121,12 @@ namespace SetGenerator.WebUI.Helpers.Algorithms
         {
             IEnumerable<Song> eligibleSongs = new Collection<Song>();
 
-            if (Container.IsFirstSong)
+            if (Container.IsNewSet)
             {
-                eligibleSongs = _masterSongList.Where(x => x.NeverOpen == false).ToArray();
+                eligibleSongs = _masterSongList
+                    .Where(x => x.NeverOpen == false);
             }
-            else if (!Container.IsFirstSong && !Container.IsLastSong)
+            else if (!Container.IsNewSet && !Container.IsLastSong)
             {
                 eligibleSongs = _masterSongList;
             }
@@ -252,6 +251,10 @@ namespace SetGenerator.WebUI.Helpers.Algorithms
                     break;
                 }
                 if ((rank == 5) && numAttempts > 1500)
+                {
+                    break;
+                }
+                if (numAttempts > 2000)
                 {
                     break;
                 }
