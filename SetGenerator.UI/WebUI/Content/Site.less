@@ -40,10 +40,13 @@ body {
     }
 }
 
-.dropdown-menu > li {
-    padding-left: 10px;
-    label {
-        font-weight:400;
+ul.dropdown-menu {
+    min-width: 130px;
+    li {
+        padding-left: 15px;
+        label {
+            font-weight:400;
+        }
     }
 }
 
@@ -145,13 +148,6 @@ body {
     margin: 20px;
 }
 
-.panel {
-    margin: 0;
-    .panel-body {
-        padding: 0;
-    }
-} 
-
 table {
     .col-glyphicon {
         width: 10px;
@@ -178,6 +174,16 @@ table {
     color: @colourBlack;
     background-color: @colourWhite;
 }
+
+.panel {
+    margin: 0;
+    .panel-body {
+        padding: 0;
+        > .nav-pills {
+            padding: 8px 10px 8px 10px;
+        }
+    }
+} 
 
 .navbar {
     border-radius: 0;
@@ -233,10 +239,6 @@ table {
             }
         }
     }
-}
-
-.nav-pills {
-    margin: 8px 0 5px 0;
 }
 
 h1, h2, h3 {

@@ -260,12 +260,12 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\Algorithms\Slugfest.cs" />
-    <Compile Include="Helpers\Algorithms\StetsonBrothers.cs" />
+    <Compile Include="Helpers\SetlistHelpers\Algorithms\Slugfest.cs" />
+    <Compile Include="Helpers\SetlistHelpers\Algorithms\StetsonBrothers.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Helpers\SetlistHelper.cs" />
+    <Compile Include="Helpers\SetlistHelpers\SetlistHelper.cs" />
     <Compile Include="Reports\Sets.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -332,6 +332,7 @@
     <Content Include="Scripts\Home\Index.js" />
     <Content Include="Scripts\Setlists\Index.js" />
     <Content Include="Scripts\Setlists\Sets.js" />
+    <Content Include="Scripts\Shared\_LayoutPartial.js" />
     <Content Include="Scripts\Site\Namespace.js" />
     <Content Include="Scripts\Site\Session.js" />
     <Content Include="Scripts\Site\Site.js" />

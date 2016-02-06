@@ -6,7 +6,7 @@ using SetGenerator.Domain.Entities;
 using SetGenerator.Service;
 using SetGenerator.WebUI.Extensions;
 
-namespace SetGenerator.WebUI.Helpers.Algorithms
+namespace SetGenerator.WebUI.Helpers.SetlistHelpers.Algorithms
 {
     public static class Slugfest
     {

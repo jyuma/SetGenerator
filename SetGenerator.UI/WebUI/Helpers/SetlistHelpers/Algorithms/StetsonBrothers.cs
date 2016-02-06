@@ -5,7 +5,7 @@ using System.Linq;
 using SetGenerator.Domain.Entities;
 using SetGenerator.Service;
 
-namespace SetGenerator.WebUI.Helpers.Algorithms
+namespace SetGenerator.WebUI.Helpers.SetlistHelpers.Algorithms
 {
     public static class StetsonBrothers
     {

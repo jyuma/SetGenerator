@@ -1,15 +1,21 @@
 ﻿@using System.Collections
 @using Microsoft.AspNet.Identity
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        shared._layoutpartial.init({ actionName: "@ViewContext.RouteData.Values["action"].ToString()" });
+    });
+</script>
 @if (Request.IsAuthenticated)
 {
-    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new {id = "logoutForm", @class = "navbar-right"}))
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
     {
         @Html.AntiForgeryToken()
-
+        
         <span class="band-dropdown">
             @if (Session["Bands"] != null)
             {
-            @Html.DropDownList("ddlUserBand", new SelectList((IEnumerable)Session["Bands"], "Id", "Name", Session["BandId"]), new { @class = "filter-bold", @onchange = "shared._layout.setCurrentBand()" })
+                @Html.DropDownList("ddlUserBand", new SelectList((IEnumerable)Session["Bands"], "Id", "Name", Session["BandId"]), new { @class = "filter-bold", @onchange = "shared._layout.setCurrentBand()" })
             }
         </span>
         <text><strong>

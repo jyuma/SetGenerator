@@ -24,7 +24,7 @@ namespace SetGenerator.WebUI
             commonStylesBundle.Include(
                      "~/Content/bootstrap.css",
                      "~/Content/bootstrap-theme.css",
-                     "~/Content/bootstrap-datepicker.css",
+                     "~/Content/bootstrap-datepicker3.css",
                      "~/Content/Site.less");
             commonStylesBundle.Builder = nullBuilder;
             commonStylesBundle.Orderer = nullOrderer;
@@ -47,6 +47,7 @@ namespace SetGenerator.WebUI
                     "~/Scripts/Site/Namespace.js",
                     "~/Scripts/Dialog/Dialog.js",
                     "~/Scripts/Shared/_Layout.js",
+                    "~/Scripts/Shared/_LayoutPartial.js",
                     "~/Scripts/Home/Index.js",
                     "~/Scripts/Songs/Index.js",
                     "~/Scripts/Setlists/Index.js",

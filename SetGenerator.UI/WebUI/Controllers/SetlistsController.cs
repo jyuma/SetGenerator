@@ -3,7 +3,6 @@ using SetGenerator.WebUI.Common;
 using SetGenerator.WebUI.ViewModels;
 using SetGenerator.Data.Repositories;
 using SetGenerator.Domain.Entities;
-using SetGenerator.WebUI.Helpers;
 using SetGenerator.WebUI.Reports.SetsTableAdapters;
 using System;
 using System.Collections.Generic;
@@ -15,6 +14,7 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.Reporting.WebForms;
 using Newtonsoft.Json;
+using SetGenerator.WebUI.Helpers.SetlistHelpers;
 using Constants = SetGenerator.Service.Constants;
 
 namespace SetGenerator.WebUI.Controllers
@@ -47,9 +47,12 @@ namespace SetGenerator.WebUI.Controllers
         }
 
         [Authorize]
-        public ActionResult Index()
+        [Route("Index/{id?}")]
+        public ActionResult Index(int? id)
         {
-            return View(LoadSetlistViewModel(0, null));
+            return View(id != null
+                ? LoadSetlistViewModel(((int) id), null)
+                : LoadSetlistViewModel(0, null));
         }
 
         [Authorize]

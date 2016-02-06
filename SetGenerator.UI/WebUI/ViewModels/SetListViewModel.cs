@@ -35,9 +35,9 @@ namespace SetGenerator.WebUI.ViewModels
 
     public class SetViewModel
     {
+        public int SetlistId { get; set; }
         public string Name { get; set; }
         public ICollection<int> SetNumberList { get; set; }
-        public int SetlistId { get; set; }
         public List<string> ErrorMessages { get; set; }
         public bool Success { get; set; }
     }

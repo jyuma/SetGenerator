@@ -21,10 +21,13 @@ body {
   padding: 10px;
   color: #e5e0e0;
 }
-.dropdown-menu > li {
-  padding-left: 10px;
+ul.dropdown-menu {
+  min-width: 130px;
 }
-.dropdown-menu > li label {
+ul.dropdown-menu li {
+  padding-left: 15px;
+}
+ul.dropdown-menu li label {
   font-weight: 400;
 }
 .glyphicon {
@@ -100,12 +103,6 @@ body {
 .login-form {
   margin: 20px;
 }
-.panel {
-  margin: 0;
-}
-.panel .panel-body {
-  padding: 0;
-}
 table .col-glyphicon {
   width: 10px;
 }
@@ -121,6 +118,15 @@ table td {
 .datepicker > table > thead {
   color: #555555;
   background-color: #ffffff;
+}
+.panel {
+  margin: 0;
+}
+.panel .panel-body {
+  padding: 0;
+}
+.panel .panel-body > .nav-pills {
+  padding: 8px 10px 8px 10px;
 }
 .navbar {
   border-radius: 0;
@@ -161,9 +167,6 @@ table td {
 }
 #logoutForm.navbar-right strong span > a:hover {
   color: #f3f1f1;
-}
-.nav-pills {
-  margin: 8px 0 5px 0;
 }
 h1,
 h2,

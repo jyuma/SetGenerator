@@ -388,7 +388,7 @@
                             $(this).css("background-color", "#ffffff");
                     });
 
-                    var r = table.find("#row_" +id);
+                    var r = table.find("#row_" + id);
                     r.css("background-color", HIGHLIGHT_ROW_COLOUR);
                     $("#tblSong").attr("tr:hover", HIGHLIGHT_ROW_COLOUR);
                 };

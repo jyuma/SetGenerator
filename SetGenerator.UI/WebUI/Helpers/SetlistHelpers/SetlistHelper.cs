@@ -4,11 +4,11 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using SetGenerator.Data.Repositories;
 using SetGenerator.Domain.Entities;
-using SetGenerator.WebUI.ViewModels;
-using SetGenerator.WebUI.Helpers.Algorithms;
 using SetGenerator.Service;
+using SetGenerator.WebUI.Helpers.SetlistHelpers.Algorithms;
+using SetGenerator.WebUI.ViewModels;
 
-namespace SetGenerator.WebUI.Helpers
+namespace SetGenerator.WebUI.Helpers.SetlistHelpers
 {
     public class SetlistHelper
     {

@@ -33,10 +33,6 @@
 
             ko.applyBindings(new SetsViewModel());
 
-            $("#back-to-list").click(function() {
-                document.location = site.url + "Setlists/Index";
-            });
-
             function loadConfig() {
                 $.ajax({
                     type: "GET",

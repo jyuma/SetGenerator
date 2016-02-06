@@ -9,7 +9,13 @@
     var STRING_ALL = "<All>";
 
     setlists.index = {
-        init: function() {
+        init: function(options) {
+
+            var config = {
+                setlistId: ""
+            };
+
+            $.extend(config, options);
 
             var lists = {
                 SetlistList: [],
@@ -20,8 +26,9 @@
 
             ko.applyBindings(new SetlistViewModel());
 
-            $("button").button();
-            $("button").removeClass("ui-widget");
+            if (config.setlistId.length > 0) {
+                $("#row_" + config.setlistId).trigger("click");
+            }
 
             function loadConfig() {
                 $.ajax({
@@ -84,15 +91,13 @@
                     self.setlists.push(new Setlist(value.Id, value.Name, value.NumSets, value.NumSongs, value.UserUpdate, value.DateUpdate));
                 };
 
-                self.selectedSetlist(self.setlists()[0]);
-
                 self.sort = function(header) {
                     var sortKey = header.sortKey;
 
                     $(self.columns()).each(function(index, value) {
-                        if (value.sortKey == sortKey) {
+                        if (value.sortKey === sortKey) {
                             self.setlists.sort(function(a, b) {
-                                return a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : a[sortKey] === b[sortKey] ? 0 : 0;
+                                return a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0;
                             });
                         }
                     });

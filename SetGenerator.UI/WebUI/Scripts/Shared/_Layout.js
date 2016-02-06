@@ -5,18 +5,16 @@
  */
 
 ; (function ($) {
-
     shared._layout = {
-
         setCurrentBand: function() {
-                $.ajax({
+            $.ajax({
                 type: "POST",
                 url: site.url + "Home/SetCurrentBand/",
                 data: { bandId: $("#ddlUserBand").val() },
                 dataType: "json",
                 traditional: true,
                 async: false,
-                success: function () {
+                success: function() {
                     window.location.reload();
                 }
             });
