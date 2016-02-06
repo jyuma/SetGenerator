@@ -17,7 +17,8 @@ namespace SetGenerator.Service
         long CreateUser(string username, string email, string password, int bandId, string ip, string browser);
         void DeleteUser(int id);
         void UpdateUserDisabled(string uname, bool disabled);
-        void UpdateUserTablePreferences(string userName, int tableId, OrderedDictionary cols);
+        void UpdateUserPreferenceTableColumns(string userName, int tableId, OrderedDictionary cols);
+        void UpdateUserPreferenceTableMembers(string userName, int tableId, OrderedDictionary cols);
         User GetUserByUserName(string username);
         ICollection<Band> GetUserBands(string uname = null);
         User GetUser(int userId);
@@ -76,20 +77,33 @@ namespace SetGenerator.Service
             _userRepository.Update(u);
         }
 
-        public void UpdateUserTablePreferences(string userName, int tableId, OrderedDictionary cols) 
+        public void UpdateUserPreferenceTableColumns(string userName, int tableId, OrderedDictionary cols) 
         {
             var u = _userRepository.GetByUserName(userName);
             if (u == null) return;
 
-            foreach (var uptc in u.UserPreferenceTableColumns.Where(x => x.TableColumn.Table.Id == tableId))
+            foreach (var uptc in u.UserPreferenceTableColumns
+                .Where(x => x.TableColumn.Table.Id == tableId)
+                .OrderBy(o => o.TableColumn.Sequence))
             {
                 var isvisible = Convert.ToBoolean(cols[uptc.TableColumn.Data]);
                 uptc.IsVisible = isvisible;
             }
 
-            foreach (var uptm in u.UserPreferenceTableMembers.Where(x => x.Table.Id == tableId))
+            _userRepository.Update(u);
+        }
+
+        public void UpdateUserPreferenceTableMembers(string userName, int tableId, OrderedDictionary cols)
+        {
+            var u = _userRepository.GetByUserName(userName);
+            if (u == null) return;
+
+            foreach (var uptm in u.UserPreferenceTableMembers
+                .Where(x => x.Table.Id == tableId)
+                .Where(x => cols.Contains(x.Member.Id.ToString()))
+                .OrderBy(o => o.Member.FirstName).ThenBy(o => o.Member.LastName))
             {
-                var isvisible = Convert.ToBoolean(cols[uptm.Member.FirstName.ToLower()]);
+                var isvisible = Convert.ToBoolean(cols[uptm.Member.Id.ToString()]);
                 uptm.IsVisible = isvisible;
             }
 

@@ -331,11 +331,12 @@ namespace SetGenerator.WebUI.Controllers
         [Authorize]
         public JsonResult SaveColumns(string columns)
         {
-            var cList = JsonConvert.DeserializeObject<IList<TableColumnDetail>>(columns);
-            var cols = new OrderedDictionary();
-            foreach (var c in cList)
-                cols.Add(c.Data, c.IsVisible);
-            _account.UpdateUserTablePreferences(_currentUserName, Constants.UserTable.SongId, cols);
+            _common.SaveColumns(columns, Constants.UserTable.SongId);
+            //var cList = JsonConvert.DeserializeObject<IList<TableColumnDetail>>(columns);
+            //var cols = new OrderedDictionary();
+            //foreach (var c in cList)
+            //    cols.Add(c.Data, c.IsVisible);
+            //_account.UpdateUserPreferenceTableColumns(_currentUserName, Constants.UserTable.SongId, cols);
             return Json(JsonRequestBehavior.AllowGet);
         }
 
