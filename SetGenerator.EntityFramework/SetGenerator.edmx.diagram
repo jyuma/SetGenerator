@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="5957eadbc54f42caa02b137ff476dc0c" Name="Diagram1">
+        <EntityTypeShape EntityType="SetGeneratorModel.Band" Width="1.5" PointX="5.25" PointY="14.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SetGeneratorModel.Genre" Width="1.5" PointX="10.5" PointY="7.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="SetGeneratorModel.Gig" Width="1.5" PointX="7.5" PointY="16.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SetGeneratorModel.Instrument" Width="1.5" PointX="5.25" PointY="11.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="SetGeneratorModel.Key" Width="1.5" PointX="10.5" PointY="3.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="SetGeneratorModel.KeyName" Width="1.5" PointX="8.25" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SetGeneratorModel.Member" Width="1.5" PointX="7.5" PointY="12.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SetGeneratorModel.MemberInstrument" Width="1.5" PointX="9.75" PointY="13.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SetGeneratorModel.Role" Width="1.5" PointX="0.75" PointY="18" IsExpanded="true" />
+        <EntityTypeShape EntityType="SetGeneratorModel.Setlist" Width="1.5" PointX="10.5" PointY="16.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="SetGeneratorModel.SetSong" Width="1.5" PointX="12.75" PointY="17.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SetGeneratorModel.Song" Width="1.5" PointX="12.75" PointY="11" IsExpanded="true" />
+        <EntityTypeShape EntityType="SetGeneratorModel.SongMemberInstrument" Width="1.5" PointX="9.75" PointY="10.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="SetGeneratorModel.Table" Width="1.5" PointX="10.5" PointY="27.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SetGeneratorModel.TableColumn" Width="1.5" PointX="8" PointY="24.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SetGeneratorModel.Tempo" Width="1.5" PointX="10.5" PointY="24.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="SetGeneratorModel.User" Width="1.5" PointX="3" PointY="15.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SetGeneratorModel.UserBand" Width="1.5" PointX="7.5" PointY="21.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="SetGeneratorModel.UserClaim" Width="1.5" PointX="5.25" PointY="18.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="SetGeneratorModel.UserLogin" Width="1.5" PointX="5.25" PointY="21.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SetGeneratorModel.UserPreferenceTableColumn" Width="1.5" PointX="10.25" PointY="20.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SetGeneratorModel.UserPreferenceTableMember" Width="1.5" PointX="12.75" PointY="20.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SetGeneratorModel.vwSongMemberInstrumentMatch" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SetGeneratorModel.vwSongMemberInstrumentMatchSummary" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <AssociationConnector Association="SetGeneratorModel.FK_Band_UserCreate" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.FK_Band_UserUpdate" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.FK_Gig_Band" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.FK_Member_Band" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.FK_Setlist_Band" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.FK_Song_Band" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.FK_User_DefaultBand" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.FK_UserBand_Band" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.FK_Song_Genre" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.FK_Gig_User1" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.FK_Gig_User2" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.FK_Member_Instrument" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.FK_MemberInstrument_Instrument" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.FK_SongMemberInstrument_Instrument" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.FK_Key_KeyName" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.FK_Song_Key" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.FK_MemberInstrument_Member" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.FK_Song_Member" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.FK_SongMemberInstrument_Member" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.FK_UserPreferenceTableMember_Member" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.FK_Set_SetList" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.FK_Setlist_User" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.FK_Setlist_User1" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.FK_Song_Tempo" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.FK_Song_User" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.FK_Song_User1" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.FK_TableColumn_Table" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.FK_UserPreferenceTableMember_Table" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.FK_UserPreferenceTableColumn_TableColumn" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.FK_UserBand_User" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.FK_UserPreferenceTableColumn_User" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.FK_UserPreferenceTableMember_User" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.PK_UserClaim_User" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.PK_UserLogin_User" ManuallyRouted="false" />
+        <AssociationConnector Association="SetGeneratorModel.UserRole" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

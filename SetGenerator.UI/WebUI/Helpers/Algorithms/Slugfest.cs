@@ -11,6 +11,7 @@ namespace SetGenerator.WebUI.Helpers.Algorithms
     {
         private static IEnumerable<Song> _masterSongList;
         private static ICollection<SetSong> _setSongs;
+        private static IEnumerable<SongMemberInstrument> _allBandSongMemberInstruments;
 
         private static class Container
         {
@@ -40,6 +41,7 @@ namespace SetGenerator.WebUI.Helpers.Algorithms
         public static IEnumerable<SetSong> Generate(int numSets, int numSongsPerSet, IEnumerable<Song> songs)
         {
             _masterSongList = songs.ToArray();
+            _allBandSongMemberInstruments = _masterSongList.SelectMany(x => x.SongMemberInstruments).ToList();
 
             Container.NumSets = numSets;
             Container.NumSongsPerSet = numSongsPerSet;
@@ -176,13 +178,14 @@ namespace SetGenerator.WebUI.Helpers.Algorithms
                 idx = rnd.Next(0, maxIds);
 
                 var song = eligibleSongs[eligibleIds[idx]];
+                var matchingSongs = GetMatchingMemberInstrumentSongList(song.Id);
 
-                if (song.SongMemberInstrumentMatches.Count >= Constants.MinSongInstrumentationCount)
+                if (matchingSongs.Count() >= Constants.MinSongInstrumentationCount)
                 {
                     break;
                 }
 
-                if (numAttempts >= 1000) break;
+                if (numAttempts >= 10) break;
             }
 
             return eligibleSongs[eligibleIds[idx]];
@@ -191,10 +194,10 @@ namespace SetGenerator.WebUI.Helpers.Algorithms
         private static Song GetCloser()
         {
             var eligibleSongs = GetEligibleUnusedSongs();
-
-            var dicPreviousMatchingSongs = Container.LastSong.SongMemberInstrumentMatches
-                .Where(x => x.MatchingSong.IsDisabled == false)
-                .ToDictionary(x => x.MatchingSong.Id, x => x);
+            var matchingSongs = GetMatchingMemberInstrumentSongList(Container.LastSong.Id);
+            var dicPreviousMatchingSongs = matchingSongs
+                .Where(x => x.IsDisabled == false)
+                .ToDictionary(x => x.Id, x => x);
 
             // try to find the same instrumentation as the last song
             var closingEligibleSongs = eligibleSongs.Where(x => dicPreviousMatchingSongs
@@ -213,10 +216,11 @@ namespace SetGenerator.WebUI.Helpers.Algorithms
         {
             var eligibleSongs = GetEligibleUnusedSongs();
             IDictionary<int, Song> middleEligibleSongs;
+            var matchingSongs = GetMatchingMemberInstrumentSongList(Container.LastSong.Id);
 
-            var dicPreviousMatchingSongs = Container.LastSong.SongMemberInstrumentMatches
-                .Where(x => x.MatchingSong.IsDisabled == false)
-                .ToDictionary(x => x.MatchingSong.Id, x => x);
+            var dicPreviousMatchingSongs = matchingSongs
+                .Where(x => x.IsDisabled == false)
+                .ToDictionary(x => x.Id, x => x);
 
             if (Container.IntrumentCount < Constants.MinSongInstrumentationCount)
             {
@@ -262,32 +266,36 @@ namespace SetGenerator.WebUI.Helpers.Algorithms
                 var idx = rnd.Next(0, maxIds);
 
                 song = eligibleSongs[eligibleIds[idx]];
-
+                
                 // if a middle song and an instrument change try to find one that has a few other songs with the same instrumentation
-                if ((!Container.IsLastSong) && (song.SongMemberInstrumentMatches.Count >= Constants.MinSongInstrumentationCount)
-                    && (Container.IsSameInstrumentation == false))
+                if ((!Container.IsLastSong) && (Container.IsSameInstrumentation == false))
                 {
-                    rank = 1;
-                }
-
-                if ((Container.LastSingerId == Container.DefaultSingerId) && (Container.SingerCount < Constants.MaxDefaultSingerCount))
-                {
-                    rank = 2;
-                }
-
-                else if ((Container.LastSingerId != Container.DefaultSingerId) && (Container.LastSingerId != (song.Singer != null ? song.Singer.Id : 0)))
-                {
-                    rank = 2;
+                    var matchingSongs = GetMatchingMemberInstrumentSongList(song.Id);
+                    rank = matchingSongs.Count() >= Constants.MinSongInstrumentationCount 
+                        ? 1 : 2;
                 }
 
                 else if ((Container.LastSingerId == Container.DefaultSingerId) && (Container.SingerCount < Constants.MaxDefaultSingerCount))
                 {
-                    rank = 3;
+                    rank = 1;
                 }
 
                 else if ((Container.LastSingerId != Container.DefaultSingerId) && (Container.LastSingerId != (song.Singer != null ? song.Singer.Id : 0)))
                 {
-                    rank = 4;
+                    rank = 1;
+                }
+                else if (Container.IsSameInstrumentation && Container.IntrumentCount <= Constants.MinSongInstrumentationCount)
+                {
+                    rank = 1;
+                }
+                else if ((Container.LastSingerId == Container.DefaultSingerId) && (Container.SingerCount < Constants.MaxDefaultSingerCount))
+                {
+                    rank = 2;
+                }
+
+                else if ((Container.LastSingerId != Container.DefaultSingerId) && (Container.LastSingerId != (song.Singer != null ? song.Singer.Id : 0)))
+                {
+                    rank = 3;
                 }
 
                 // tolerance
@@ -295,25 +303,57 @@ namespace SetGenerator.WebUI.Helpers.Algorithms
                 {
                     break;
                 }
-                if ((rank == 2) && numAttempts > 500)
+                if ((rank == 2) && numAttempts > 10)
                 {
                     break;
                 }
-                if ((rank == 3) && numAttempts > 1000)
+                if ((rank == 3) && numAttempts > 25)
                 {
                     break;
                 }
-                if ((rank == 4) && numAttempts > 1500)
-                {
-                    break;
-                }
-                if (numAttempts > 2000)
+                if (numAttempts > 50)
                 {
                     break;
                 }
             }
 
             return song;
+        }
+
+        public static IEnumerable<Song> GetMatchingMemberInstrumentSongList(int id)
+        {
+            var result = _allBandSongMemberInstruments
+                    .Join(_allBandSongMemberInstruments,
+                        smi1 => new { smi1.Member, smi1.Instrument },
+                        smi2 => new { smi2.Member, smi2.Instrument },
+                        (smi2, smi1) => new { smi2, smi1 })
+                        .Select(x => new
+                        {
+                            SongId = x.smi1.Song.Id,
+                            MemberId = x.smi1.Member.Id,
+                            MatchingSong = x.smi2.Song
+                        }).Join(_allBandSongMemberInstruments
+                        .GroupBy(g => g.Song)
+                        .Select(g => new
+                        {
+                            SongId = g.Key.Id,
+                            MemberCount = g.Count(c => c.Member != null)
+                        }), smi1 => smi1.SongId, smi2 => smi2.SongId,
+                            (smi1, smi2) => new { smi2.SongId, smi1.MemberId, smi1.MatchingSong, smi2.MemberCount })
+                    .Where(x => x.SongId != x.MatchingSong.Id).GroupBy(g => new { g.SongId, g.MatchingSong, g.MemberCount })
+                    .Select(g => new
+                    {
+                        g.Key.SongId,
+                        g.Key.MemberCount,
+                        g.Key.MatchingSong,
+                        MatchingMemberCount = g.Count(c => c.MemberId > 0)
+                    })
+                    .Where(x => x.MemberCount == x.MatchingMemberCount)
+                    .Where(x => x.SongId == id)
+                    .Select(x => x.MatchingSong)
+                    .ToArray();
+
+            return result;
         }
     }
 }

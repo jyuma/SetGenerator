@@ -25,8 +25,6 @@ namespace SetGenerator.Domain.Mappings
             References(m => m.UserCreate).Column("UserCreateId");
             References(m => m.UserUpdate).Column("UserUpdateId");
 
-            HasMany(m => m.SongMemberInstrumentMatches).KeyColumn("SongId");
-
             HasMany(m => m.SongMemberInstruments)
                 .Cascade.All()
                 .Inverse()

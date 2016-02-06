@@ -136,6 +136,7 @@ namespace SetGenerator.WebUI.Controllers
         public JsonResult GetData()
         {
             var bandId = Convert.ToInt32(Session["BandId"]);
+
             var vm = new
             {
                 SetlistList = GetSetlistList(),

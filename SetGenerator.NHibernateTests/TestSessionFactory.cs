@@ -33,7 +33,6 @@ namespace SetGenerator.NHibernateTests
                 .Mappings(m => m.FluentMappings.Add<UserBandMap>())
                 .Mappings(m => m.FluentMappings.Add<UserPreferenceTableColumnMap>())
                 .Mappings(m => m.FluentMappings.Add<UserPreferenceTableMemberMap>())
-                .Mappings(m => m.FluentMappings.Add<SongMemberInstrumentMatchMap>())
                 
                 .BuildSessionFactory();
             }

@@ -15,6 +15,5 @@ namespace SetGenerator.Domain.Entities
         public virtual Tempo Tempo { get; set; }
         public virtual bool IsDisabled { get; set; }
         public virtual IList<SongMemberInstrument> SongMemberInstruments { get; set; }
-        public virtual IList<SongMemberInstrumentMatch> SongMemberInstrumentMatches { get; set; }
     }
 }

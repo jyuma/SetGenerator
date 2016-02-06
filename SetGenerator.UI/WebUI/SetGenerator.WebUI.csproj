@@ -256,7 +256,6 @@
     <Compile Include="Controllers\MembersController.cs" />
     <Compile Include="Controllers\SetlistsController.cs" />
     <Compile Include="Controllers\SongsController.cs" />
-    <Compile Include="Extensions\SongExtensions.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

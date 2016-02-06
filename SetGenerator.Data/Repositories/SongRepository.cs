@@ -12,7 +12,7 @@ namespace SetGenerator.Data.Repositories
         IEnumerable<Song> GetAList(int bandId);
         IEnumerable<Song> GetByBandId(int bandId);
         IEnumerable<string> GetComposerList(int bandId);
-        IEnumerable<SongMemberInstrument> GetMemberInstrumentList(int songId);
+        IEnumerable<SongMemberInstrument> GetMemberInstrumentList(int id);
 
         // Key
         Key GetKey(int keyId);
@@ -82,9 +82,9 @@ namespace SetGenerator.Data.Repositories
             return list;
         }
 
-        public IEnumerable<SongMemberInstrument> GetMemberInstrumentList(int songId)
+        public IEnumerable<SongMemberInstrument> GetMemberInstrumentList(int id)
         {
-            var list = Get(songId)
+            var list = Get(id)
                 .SongMemberInstruments
                 .ToList();
 
