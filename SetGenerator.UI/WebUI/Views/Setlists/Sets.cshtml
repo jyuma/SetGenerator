@@ -19,12 +19,14 @@
     <div class="panel-heading">
         <ul class="nav nav-pills">
             <li>
-                <h3>View Sets for <i>@Model.Name</i></h3>
+                <h3>View Sets for <i>@Model.Name</i>
+                </h3>
             </li>
             <li style="float: right;">
-                <button class="btn btn-info" onclick="location.href='@Url.Action("Print", "Setlists", new { @id=@Model.SetlistId })'">Download PDF</button>
+                <button class="btn btn-info" onclick="location.href = '@Url.Action("Print", "Setlists", new {@id = @Model.SetlistId})'">Download PDF</button>
             </li>
         </ul>
+        <a href="#" id="back-to-list">Back To List</a>
     </div>
     <div class="panel-body">
         <ul class="nav nav-pills">

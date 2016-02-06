@@ -33,9 +33,9 @@
 
             ko.applyBindings(new SetsViewModel());
 
-            $("button").button();
-            $("button").removeClass("ui-widget");
-            $("#set_1").focus();
+            $("#back-to-list").click(function() {
+                document.location = site.url + "Setlists/Index";
+            });
 
             function loadConfig() {
                 $.ajax({

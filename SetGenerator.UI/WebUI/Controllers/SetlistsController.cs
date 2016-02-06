@@ -250,6 +250,7 @@ namespace SetGenerator.WebUI.Controllers
         }
 
         [Route("{id}/Sets/")]
+        [Authorize]
         public ActionResult Sets(int id)
         {
             return View(LoadSetViewModel(id, null));
