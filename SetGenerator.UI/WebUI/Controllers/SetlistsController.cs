@@ -86,6 +86,8 @@ namespace SetGenerator.WebUI.Controllers
 
         private string GetReportPath()
         {
+            var bandId = Convert.ToInt32(Session["BandId"]);
+            var memberIds = _bandRepository.GetMembers(bandId).Select(x => x.Id);
             var reportPath = "~/Reports/Sets.rdlc";
 
             var showKey = _currentUser.UserPreferenceTableColumns
@@ -98,6 +100,7 @@ namespace SetGenerator.WebUI.Controllers
 
             var showMembers = _currentUser.UserPreferenceTableMembers
                 .Where(x => x.Table.Id == Constants.UserTable.SetId)
+                .Where(x => memberIds.Contains(x.Member.Id))
                 .Any(x => x.IsVisible);
 
             if (showKey && !showSinger && !showMembers)
