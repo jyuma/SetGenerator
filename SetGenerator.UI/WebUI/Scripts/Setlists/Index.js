@@ -14,7 +14,8 @@
             
             var config = {
                 setlistId: "",
-                currentUser: ""
+                currentUser: "",
+                selectedOwnerSearch: ""
             };
 
             $.extend(config, options);
@@ -64,7 +65,9 @@
                 self.ownerSearchList = ko.observableArray([STRING_ALL_SETLISTS, STRING_MY_SETLISTS]);
                 self.selectedSetlist = ko.observable();
                 self.nameSearch = ko.observable("");
-                self.ownerSearch = ko.observable(STRING_MY_SETLISTS);
+                self.ownerSearch = ko.observable(config.selectedOwnerSearch.length > 0
+                    ? config.selectedOwnerSearch
+                    : STRING_MY_SETLISTS);
                 self.numSetsList = ko.observable([]);
                 self.selectedNumSets = ko.observable(3);
                 self.selectedNumSongs = ko.observable(10);
@@ -222,6 +225,16 @@
                     r.css("background-color", HIGHLIGHT_ROW_COLOUR);
                     $("#tblSetlist").attr("tr:hover", HIGHLIGHT_ROW_COLOUR);
                 };
+
+                self.ownerSearch.subscribe(function() {
+                    $.ajax({
+                        type: "POST",
+                        url: site.url + "Setlists/StoreSelectedOwnerSearch/",
+                        data: { ownerSearch: self.ownerSearch() },
+                        dataType: "json",
+                        traditional: true
+                    });
+                });
 
                 self.getSetlistDetailFromDialog = function(edit) {
                     var name = $.trim($("#txtName").val());

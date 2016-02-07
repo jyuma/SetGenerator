@@ -181,10 +181,15 @@ namespace SetGenerator.WebUI.Controllers
 
         private SetlistViewModel LoadSetlistViewModel(int selectedId, List<string> msgs)
         {
+            var selectedOwnerSearch = Session["OwnerSearch"] != null 
+                ? Session["OwnerSearch"].ToString() 
+                : string.Empty;
+
             var model = new SetlistViewModel
             {
                 CurrentUser = _currentUser.UserName,
                 SelectedId = selectedId,
+                SelectedOwnerSearch = selectedOwnerSearch,
                 Success = (msgs == null),
                 ErrorMessages = msgs
             };
@@ -326,6 +331,12 @@ namespace SetGenerator.WebUI.Controllers
                 SetlistList = GetSetlistList(),
                 Success = true,
             }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public void StoreSelectedOwnerSearch(string ownerSearch)
+        {
+            Session["OwnerSearch"] = ownerSearch;
         }
 
         [HttpPost]

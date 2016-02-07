@@ -22,6 +22,7 @@ namespace SetGenerator.WebUI.ViewModels
     {
         public string CurrentUser { get; set; }
         public int SelectedId { get; set; }
+        public string SelectedOwnerSearch { get; set; }
         public List<string> ErrorMessages { get; set; }
         public bool Success { get; set; }
     }
