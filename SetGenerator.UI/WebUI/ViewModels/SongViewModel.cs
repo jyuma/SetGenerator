@@ -36,6 +36,7 @@ namespace SetGenerator.WebUI.ViewModels
         public bool IsVisible { get; set; }
         public bool AlwaysVisible { get; set; }
         public bool IsMemberColumn { get; set; }
+        public int TableColumnId { get; set; }
     }
 
     public class BandMemberDetail

@@ -3,6 +3,7 @@ using SetGenerator.Service;
 using SetGenerator.WebUI.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace SetGenerator.WebUI.Common
 {
@@ -50,7 +51,8 @@ namespace SetGenerator.WebUI.Common
                 Data = tc.TableColumn.Data,
                 IsVisible = tc.IsVisible,
                 AlwaysVisible = tc.TableColumn.AlwaysVisible,
-                IsMemberColumn = false
+                IsMemberColumn = false,
+                TableColumnId = tc.TableColumn.Id
             }));
 
             list.AddRange(tableMembers
@@ -64,7 +66,8 @@ namespace SetGenerator.WebUI.Common
                 Data = tc.Member.FirstName.ToLower(),
                 IsVisible = tc.IsVisible,
                 AlwaysVisible = false,
-                IsMemberColumn = true
+                IsMemberColumn = true,
+                TableColumnId = 0
             }));
 
             return list;

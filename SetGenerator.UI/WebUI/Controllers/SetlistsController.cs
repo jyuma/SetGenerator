@@ -47,7 +47,6 @@ namespace SetGenerator.WebUI.Controllers
         }
 
         [Authorize]
-        [Route("Index/{id?}")]
         public ActionResult Index(int? id)
         {
             return View(id != null
@@ -93,12 +92,12 @@ namespace SetGenerator.WebUI.Controllers
             var memberIds = _bandRepository.GetMembers(bandId).Select(x => x.Id);
             var reportPath = "~/Reports/Sets.rdlc";
 
-            var showKey = _currentUser.UserPreferenceTableColumns
-                .Single(x => x.TableColumn.Id == Constants.UserTableColumn.KeyId)
+            var showKey = _common.GetTableColumnList(_currentUser.Id, Constants.UserTable.SetId, bandId)
+                .Single(x => x.TableColumnId == Constants.UserTableColumn.KeyId)
                 .IsVisible;
 
-            var showSinger = _currentUser.UserPreferenceTableColumns
-                .Single(x => x.TableColumn.Id == Constants.UserTableColumn.SingerId)
+            var showSinger = _common.GetTableColumnList(_currentUser.Id, Constants.UserTable.SetId, bandId)
+                .Single(x => x.TableColumnId == Constants.UserTableColumn.SingerId)
                 .IsVisible;
 
             var showMembers = _currentUser.UserPreferenceTableMembers
@@ -191,12 +190,12 @@ namespace SetGenerator.WebUI.Controllers
             return model;
         }
 
-        private SetViewModel LoadSetViewModel(int selectedId, List<string> msgs)
+        private SetViewModel LoadSetViewModel(int setlistId, List<string> msgs)
         {
             var model = new SetViewModel
             {
-                SetlistId = selectedId,
-                Name = _setlistRepository.Get(selectedId).Name,
+                SetlistId = setlistId,
+                Name = _setlistRepository.Get(setlistId).Name,
                 Success = (msgs == null),
                 ErrorMessages = msgs
             };
