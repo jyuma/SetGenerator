@@ -105,7 +105,7 @@
                 self.columns = ko.computed(function () {
                     var arr = [];
                     $(lists.TableColumnList).each(function (index, value) {
-                        arr.push({ id: value.Id, title: value.Header, sortKey: value.Data, dataMember: value.Data, isVisible: ko.observable(value.IsVisible), alwaysVisible: value.AlwaysVisible, memberId: value.MemberId });
+                        arr.push({ id: value.Id, title: value.Header, sortKey: value.Data, dataMember: value.Data, isVisible: ko.observable(value.IsVisible), alwaysVisible: value.AlwaysVisible, isMemberColumn: value.IsMemberColumn });
                     });
                     return arr;
                 });
@@ -196,7 +196,7 @@
                             arr.push({
                                 Id: value.id,
                                 IsVisible: value.isVisible(),
-                                MemberId: value.memberId
+                                IsMemberColumn: value.isMemberColumn
                             });
                         }
                     });

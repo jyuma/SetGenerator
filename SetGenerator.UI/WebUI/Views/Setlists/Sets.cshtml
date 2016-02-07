@@ -55,10 +55,10 @@
             <thead>
                 <tr>
                     <!-- ko foreach: columns -->
-                    <!-- ko if: memberId == 0 -->
+                    <!-- ko if: !isMemberColumn -->
                     <th data-bind="visible: isVisible, click: $parent.sort, attr: { id: 'song-col-' + dataMember }"><span data-bind="text: title"></span></th>
                     <!-- /ko -->
-                    <!-- ko if: memberId > 0 -->
+                    <!-- ko if: isMemberColumn > 0 -->
                     <th class="column-member" data-bind="visible: isVisible, click: $parent.sort"><span data-bind="text: title"></span></th>
                     <!-- /ko -->
                     <!-- /ko -->

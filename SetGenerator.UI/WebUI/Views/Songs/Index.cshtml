@@ -68,10 +68,10 @@
                     <th class="col-glyphicon"></th>
                     <th class="col-glyphicon"></th>
                     <!-- ko foreach: columns -->
-                    <!-- ko if: memberId == 0 -->
+                    <!-- ko if: !isMemberColumn -->
                     <th data-bind="visible: isVisible, click: $parent.sort, attr: { id: 'song-col-' + dataMember }"><a href="#" data-bind="text: title"></a></th>
                     <!-- /ko -->
-                    <!-- ko if: memberId > 0 -->
+                    <!-- ko if: isMemberColumn -->
                     <th data-bind="visible: isVisible, click: $parent.sort"><a href="#" data-bind="text: title"></a></th>
                     <!-- /ko -->
                     <!-- /ko -->

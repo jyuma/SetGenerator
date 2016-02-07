@@ -20,14 +20,17 @@ namespace SetGenerator.WebUI.Common
 
         public void SaveColumns(string columns, int tableId)
         {
+            // gather/save table columns
             var cList = JsonConvert.DeserializeObject<IList<TableColumnDetail>>(columns);
-            var cols = cList.Where(x => x.MemberId == 0).ToDictionary(c => c.Id, c => c.IsVisible);
+            var cols = cList.Where(x => !x.IsMemberColumn).ToDictionary(c => c.Id, c => c.IsVisible);
             _account.UpdateUserPreferenceTableColumns(_currentUserName, cols);
 
-            if (!cList.Any(x => x.MemberId > 0)) return;
+            if (!cList.Any(x => x.IsMemberColumn)) return;
 
             cols.Clear();
-            cols = cList.Where(x => x.MemberId > 0).ToDictionary(c => c.Id, c => c.IsVisible);
+
+            // gather/save member columns
+            cols = cList.Where(x => x.IsMemberColumn).ToDictionary(c => c.Id, c => c.IsVisible);
             _account.UpdateUserPreferenceTableMembers(_currentUserName, cols);
         }
 
@@ -47,7 +50,7 @@ namespace SetGenerator.WebUI.Common
                 Data = tc.TableColumn.Data,
                 IsVisible = tc.IsVisible,
                 AlwaysVisible = tc.TableColumn.AlwaysVisible,
-                MemberId = 0            // indicate that it's not a member column
+                IsMemberColumn = false
             }));
 
             list.AddRange(tableMembers
@@ -61,7 +64,7 @@ namespace SetGenerator.WebUI.Common
                 Data = tc.Member.FirstName.ToLower(),
                 IsVisible = tc.IsVisible,
                 AlwaysVisible = false,
-                MemberId = tc.Member.Id
+                IsMemberColumn = true
             }));
 
             return list;
