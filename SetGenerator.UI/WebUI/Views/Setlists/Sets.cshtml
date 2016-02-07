@@ -21,14 +21,11 @@
             <li>
                 <h3>View Sets for <i>@Model.Name</i>
                 </h3>
-            </li>
-            <li>
-                <a onclick="location.href = '@Url.Action("Index", "Setlists", new {@id = @Model.SetlistId})'">Back To List</a>
-            </li>
-            <li style="float: right;">
+            </li> <li style="float: right;">
                 <button class="btn btn-info" onclick="location.href = '@Url.Action("Print", "Setlists", new {@id = @Model.SetlistId})'">Download PDF</button>
             </li>
         </ul>
+        <a href="#" onclick="location.href = '@Url.Action("Index", "Setlists", new {@id = @Model.SetlistId})'">Back To List</a>
     </div>
     <div class="panel-body">
         <ul class="nav nav-pills">
