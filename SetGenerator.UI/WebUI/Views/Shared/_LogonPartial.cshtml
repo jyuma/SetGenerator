@@ -2,8 +2,12 @@
 @using Microsoft.AspNet.Identity
 
 <script type="text/javascript">
-    $(document).ready(function () {
-        shared._layoutpartial.init({ actionName: "@ViewContext.RouteData.Values["action"].ToString()" });
+    $(document).ready(function() {
+        shared._logonpartial.init(
+        {
+            controller: "@ViewContext.RouteData.Values["controller"].ToString()",
+            actionName: "@ViewContext.RouteData.Values["action"].ToString()"
+        });
     });
 </script>
 @if (Request.IsAuthenticated)
