@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using SetGenerator.Data.Repositories;
 using SetGenerator.Domain.Entities;
 using System.Collections.Generic;
@@ -17,8 +18,10 @@ namespace SetGenerator.Service
         long CreateUser(string username, string email, string password, int bandId, string ip, string browser);
         void DeleteUser(int id);
         void UpdateUserDisabled(string uname, bool disabled);
-        void UpdateUserPreferenceTableColumns(string userName, int tableId, OrderedDictionary cols);
-        void UpdateUserPreferenceTableMembers(string userName, int tableId, OrderedDictionary cols);
+        IEnumerable<UserPreferenceTableColumn> GetTableColumnsByBandId(int userId, int tableId, int bandId);
+        IEnumerable<UserPreferenceTableMember> GetTableMembersByBandId(int userId, int tableId, int bandId);
+        void UpdateUserPreferenceTableColumns(string userName, IDictionary cols);
+        void UpdateUserPreferenceTableMembers(string userName, IDictionary cols);
         User GetUserByUserName(string username);
         ICollection<Band> GetUserBands(string uname = null);
         User GetUser(int userId);
@@ -77,33 +80,43 @@ namespace SetGenerator.Service
             _userRepository.Update(u);
         }
 
-        public void UpdateUserPreferenceTableColumns(string userName, int tableId, OrderedDictionary cols) 
+        public IEnumerable<UserPreferenceTableColumn> GetTableColumnsByBandId(int userId, int tableId, int bandId)
+        {
+            return _userRepository.GetTableColumnsByBandId(userId, tableId, bandId);
+        }
+
+        public IEnumerable<UserPreferenceTableMember> GetTableMembersByBandId(int userId, int tableId, int bandId)
+        {
+            return _userRepository.GetTableMembersByBandId(userId, tableId, bandId);
+        }
+
+        public void UpdateUserPreferenceTableColumns(string userName, IDictionary cols) 
         {
             var u = _userRepository.GetByUserName(userName);
             if (u == null) return;
 
             foreach (var uptc in u.UserPreferenceTableColumns
-                .Where(x => x.TableColumn.Table.Id == tableId)
+                .Where(x => cols.Contains(x.Id))
                 .OrderBy(o => o.TableColumn.Sequence))
             {
-                var isvisible = Convert.ToBoolean(cols[uptc.TableColumn.Data]);
+                var isvisible = Convert.ToBoolean(cols[uptc.Id]);
                 uptc.IsVisible = isvisible;
             }
 
             _userRepository.Update(u);
         }
 
-        public void UpdateUserPreferenceTableMembers(string userName, int tableId, OrderedDictionary cols)
+        public void UpdateUserPreferenceTableMembers(string userName, IDictionary cols)
         {
             var u = _userRepository.GetByUserName(userName);
             if (u == null) return;
 
             foreach (var uptm in u.UserPreferenceTableMembers
-                .Where(x => x.Table.Id == tableId)
-                .Where(x => cols.Contains(x.Member.Id.ToString()))
-                .OrderBy(o => o.Member.FirstName).ThenBy(o => o.Member.LastName))
+                .Where(x => cols.Contains(x.Id))
+                .OrderBy(o => o.Member.FirstName)
+                .ThenBy(o => o.Member.LastName))
             {
-                var isvisible = Convert.ToBoolean(cols[uptm.Member.Id.ToString()]);
+                var isvisible = Convert.ToBoolean(cols[uptm.Id]);
                 uptm.IsVisible = isvisible;
             }
 

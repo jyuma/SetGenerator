@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using FluentNHibernate.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NHibernate.Type;
 using SetGenerator.Domain.Entities;
 
 namespace SetGenerator.NHibernateTests
@@ -50,17 +48,20 @@ namespace SetGenerator.NHibernateTests
         public void GetUserTableColumns()
         {
             const int UserId_John = 10020;
+            const int BandId_Stetson = 3;
+            const int TableId_Setlists = 6;
 
             using (var db = TestSessionFactory.OpenSession())
             {
-                var user = db.QueryOver<User>()
-                    .Where(x => x.Id == UserId_John)
-                    .List()
-                    .FirstOrDefault();
+                var columns = db.QueryOver<UserPreferenceTableColumn>()
+                    .Where(x => x.User.Id == UserId_John)
+                    .Where(x => x.Band.Id == BandId_Stetson)
+                      .JoinQueryOver(uptc => uptc.TableColumn)
+                      .Where(x => x.Table.Id == TableId_Setlists)
+                      .List()
+                      .OrderBy(o => o.TableColumn.Sequence);
 
-                var columns = user.UserPreferenceTableColumns.ToArray();
-
-                Assert.AreEqual(columns.First().TableColumn.Name, "Title");
+                Assert.AreEqual(columns.Count(), 4);
             }
         }
 

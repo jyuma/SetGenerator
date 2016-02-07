@@ -115,10 +115,7 @@ namespace SetGenerator.WebUI.Controllers
                 KeyListFull = GetKeyListFull(),
                 GenreArrayList = _songRepository.GetGenreArrayList(),
                 TempoArrayList = _songRepository.GetTempoArrayList(),
-                TableColumnList = _common.GetTableColumnList(
-                    _currentUser.UserPreferenceTableColumns,
-                    _currentUser.UserPreferenceTableMembers.Where(x => x.Member.Band.Id == bandId),
-                    Constants.UserTable.SongId)
+                TableColumnList = _common.GetTableColumnList(_currentUser.Id, Constants.UserTable.SongId, bandId)
             };
 
             return Json(vm, JsonRequestBehavior.AllowGet);
@@ -331,11 +328,6 @@ namespace SetGenerator.WebUI.Controllers
         public JsonResult SaveColumns(string columns)
         {
             _common.SaveColumns(columns, Constants.UserTable.SongId);
-            //var cList = JsonConvert.DeserializeObject<IList<TableColumnDetail>>(columns);
-            //var cols = new OrderedDictionary();
-            //foreach (var c in cList)
-            //    cols.Add(c.Data, c.IsVisible);
-            //_account.UpdateUserPreferenceTableColumns(_currentUserName, Constants.UserTable.SongId, cols);
             return Json(JsonRequestBehavior.AllowGet);
         }
 

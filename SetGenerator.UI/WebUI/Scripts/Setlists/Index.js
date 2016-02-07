@@ -89,7 +89,7 @@
                 self.columns = ko.computed(function() {
                     var arr = [];
                     $(lists.TableColumnList).each(function(index, value) {
-                        arr.push({ title: value.Header, sortKey: value.Data, dataMember: value.Data, isVisible: ko.observable(value.IsVisible), alwaysVisible: value.AlwaysVisible, isMember: value.IsMember });
+                        arr.push({ id: value.Id, title: value.Header, sortKey: value.Data, dataMember: value.Data, isVisible: ko.observable(value.IsVisible), alwaysVisible: value.AlwaysVisible });
                     });
                     return arr;
                 });
@@ -251,10 +251,14 @@
 
                 self.getColumns = function () {
                     var arr =[];
-                    $(self.columns()).each(function(index, value) {
-                        arr.push({
-                        Header: value.title, Data: value.dataMember, IsVisible: value.isVisible()
-                        });
+                    $(self.columns()).each(function (index, value) {
+                        if (!value.alwaysVisible) {
+                            arr.push({
+                                Id: value.id,
+                                IsVisible: value.isVisible(),
+                                MemberId: "0"
+                            });
+                        }
                     });
                     return arr;
                 };
@@ -345,13 +349,14 @@
 
                 self.saveColumns = function() {
                     var jsonData = JSON.stringify(self.getColumns());
-                    var selfColumns = self.getColumns();        // after changes
-                    var tableColumns = lists.TableColumnList;   // before changes
+                    // after changes
+                    var selfColumns = self.getColumns();
+                    // before changes
+                    var tableColumns = lists.TableColumnList.filter(function(value) { return !value.AlwaysVisible; });
                     var isDifference = false;
 
                     $(selfColumns).each(function (index, value) {
-                        var isvisible = tableColumns[index].IsVisible;
-                        if (isvisible !== value.IsVisible) {
+                        if (tableColumns[index].IsVisible !== value.IsVisible) {
                             isDifference = true;
                         }
                     });

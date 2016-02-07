@@ -47,10 +47,7 @@ namespace SetGenerator.WebUI.Controllers
             var vm = new
             {
                 GigList = GetGigList(),
-                TableColumnList = _common.GetTableColumnList(
-                    _currentUser.UserPreferenceTableColumns,
-                    _currentUser.UserPreferenceTableMembers.Where(x => x.Member.Band.Id == bandId),
-                    Constants.UserTable.GigId)
+                TableColumnList = _common.GetTableColumnList(_currentUser.Id, Constants.UserTable.GigId, bandId)
             };
 
             return Json(vm, JsonRequestBehavior.AllowGet);

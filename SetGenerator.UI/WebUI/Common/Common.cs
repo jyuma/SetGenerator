@@ -2,9 +2,7 @@
 using SetGenerator.Service;
 using SetGenerator.WebUI.ViewModels;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
-using SetGenerator.Domain.Entities;
 
 namespace SetGenerator.WebUI.Common
 {
@@ -23,40 +21,42 @@ namespace SetGenerator.WebUI.Common
         public void SaveColumns(string columns, int tableId)
         {
             var cList = JsonConvert.DeserializeObject<IList<TableColumnDetail>>(columns);
-            var cols = new OrderedDictionary();
+            var cols = cList.Where(x => x.MemberId == 0).ToDictionary(c => c.Id, c => c.IsVisible);
+            _account.UpdateUserPreferenceTableColumns(_currentUserName, cols);
 
-            foreach (var c in cList.Where(x => x.MemberId == 0))
-                cols.Add(c.Data, c.IsVisible);
-            _account.UpdateUserPreferenceTableColumns(_currentUserName, tableId, cols);
+            if (!cList.Any(x => x.MemberId > 0)) return;
 
             cols.Clear();
-            foreach (var c in cList.Where(x => x.MemberId > 0))
-                cols.Add(c.MemberId.ToString(), c.IsVisible);
-            _account.UpdateUserPreferenceTableMembers(_currentUserName, tableId, cols);
+            cols = cList.Where(x => x.MemberId > 0).ToDictionary(c => c.Id, c => c.IsVisible);
+            _account.UpdateUserPreferenceTableMembers(_currentUserName, cols);
         }
 
-        public ICollection<TableColumnDetail> GetTableColumnList(IEnumerable<UserPreferenceTableColumn> columns, IEnumerable<UserPreferenceTableMember> members, int userTableId)
+        public ICollection<TableColumnDetail> GetTableColumnList(int userId, int userTableId, int bandId)
         {
+            var tableColumns = _account.GetTableColumnsByBandId(userId, userTableId, bandId);
+            var tableMembers = _account.GetTableMembersByBandId(userId, userTableId, bandId);
             var list = new List<TableColumnDetail>();
 
-            list.AddRange(columns
+            list.AddRange(tableColumns
                 .Where(x => x.TableColumn.Table.Id == userTableId)
                 .OrderBy(x => x.TableColumn.Sequence)
                 .Select(tc => new TableColumnDetail
             {
+                Id = tc.Id,
                 Header = tc.TableColumn.Name,
                 Data = tc.TableColumn.Data,
                 IsVisible = tc.IsVisible,
                 AlwaysVisible = tc.TableColumn.AlwaysVisible,
-                MemberId = 0
+                MemberId = 0            // indicate that it's not a member column
             }));
 
-            list.AddRange(members
+            list.AddRange(tableMembers
                 .Where(x => x.Table.Id == userTableId)
                 .OrderBy(o => o.Member.FirstName)
                 .ThenBy(o => o.Member.LastName)
                 .Select(tc => new TableColumnDetail
             {
+                Id = tc.Id,
                 Header = tc.Member.FirstName,
                 Data = tc.Member.FirstName.ToLower(),
                 IsVisible = tc.IsVisible,

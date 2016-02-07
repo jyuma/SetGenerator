@@ -146,10 +146,7 @@ namespace SetGenerator.WebUI.Controllers
             var vm = new
             {
                 SetlistList = GetSetlistList(),
-                TableColumnList = _common.GetTableColumnList(
-                        _currentUser.UserPreferenceTableColumns,
-                        _currentUser.UserPreferenceTableMembers.Where(x => x.Member.Band.Id == bandId),
-                        Constants.UserTable.SetlistId)
+                TableColumnList = _common.GetTableColumnList(_currentUser.Id, Constants.UserTable.SetlistId, bandId)
             };
 
             return Json(vm, JsonRequestBehavior.AllowGet);
@@ -170,10 +167,7 @@ namespace SetGenerator.WebUI.Controllers
                 GenreArrayList = _songRepository.GetGenreArrayList(),
                 TempoArrayList = _songRepository.GetTempoArrayList(),
                 SetNumberList = setlist.SetSongs.Select(x => x.SetNumber).Distinct().ToArray(),
-                TableColumnList = _common.GetTableColumnList(
-                        _currentUser.UserPreferenceTableColumns,
-                        _currentUser.UserPreferenceTableMembers.Where(x => x.Member.Band.Id == bandId),
-                        Constants.UserTable.SetId)
+                TableColumnList = _common.GetTableColumnList(_currentUser.Id, Constants.UserTable.SetId, bandId)
             };
 
             return Json(vm, JsonRequestBehavior.AllowGet);

@@ -30,6 +30,7 @@ namespace SetGenerator.WebUI.ViewModels
 
     public class TableColumnDetail
     {
+        public int Id { get; set; }
         public string Header { get; set; }
         public string Data { get; set; }
         public bool IsVisible { get; set; }
