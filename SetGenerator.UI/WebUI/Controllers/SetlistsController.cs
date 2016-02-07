@@ -179,6 +179,19 @@ namespace SetGenerator.WebUI.Controllers
             return Json(vm, JsonRequestBehavior.AllowGet);
         }
 
+        private SetlistViewModel LoadSetlistViewModel(int selectedId, List<string> msgs)
+        {
+            var model = new SetlistViewModel
+            {
+                CurrentUser = _currentUser.UserName,
+                SelectedId = selectedId,
+                Success = (msgs == null),
+                ErrorMessages = msgs
+            };
+
+            return model;
+        }
+
         private SetViewModel LoadSetViewModel(int selectedId, List<string> msgs)
         {
             var model = new SetViewModel
@@ -192,18 +205,6 @@ namespace SetGenerator.WebUI.Controllers
             return model;
         }
 
-        private static SetlistViewModel LoadSetlistViewModel(int selectedId, List<string> msgs)
-        {
-            var model = new SetlistViewModel
-                        {
-                            SelectedId = selectedId, 
-                            Success = (msgs == null), 
-                            ErrorMessages = msgs
-                        };
-
-            return model;
-        }
-
         private IEnumerable<SetlistDetail> GetSetlistList()
         {
             var bandId = Convert.ToInt32(Session["BandId"]);
@@ -213,6 +214,7 @@ namespace SetGenerator.WebUI.Controllers
             {
                 Id = setlist.Id,
                 Name = setlist.Name,
+                Owner = setlist.UserCreate.UserName,
                 UserUpdate = setlist.UserUpdate.UserName,
                 DateUpdate = setlist.DateUpdate.ToShortDateString(),
                 NumSets = 1

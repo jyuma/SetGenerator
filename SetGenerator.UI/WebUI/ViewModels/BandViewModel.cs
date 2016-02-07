@@ -18,8 +18,8 @@ namespace SetGenerator.WebUI.ViewModels
 
     public class BandViewModel
     {
-        public IList<Bandetail> BandList { get; set; }
-        public IList<TableColumnDetail> TableColumnList { get; set; }
+        public IEnumerable<Bandetail> BandList { get; set; }
+        public IEnumerable<TableColumnDetail> TableColumnList { get; set; }
 
         public int SelectedId { get; set; }
         public List<string> ErrorMessages { get; set; }

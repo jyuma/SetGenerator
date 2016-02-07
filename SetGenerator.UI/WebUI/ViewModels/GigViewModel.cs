@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace SetGenerator.WebUI.ViewModels
 {
@@ -17,10 +15,6 @@ namespace SetGenerator.WebUI.ViewModels
 
     public class GigViewModel
     {
-        public IList<GigDetail> GigList { get; set; }
-        public ArrayList UserBandArrayList { get; set; }
-        public IList<TableColumnDetail> TableColumnList { get; set; }
-
         public int SelectedId { get; set; }
         public List<string> ErrorMessages { get; set; }
         public bool Success { get; set; }

@@ -2,6 +2,7 @@
 
 @if (!Request.IsAuthenticated)
 {
+    ViewBag.Title = "Manage Setlists";
     Url.Action("Index", "Home");
 }
 
@@ -11,7 +12,11 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        setlists.index.init({ setlistId: "@Model.SelectedId" });
+        setlists.index.init(
+        {
+            setlistId: "@Model.SelectedId",
+            currentUser: "@Model.CurrentUser"
+        });
     });
 </script>
 
@@ -19,10 +24,13 @@
     <div class="panel-heading">
         <ul class="nav nav-pills">
             <li>
-                <input type="button" class="btn btn-success" value="Generate New" data-bind="click: showEditDialog" />
+                <input type="button" class="btn btn-success" value="Generate New" data-bind="click: showEditDialog"/>
             </li>
             <li>
-                <input type="text" class="form-control text-search" placeholder="Name" data-bind="value: nameSearch, valueUpdate: 'keyup'" />
+                <input type="text" class="form-control text-search" placeholder="Name" data-bind="value: nameSearch, valueUpdate: 'keyup'"/>
+            </li>
+            <li>
+                <select class="form-control" data-bind="options: ownerSearchList(), value: ownerSearch"></select>
             </li>
             <li style="float: right;">
                 <div id="ddlColumns" class="dropdown">

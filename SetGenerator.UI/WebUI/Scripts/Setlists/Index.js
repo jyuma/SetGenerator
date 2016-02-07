@@ -6,13 +6,15 @@
 ; (function ($) {
 
     var HIGHLIGHT_ROW_COLOUR = "#e3e8ff";
-    var STRING_ALL = "<All>";
+    var STRING_MY_SETLISTS = "My Setlists";
+    var STRING_ALL_SETLISTS = "All Setlists";
 
     setlists.index = {
         init: function(options) {
-
+            
             var config = {
-                setlistId: ""
+                setlistId: "",
+                currentUser: ""
             };
 
             $.extend(config, options);
@@ -43,13 +45,14 @@
                 });
             }
 
-            function Setlist(id, name, numsets, numsongs, updateuser, updatedate) {
+            function Setlist(id, name, numsets, numsongs, owner, updateuser, updatedate) {
                 var self = this;
 
                 self.id = id;
                 self.name = name;
                 self.numsets = numsets;
                 self.numsongs = numsongs;
+                self.owner = owner;
                 self.updateuser = updateuser;
                 self.updatedate = updatedate;
             }
@@ -58,13 +61,14 @@
                 var self = this;
 
                 self.setlists = ko.observableArray([]);
+                self.ownerSearchList = ko.observableArray([STRING_ALL_SETLISTS, STRING_MY_SETLISTS]);
                 self.selectedSetlist = ko.observable();
-                self.nameSearch = ko.observable('');
-                self.memberSearch = ko.observable(STRING_ALL);
+                self.nameSearch = ko.observable("");
+                self.ownerSearch = ko.observable(STRING_MY_SETLISTS);
                 self.numSetsList = ko.observable([]);
                 self.selectedNumSets = ko.observable(3);
                 self.selectedNumSongs = ko.observable(10);
-                self.editFormHeader = ko.observable('');
+                self.editFormHeader = ko.observable("");
 
                 createSetlistArray(lists.SetlistList);
 
@@ -87,8 +91,15 @@
                     return arr;
                 });
 
+                self.ownerSearchList = ko.computed(function () {
+                    var arr = [];
+                    arr.push(STRING_ALL_SETLISTS);
+                    arr.push(STRING_MY_SETLISTS);
+                    return arr;
+                });
+
                 function pushSetlist(value) {
-                    self.setlists.push(new Setlist(value.Id, value.Name, value.NumSets, value.NumSongs, value.UserUpdate, value.DateUpdate));
+                    self.setlists.push(new Setlist(value.Id, value.Name, value.NumSets, value.NumSongs, value.Owner, value.UserUpdate, value.DateUpdate));
                 };
 
                 self.sort = function(header) {
@@ -107,6 +118,7 @@
                     return ko.utils.arrayFilter(self.setlists(), function(sl) {
                         return (
                             (self.nameSearch().length === 0 || sl.name.toLowerCase().indexOf(self.nameSearch().toLowerCase()) !== -1)
+                            && (self.ownerSearch() === STRING_ALL_SETLISTS || sl.owner.toLowerCase() === config.currentUser.toLowerCase())
                         );
                     });
                 });

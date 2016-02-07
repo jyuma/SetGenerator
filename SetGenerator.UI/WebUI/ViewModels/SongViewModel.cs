@@ -43,7 +43,7 @@ namespace SetGenerator.WebUI.ViewModels
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Initials { get; set; }
-        public ICollection<BandMemberInstrumentDetail> MemberInstrumentDetails { get; set; }
+        public IEnumerable<BandMemberInstrumentDetail> MemberInstrumentDetails { get; set; }
     }
 
     public class BandMemberInstrumentDetail
@@ -64,11 +64,6 @@ namespace SetGenerator.WebUI.ViewModels
 
     public class SongViewModel
     {
-        public string UserCreated { get; set; }
-        public string UserUpdated { get; set; }
-        public string DateCreated { get; set; }
-        public string DateUpdated { get; set; }
-
         public int SelectedId { get; set; }
         public List<string> ErrorMessages { get; set; }
         public bool Success { get; set; }
