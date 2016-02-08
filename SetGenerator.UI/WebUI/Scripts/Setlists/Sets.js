@@ -186,10 +186,18 @@
                 };
 
                 self.showSet = function (row) {
-                    if (row.setnumber > 0) self.selectedSetNumber(row.setnumber);
-                    else self.selectedSetNumber(0);
+                    if (row.setnumber > 0) {
+                        self.selectedSetNumber(row.setnumber);
+                    } else {
+                        self.selectedSetNumber(0);
+                    }
+
                     createSetSongArray(lists.SetSongList);
-                    $("#tblSetSong").tableDnDUpdate();
+
+                    // only turn on DnD if not on Spares
+                    if (row.setnumber > 0) {
+                        $("#tblSetSong").tableDnDUpdate();
+                    }
                 };
 
                 self.isSequenceChanged = function () {
