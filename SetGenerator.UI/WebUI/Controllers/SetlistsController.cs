@@ -286,7 +286,6 @@ namespace SetGenerator.WebUI.Controllers
             return vm;
         }
 
-
         public string GetCurrentSessionUser()
         {
             return (System.Web.HttpContext.Current.User.Identity.Name);
@@ -399,6 +398,26 @@ namespace SetGenerator.WebUI.Controllers
         }
 
         [HttpPost]
+        public JsonResult SaveSetSongOrder(int setlistId, int setNumber, int[] songIds)
+        {
+            var sequence = 1;
+            foreach (var setSong in songIds
+                .Select(id => _setSongRepository.GetBySetlistSong(setlistId, id)))
+            {
+                setSong.Sequence = sequence++;
+                _setSongRepository.Update(setSong);
+            }
+
+            var setlist = _setlistRepository.Get(setlistId);
+            return Json(new
+            {
+                SetSongList = GetSetSongList(setlist),
+                SpareList = GetSpareList(setlist),
+                Success = true,
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
         public void StoreSelectedOwnerSearch(string ownerSearch)
         {
             Session["OwnerSearch"] = ownerSearch;
@@ -432,7 +451,8 @@ namespace SetGenerator.WebUI.Controllers
             var allAListSongs = _songRepository.GetAList(bandId);
 
             return allAListSongs
-                .Where(x => !setSongIds.Contains(x.Id)).Select(x =>
+                .Where(x => !setSongIds.Contains(x.Id))
+                .Select(x =>
             {
                 var songMemberInstrumentList = GetSongMemberInstrumentDetails(x.SongMemberInstruments);
                 return new SetSongDetail
@@ -456,7 +476,10 @@ namespace SetGenerator.WebUI.Controllers
 
         private static IEnumerable<SetSongDetail> GetSetSongList(Setlist setlist)
         {
-            return setlist.SetSongs.Select(x =>
+            return setlist.SetSongs
+                .OrderBy(x => x.SetNumber)
+                .ThenBy(x => x.Sequence)
+                .Select(x =>
             {
                 var songMemberInstrumentList = GetSongMemberInstrumentDetails(x.Song.SongMemberInstruments);
 

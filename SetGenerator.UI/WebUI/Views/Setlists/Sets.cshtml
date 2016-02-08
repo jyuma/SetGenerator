@@ -66,20 +66,20 @@
             </thead>
 
             <tbody data-bind="foreach: setSongs">
-            <tr data-bind="event: { mousedown: $parent.highlightRow }, attr: {id: 'row_' +  setnumber + '_' + id}">
-                <!-- ko if: setnumber > 0 -->
-                <td class="table-edit"><a class="glyphicon glyphicon-remove" href="#" data-bind="click: $parent.showDeleteDialog"></a></td>
-                <!-- /ko -->
-                <!-- ko if: setnumber === 0 -->
-                <td><a class="glyphicon glyphicon-new-window" href="#" data-bind="click: $parent.showAddToSetDialog"></a></td>
-                <!-- /ko -->
-                <!-- ko foreach: $parent.columns -->
-                <td data-bind="text: $parent[dataMember], visible: isVisible"></td>
-                <!-- /ko -->
-                <!-- ko foreach: memberInstruments -->
-                <td data-bind="text: instrument, visible: isVisible"></td>
-                <!-- /ko -->
-            </tr>
+                <tr data-bind="attr: {id: 'row_' +  setnumber + '_' + id }, event: { mouseup: function(data, event) { $parent.setNewSongOrder(setnumber, data, event) } }">
+                    <!-- ko if: setnumber > 0 -->
+                    <td class="table-edit"><a class="glyphicon glyphicon-remove" href="#" data-bind="click: $parent.showDeleteDialog"></a></td>
+                    <!-- /ko -->
+                    <!-- ko if: setnumber === 0 -->
+                    <td><a class="glyphicon glyphicon-new-window" href="#" data-bind="click: $parent.showAddToSetDialog"></a></td>
+                    <!-- /ko -->
+                    <!-- ko foreach: $parent.columns -->
+                    <td data-bind="text: $parent[dataMember], visible: isVisible"></td>
+                    <!-- /ko -->
+                    <!-- ko foreach: memberInstruments -->
+                    <td data-bind="text: instrument, visible: isVisible"></td>
+                    <!-- /ko -->
+                </tr>
             </tbody>
         </table>
     </div>

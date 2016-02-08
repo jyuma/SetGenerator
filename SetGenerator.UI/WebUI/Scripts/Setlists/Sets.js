@@ -43,17 +43,32 @@
                 {
                     onDragClass: "dragClass",
                     onDrop: function (table) {
-                        var cells = $(table).find("tr > td");
-                        $(cells).removeClass("dragClass");
+                        var rows = $(table.rows).filter(function (index, value) {
+                            return ((value.id.length > 0) && (value.id.indexOf("_0_") < 0));
+                        });
+                        if (rows.length > 0) {
+                            var cells = $(rows).find("td");
+                            $(cells).removeClass("dragClass");
+                        }
                     },
                     onDragStart: function (table, row) {
-                        var cells = $(table).find("tr > td");
-                        $(cells).removeClass("dragClass");
-                        $(row.cells).addClass("dragClass");
+                        var rows = $(table.rows).filter(function (index, value) {
+                            return ((value.id.length > 0) && (value.id.indexOf("_0_") < 0));
+                        });
+                        if (rows.length > 0) {
+                            var cells = $(rows).find("td");
+                            $(cells).removeClass("dragClass");
+                            $(row.cells).addClass("dragClass");
+                        }
                     },
                     onDragStop: function (table, row) {
-                        var cells = $(table).find("tr > td");
-                        $(cells).removeClass("dragClass");
+                        var rows = $(table.rows).filter(function (index, value) {
+                            return ((value.id.length > 0) && (value.id.indexOf("_0_") < 0));
+                        });
+                        if (rows.length > 0) {
+                            var cells = $(rows).find("td");
+                            $(cells).removeClass("dragClass");
+                        }
                     }
                 });
 
@@ -175,6 +190,44 @@
                     else self.selectedSetNumber(0);
                     createSetSongArray(lists.SetSongList);
                     $("#tblSetSong").tableDnDUpdate();
+                };
+
+                self.isSequenceChanged = function () {
+                    // get original order
+                    var originalOrder = lists.SetSongList.filter(function(value) {
+                        return (value.SetNumber === self.selectedSetNumber());
+                    });
+
+                    var originalIds = $.map(originalOrder, function (value) {
+                        return value.Id;
+                    });
+
+                    // get new order
+                    var newOrder = $("#tblSetSong tr").not("thead tr");
+                    var newIds = [];
+                    $(newOrder).each(function (index, value) {
+                        var idx = value.id.lastIndexOf("_");
+                        newIds.push(parseInt(value.id.substring(idx + 1, value.length)));
+                    });
+
+                    // see if the order has changed
+                    var changedIds = $(originalIds).filter(function(index, value) {
+                        return (value !== newIds[index]);
+                    });
+
+                    var result = (changedIds.length > 0);
+                    return result;
+                };
+
+                self.setNewSongOrder = function (setnumber, data, event) {
+                    if (setnumber === 0) return; // don't proceed if on Spares pages
+                    if (event.target.localName !== "td") return;  // don't proceed if an anchor was clicked
+
+                    var ischanged = self.isSequenceChanged();
+
+                    if (ischanged) {
+                        self.saveSetSongOrder();
+                    }
                 };
 
                 self.highlightRow = function (row) {
@@ -350,6 +403,41 @@
 
                     return result;
                 };
+
+                self.saveSetSongOrder = function () {
+                    var rows = $("#tblSetSong tr").not("thead tr");
+                    // dig out the setnumber
+                    var idx1 = rows[0].id.indexOf("_");
+                    var idx2 = rows[0].id.lastIndexOf("_");
+                    var setNumber = rows[0].id.substring(idx1 + 1, idx2);
+
+                    var ids = [];
+                    rows.each(function (index, value) {
+                        var idx = value.id.lastIndexOf("_");
+                        var id = value.id.substring(idx + 1, value.id.length);
+                        ids.push(parseInt(id));
+                    });
+
+                    if (ids.length > 0) {
+                        $.ajax({
+                            type: "POST",
+                            url: site.url + "Setlists/SaveSetSongOrder/",
+                            data: { setlistId: config.setlistId, setNumber: setNumber, songIds: ids },
+                            dataType: "json",
+                            traditional: true,
+                            success: function (data) {
+                                if (data.Success) {
+                                    lists.SetSongList = data.SetSongList;
+                                    lists.SpareList = data.SpareList;
+                                    createSetSongArray(lists.SetSongList);
+                                    self.selectedSetSong(self.getSetSong(data.SelectedId));
+                                    self.highlightRow(self.selectedSetSong());
+                                    $("#tblSetSong").tableDnDUpdate();
+                                }
+                            }
+                        });
+                    };
+                }
 
                 //---------------------------------------------- CONTROLLER (END) -------------------------------------------------------
 
