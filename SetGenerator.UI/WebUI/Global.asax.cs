@@ -21,6 +21,7 @@ namespace SetGenerator.WebUI
             kernel.Bind<IBandRepository>().To<BandRepository>();
             kernel.Bind<ISongRepository>().To<SongRepository>();
             kernel.Bind<ISetlistRepository>().To<SetlistRepository>();
+            kernel.Bind<ISetSongRepository>().To<SetSongRepository>();
             kernel.Bind<IGigRepository>().To<GigRepository>();
             kernel.Bind<IMemberRepository>().To<MemberRepository>();
             kernel.Bind<IInstrumentRepository>().To<InstrumentRepository>();

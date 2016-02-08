@@ -73,6 +73,7 @@
     <Compile Include="Repositories\SetlistRepository.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Repositories\SetSongRepository.cs" />
     <Compile Include="Repositories\SongRepository.cs">
       <SubType>Code</SubType>
     </Compile>

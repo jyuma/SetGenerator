@@ -314,11 +314,13 @@
     <Content Include="Content\images\home.jpg" />
     <Content Include="Content\images\toilet.png" />
     <Content Include="Content\images\trash.png" />
+    <Content Include="Content\images\updown2.gif" />
     <Content Include="Content\images\wait_animated.gif" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\Site.min.css">
       <DependentUpon>Site.css</DependentUpon>
     </Content>
+    <Content Include="Content\tablednd.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -330,6 +332,7 @@
     <Content Include="Scripts\Dialog\Dialog.js" />
     <Content Include="Scripts\Gigs\Index.js" />
     <Content Include="Scripts\Home\Index.js" />
+    <Content Include="Scripts\jquery.tablednd.js" />
     <Content Include="Scripts\Setlists\Index.js" />
     <Content Include="Scripts\Setlists\Sets.js" />
     <Content Include="Scripts\Shared\_LogonPartial.js" />
@@ -416,6 +419,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Scripts\jquery-2.2.0.min.map" />
     <Content Include="Views\Gigs\_GigEdit.cshtml" />
+    <Content Include="Views\Setlists\_AddSongToSet.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

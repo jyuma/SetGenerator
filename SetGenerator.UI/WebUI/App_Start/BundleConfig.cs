@@ -22,10 +22,11 @@ namespace SetGenerator.WebUI
 
             var commonStylesBundle = new Bundle("~/bundles/CommonStyles");
             commonStylesBundle.Include(
-                     "~/Content/bootstrap.css",
-                     "~/Content/bootstrap-theme.css",
-                     "~/Content/bootstrap-datepicker3.css",
-                     "~/Content/Site.less");
+                    "~/Content/tablednd.css",
+                    "~/Content/bootstrap.css",
+                    "~/Content/bootstrap-theme.css",
+                    "~/Content/bootstrap-datepicker3.css",
+                    "~/Content/Site.less");
             commonStylesBundle.Builder = nullBuilder;
             commonStylesBundle.Orderer = nullOrderer;
             commonStylesBundle.Transforms.Add(styleTransformer);
@@ -35,7 +36,9 @@ namespace SetGenerator.WebUI
             commonScriptsBundle.Include(
                     "~/Scripts/jquery-{version}.js",
                     "~/Scripts/knockout-{version}.js",
-                    "~/Scripts/bootstrap-datepicker.js");
+                    "~/Scripts/bootstrap-datepicker.js",
+                    "~/Scripts/bootstrap-datepicker.js",
+                    "~/Scripts/jquery.tablednd.js");
             commonScriptsBundle.Builder = nullBuilder;
             commonScriptsBundle.Transforms.Add(scriptTransformer);
             bundles.Add(commonScriptsBundle);

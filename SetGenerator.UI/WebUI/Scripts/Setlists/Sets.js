@@ -20,7 +20,7 @@
 
             var lists = {
                 SetlistName: "",
-                SongList: [],
+                SetSongList: [],
                 SpareList: [],
                 MemberArrayList: [],
                 GenreArrayList: [],
@@ -32,6 +32,37 @@
             loadConfig();
 
             ko.applyBindings(new SetsViewModel());
+
+            initTableDnD();
+
+            function initTableDnD() {
+                var tblSetSong = $("#tblSetSong");
+                var tblSetSongRow = $("#tblSetSong tr");
+
+                tblSetSong.tableDnD(
+                {
+                    onDragClass: "dragClass",
+                    onDrop: function (table) {
+                        var cells = $(table).find("tr > td");
+                        $(cells).removeClass("dragClass");
+                    },
+                    onDragStart: function (table, row) {
+                        var cells = $(table).find("tr > td");
+                        $(cells).removeClass("dragClass");
+                        $(row.cells).addClass("dragClass");
+                    },
+                    onDragStop: function (table, row) {
+                        var cells = $(table).find("tr > td");
+                        $(cells).removeClass("dragClass");
+                    }
+                });
+
+                tblSetSongRow.hover(function () {
+                    $(this.cells).addClass("showDragHandle");
+                }, function () {
+                    $(this.cells).removeClass("showDragHandle");
+                });
+            }
 
             function loadConfig() {
                 $.ajax({
@@ -47,7 +78,7 @@
                 });
             }
 
-            function Song(id, setnumber, title, keydetail, singerid, composer, genreid, tempoid, neverclose, neveropen, disabled, instrumentmemberdetails) {
+            function SetSong(id, setnumber, title, keydetail, singerid, composer, genreid, tempoid, neverclose, neveropen, disabled, instrumentmemberdetails) {
                 var self = this;
 
                 self.id = id;
@@ -92,11 +123,11 @@
             function SetsViewModel() {
                 var self = this;
 
-                self.songs = ko.observableArray([]);
-                self.selectedSong = ko.observable();
+                self.setSongs = ko.observableArray([]);
+                self.selectedSetSong = ko.observable();
                 self.selectedSetNumber = ko.observable(1);
-
-                createSongArray(lists.SongList);
+                
+                createSetSongArray(lists.SetSongList);
 
                 $("#ddlColumns").on("hidden.bs.dropdown", function () {
                     self.saveColumns();
@@ -118,49 +149,132 @@
                     return arr;
                 });
 
-                function createSongArray(list) {
-                    self.songs.removeAll();
+                function createSetSongArray(list) {
+                    self.setSongs.removeAll();
 
                     if (self.selectedSetNumber() > 0) {
                         $(list).each(function (index, value) {
                             if (value.SetNumber === self.selectedSetNumber()) {
-                                pushSong(value);
+                                pushSetSong(value);
                             }
                         });
                     }
                     else {
                         $(lists.SpareList).each(function (index, value) {
-                            pushSong(value);
+                            pushSetSong(value);
                         });
                     }
                 };
 
-                function pushSong(value) {
-                    self.songs.push(new Song(value.Id, value.SetNumber, value.Title, value.KeyDetail, value.SingerId, value.Composer, value.GenreId, value.TempoId, value.NeverClose, value.NeverOpen, value.Disabled, value.SongMemberInstrumentDetails));
+                function pushSetSong(value) {
+                    self.setSongs.push(new SetSong(value.Id, value.SetNumber, value.Title, value.KeyDetail, value.SingerId, value.Composer, value.GenreId, value.TempoId, value.NeverClose, value.NeverOpen, value.Disabled, value.SongMemberInstrumentDetails));
                 };
 
                 self.showSet = function (row) {
                     if (row.setnumber > 0) self.selectedSetNumber(row.setnumber);
                     else self.selectedSetNumber(0);
-                    createSongArray(lists.SongList);
-
+                    createSetSongArray(lists.SetSongList);
+                    $("#tblSetSong").tableDnDUpdate();
                 };
 
                 self.highlightRow = function (row) {
                     if (row == null) return;
                     var id = row.id;
-                    var table = $("#tblSong");
-                    var rows = $("#tblSong tr:gt(0)");
+                    var table = $("#tblSetSong");
+                    var rows = $("#tblSetSong tr:gt(0)");
                     rows.each(function () {
                         $(this).css("background-color", "#ffffff");
                     });
 
                     var r = table.find("#row_" + id);
                     r.css("background-color", HIGHLIGHT_ROW_COLOUR);
-                    $("#tblSong").attr("tr:hover", HIGHLIGHT_ROW_COLOUR);
+                    $("#tblSetSong").attr("tr:hover", HIGHLIGHT_ROW_COLOUR);
+                };
+
+                self.getSetSong = function (songid) {
+                    var setsong;
+
+                    ko.utils.arrayForEach(self.setSongs(), function (item) {
+                        if (item.id === songid) {
+                            setsong = item;
+                        }
+                    });
+                    return setsong;
+                };
+
+                self.showAddToSetDialog = function (row) {
+                    var message;
+                    var songId = row.id;
+
+                    $.ajax({
+                        type: "GET",
+                        async: false,
+                        url: site.url + "Setlists/GetAddSongToSetView",
+                        data: { totalSets: lists.SetNumberList.length },
+                        success: function (data) {
+                            message = data;
+                        }
+                    });
+
+                    dialog.custom.showModal({
+                        title: "Add To Set",
+                        message: message,
+                        callback: function () {
+                            $("#validation-container").html("");
+                            $("#validation-container").hide();
+                            return self.addSongToSet(songId);
+                        },
+                        width: 350
+                    });
+                };
+
+                self.showDeleteDialog = function (row) {
+                    self.highlightRow(row);
+                    self.showSongDeleteDialog(row);
+                };
+
+                self.showSongDeleteDialog = function (row) {
+                    var id = (typeof row.id !== "undefined" ? row.id : 0);
+                    if (id <= 0) return;
+                    var s = self.getSetSong(id);
+
+                    dialog.custom.showModal({
+                        title: "Remove song?",
+                        message: "This will remove the song '" + s.title + "' from the setlist.",
+                        callback: function () {
+                            return self.deleteSetSong(row.id);
+                        },
+                        width: 500
+                    });
                 };
 
                 //---------------------------------------------- CONTROLLER (BEGIN) -------------------------------------------------------
+
+                self.deleteSetSong = function (id) {
+                    $("body").css("cursor", "wait");
+
+                    $.ajax({
+                        type: "POST",
+                        url: site.url + "Setlists/DeleteSetSong/",
+                        data: { setlistId: config.setlistId, songId: id },
+                        dataType: "json",
+                        traditional: true,
+                        failure: function () {
+                            $("body").css("cursor", "default");
+                        },
+                        success: function (data) {
+                            if (data.Success) {
+                                lists.SetSongList = data.SetSongList;
+                                lists.SpareList = data.SpareList;
+                                createSetSongArray(lists.SetSongList);
+                                $("#tblSetSong").tableDnDUpdate();
+                            }
+                            $("body").css("cursor", "default");
+                        }
+                    });
+
+                    return true;
+                };
 
                 self.saveColumns = function () {
                     var jsonData = JSON.stringify(self.getColumns());
@@ -187,7 +301,62 @@
                     }
                 };
 
+                self.addSongToSet = function (songId) {
+                    var setNumber = self.getSetNumberFromDialog();
+                    var result;
+
+                    $("body").css("cursor", "wait");
+
+                    var url = site.url + "Setlists/AddSongToSet/";
+
+                    $.ajax({
+                        type: "POST",
+                        async: false,
+                        url: url,
+                        data: { setlistId: config.setlistId, setNumber: setNumber, songId: songId },
+                        dataType: "json",
+                        traditional: true,
+                        failure: function () {
+                            $("body").css("cursor", "default");
+                            $("#validation-container").html("");
+                        },
+                        success: function (data) {
+                            if (data.Success) {
+                                lists.SetSongList = data.SetSongList;
+                                lists.SpareList = data.SpareList;
+                                createSetSongArray(lists.SetSongList);
+                                self.selectedSetSong(self.getSetSong(data.SelectedId));
+                                self.highlightRow(self.selectedSetSong());
+                                $("#tblSetSong").tableDnDUpdate();
+                                result = true;
+                            } else {
+                                if (data.ErrorMessages.length > 0) {
+                                    $("#validation-container").show();
+                                    $("#validation-container").html("");
+                                    $("body").css("cursor", "default");
+                                    var html = "<ul>";
+                                    for (var i = 0; i < data.ErrorMessages.length; i++) {
+                                        var message = data.ErrorMessages[i];
+                                        html = html + "<li>" + message + "</li>";
+                                    }
+                                    html = html + "</ul>";
+                                    $("#validation-container").append(html);
+                                }
+                                result = false;
+                            }
+                            $("body").css("cursor", "default");
+                        }
+                    });
+
+                    return result;
+                };
+
                 //---------------------------------------------- CONTROLLER (END) -------------------------------------------------------
+
+                self.getSetNumberFromDialog = function () {
+                    var setnum = parseInt($("#ddlNumSets").val());
+                    return setnum;
+                };
 
                 self.getColumns = function () {
                     var arr = [];

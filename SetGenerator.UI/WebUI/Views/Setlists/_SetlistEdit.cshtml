@@ -12,8 +12,8 @@
             <div class="col-sm-5">
                 <div class="label label-default">Sets</div>
                 @(@Model.SetlistId > 0
-                ? Html.DropDownList("ddlNumSets", @Model.ToalSetsList, new { @class = "form-control", @disabled = "disabled" })
-                : Html.DropDownList("ddlNumSets", @Model.ToalSetsList, new { @class = "form-control" }))
+                ? Html.DropDownList("ddlNumSets", @Model.TotalSetsList, new { @class = "form-control", @disabled = "disabled" })
+                : Html.DropDownList("ddlNumSets", @Model.TotalSetsList, new { @class = "form-control" }))
             </div>
             <div class="col-sm-5">
                 <div class="label label-default">Songs / Set</div>

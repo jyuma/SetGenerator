@@ -6,7 +6,14 @@ namespace SetGenerator.WebUI.ViewModels
     {
         public int SetlistId { get; set; }
         public string Name { get; set; }
-        public SelectList ToalSetsList { get; set; }
+        public SelectList TotalSetsList { get; set; }
         public SelectList TotalSongsPerSetlist { get; set; }
+    }
+
+    public class AddSongToSetViewModel
+    {
+        public int SetlistId { get; set; }
+        public string SetlistName { get; set; }
+        public SelectList TotalSetsList { get; set; }
     }
 }

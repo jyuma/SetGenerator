@@ -1,0 +1,19 @@
+﻿
+@model SetGenerator.WebUI.ViewModels.AddSongToSetViewModel
+
+<div id="setlist-edit-modal">
+    <div class="panel">
+        <div class="panel-header">
+            <h4>@Model.SetlistName</h4>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-sm-5">
+                    <div class="label label-default">Set Number</div>
+                    @Html.DropDownList("ddlNumSets", @Model.TotalSetsList, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="validation-container" id="validation-container"></div>
+</div>

@@ -24,6 +24,7 @@ namespace SetGenerator.WebUI.Controllers
     {
         private readonly IBandRepository _bandRepository;
         private readonly ISetlistRepository _setlistRepository;
+        private readonly ISetSongRepository _setSongRepository;
         private readonly ISongRepository _songRepository;
         private readonly IValidationRules _validationRules;
 
@@ -31,7 +32,8 @@ namespace SetGenerator.WebUI.Controllers
         private readonly CommonSong _common;
 
         public SetlistsController(  IBandRepository bandRepository, 
-                                    ISetlistRepository setlistRepository, 
+                                    ISetlistRepository setlistRepository,
+                                    ISetSongRepository setSongRepository,
                                     ISongRepository songRepository, 
                                     IAccount account, 
                                     IValidationRules validationRules)
@@ -41,6 +43,7 @@ namespace SetGenerator.WebUI.Controllers
 
             _bandRepository = bandRepository;
             _setlistRepository = setlistRepository;
+            _setSongRepository = setSongRepository;
             _songRepository = songRepository;
             _validationRules = validationRules;
             _common = new CommonSong(account, currentUserName);
@@ -151,27 +154,6 @@ namespace SetGenerator.WebUI.Controllers
             return Json(vm, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet]
-        public JsonResult GetDataSets(int setlistId)
-        {
-            var bandId = Convert.ToInt32(Session["BandId"]);
-            var setlist = _setlistRepository.Get(setlistId);
-
-            var vm = new
-            {
-                Name = setlist.Name,
-                SongList = GetSongList(setlist),
-                SpareList = GetSpareList(setlist),
-                MemberArrayList = _bandRepository.GetMemberNameArrayList(bandId),
-                GenreArrayList = _songRepository.GetGenreArrayList(),
-                TempoArrayList = _songRepository.GetTempoArrayList(),
-                SetNumberList = setlist.SetSongs.Select(x => x.SetNumber).Distinct().ToArray(),
-                TableColumnList = _common.GetTableColumnList(_currentUser.Id, Constants.UserTable.SetId, bandId)
-            };
-
-            return Json(vm, JsonRequestBehavior.AllowGet);
-        }
-
         private SetlistViewModel LoadSetlistViewModel(int selectedId, List<string> msgs)
         {
             var selectedOwnerSearch = Session["OwnerSearch"] != null 
@@ -183,19 +165,6 @@ namespace SetGenerator.WebUI.Controllers
                 CurrentUser = _currentUser.UserName,
                 SelectedId = selectedId,
                 SelectedOwnerSearch = selectedOwnerSearch,
-                Success = (msgs == null),
-                ErrorMessages = msgs
-            };
-
-            return model;
-        }
-
-        private SetViewModel LoadSetViewModel(int setlistId, List<string> msgs)
-        {
-            var model = new SetViewModel
-            {
-                SetlistId = setlistId,
-                Name = _setlistRepository.Get(setlistId).Name,
                 Success = (msgs == null),
                 ErrorMessages = msgs
             };
@@ -239,7 +208,7 @@ namespace SetGenerator.WebUI.Controllers
             {
                 SetlistId = id,
                 Name = (setlist != null) ? setlist.Name : string.Empty,
-                ToalSetsList = new SelectList(new Collection<int> { 1, 2, 3 },
+                TotalSetsList = new SelectList(new Collection<int> { 1, 2, 3 },
                     (setlist != null)
                     ? setlist.SetSongs.Max(x => x.SetNumber) 
                     : 3),
@@ -258,6 +227,65 @@ namespace SetGenerator.WebUI.Controllers
         {
             return View(LoadSetViewModel(id, null));
         }
+
+        private SetViewModel LoadSetViewModel(int setlistId, List<string> msgs)
+        {
+            var model = new SetViewModel
+            {
+                SetlistId = setlistId,
+                Name = _setlistRepository.Get(setlistId).Name,
+                Success = (msgs == null),
+                ErrorMessages = msgs
+            };
+
+            return model;
+        }
+
+        [HttpGet]
+        public JsonResult GetDataSets(int setlistId)
+        {
+            var bandId = Convert.ToInt32(Session["BandId"]);
+            var setlist = _setlistRepository.Get(setlistId);
+
+            var vm = new
+            {
+                Name = setlist.Name,
+                SetSongList = GetSetSongList(setlist),
+                SpareList = GetSpareList(setlist),
+                MemberArrayList = _bandRepository.GetMemberNameArrayList(bandId),
+                GenreArrayList = _songRepository.GetGenreArrayList(),
+                TempoArrayList = _songRepository.GetTempoArrayList(),
+                SetNumberList = setlist.SetSongs.Select(x => x.SetNumber).Distinct().ToArray(),
+                TableColumnList = _common.GetTableColumnList(_currentUser.Id, Constants.UserTable.SetId, bandId)
+            };
+
+            return Json(vm, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public PartialViewResult GetAddSongToSetView(int totalSets)
+        {
+            return PartialView("_AddSongToSet", LoadAddSongToSetViewModel(totalSets));
+        }
+
+        private static AddSongToSetViewModel LoadAddSongToSetViewModel(int totalSets)
+        {
+            var setNumberList = new Collection<int>();
+            for (var n = 1; n <= totalSets; n++)
+            {
+                setNumberList.Add(n);
+            }
+
+            var vm = new AddSongToSetViewModel
+            {
+                TotalSetsList = new SelectList(setNumberList
+                        .Select(x => new { Value = x, Display = x }),
+                        "Value", "Display"),
+            };
+
+            return vm;
+        }
+
 
         public string GetCurrentSessionUser()
         {
@@ -327,6 +355,50 @@ namespace SetGenerator.WebUI.Controllers
         }
 
         [HttpPost]
+        public JsonResult DeleteSetSong(int setlistId, int songId)
+        {
+            var setSong = _setSongRepository.GetBySetlistSong(setlistId, songId);
+            _setSongRepository.Delete(setSong.Id);
+
+            var setlist = _setlistRepository.Get(setlistId);
+
+            return Json(new
+            {
+                SetSongList = GetSetSongList(setlist),
+                SpareList = GetSpareList(setlist),
+                Success = true,
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult AddSongToSet(int setlistId, int setNumber, int songId)
+        {
+            var setlist = _setlistRepository.Get(setlistId);
+            var song = _songRepository.Get(songId);
+
+            var sequence = setlist.SetSongs
+                .Where(x => x.SetNumber == setNumber)
+                .Max(m => m.Sequence) + 1;
+
+            setlist.SetSongs.Add(new SetSong
+            {
+                Sequence = sequence,
+                Setlist = setlist,
+                SetNumber = setNumber,
+                Song = song
+            });
+
+            _setlistRepository.Update(setlist);
+
+            return Json(new
+            {
+                SetSongList = GetSetSongList(setlist),
+                SpareList = GetSpareList(setlist),
+                Success = true,
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
         public void StoreSelectedOwnerSearch(string ownerSearch)
         {
             Session["OwnerSearch"] = ownerSearch;
@@ -382,7 +454,7 @@ namespace SetGenerator.WebUI.Controllers
             }).ToArray();
         }
 
-        private static IEnumerable<SetSongDetail> GetSongList(Setlist setlist)
+        private static IEnumerable<SetSongDetail> GetSetSongList(Setlist setlist)
         {
             return setlist.SetSongs.Select(x =>
             {

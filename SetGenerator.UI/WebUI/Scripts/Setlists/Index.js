@@ -155,8 +155,8 @@
                     var sl = self.getSetlist(id);
 
                     dialog.custom.showModal({
-                        title: "Delete Set List?",
-                        message: "This will permanently delete the set list '" + sl.name + "'.",
+                        title: "Delete Setlist?",
+                        message: "This will permanently delete the Setlist '" + sl.name + "'.",
                         callback : function () {
                             return self.deleteSetlist(row.id);
                         },
@@ -170,11 +170,11 @@
                     var message;
 
                     if (id > 0) {
-                        title = "Edit Set List";
+                        title = "Edit Setlist";
                         var setlist = self.getSetlist(id);
                         self.selectedSetlist(setlist);
                     } else {
-                        title = "Generate Set List";
+                        title = "Generate Setlist";
                         self.selectedSetlist([]);
                     }
 
