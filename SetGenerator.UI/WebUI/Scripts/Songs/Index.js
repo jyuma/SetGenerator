@@ -416,7 +416,6 @@
                                 lists.SongList = data.SongList;
                                 createSongArray();
                                 self.selectedSong(self.getSong(data.SelectedId));
-                                self.sort({ afterSave: true });
                                 self.highlightRow(self.selectedSong());
                                 result = true;
                             } else {
