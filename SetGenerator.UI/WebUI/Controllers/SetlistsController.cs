@@ -59,20 +59,20 @@ namespace SetGenerator.WebUI.Controllers
 
         [Authorize]
         [HttpGet]
-        public FileResult Print(int id)
+        public FileResult Print(int setlistId, bool includeKey, bool includeSinger, bool includeInstrumentation)
         {
             var rv = new ReportViewer {ProcessingMode = ProcessingMode.Local};
             var ds = new GetSetlistTableAdapter();
             var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ReportConnectionString"].ConnectionString);
             ds.Connection = connection;
 
-            string reportPath = GetReportPath();
+            string reportPath = GetReportPath(includeKey, includeSinger, includeInstrumentation);
 
             rv.LocalReport.ReportPath = Server.MapPath(reportPath);
             rv.ProcessingMode = ProcessingMode.Local;
 
             var userId = Convert.ToInt32(System.Web.HttpContext.Current.User.Identity.GetUserId());
-            ReportDataSource rds = new ReportDataSource("Sets", (object)ds.GetData(id, userId));
+            ReportDataSource rds = new ReportDataSource("Sets", (object)ds.GetData(setlistId, userId));
             rv.LocalReport.DataSources.Add(rds);
             rv.LocalReport.Refresh();
 
@@ -83,56 +83,41 @@ namespace SetGenerator.WebUI.Controllers
             Warning[] warnings;
             var streamBytes = rv.LocalReport.Render("PDF", null, out mimeType, out encoding, out filenameExtension, out streamids, out warnings);
 
-            var setlist = _setlistRepository.Get(id);
+            var setlist = _setlistRepository.Get(setlistId);
             var filename = setlist.Name + ".pdf";
 
             return File(streamBytes, mimeType, filename);
         }
 
-        private string GetReportPath()
+        private string GetReportPath(bool includeKey, bool includeSinger, bool includeInstrumentation)
         {
-            var bandId = Convert.ToInt32(Session["BandId"]);
-            var memberIds = _bandRepository.GetMembers(bandId).Select(x => x.Id);
             var reportPath = "~/Reports/Sets.rdlc";
 
-            var showKey = _common.GetTableColumnList(_currentUser.Id, Constants.UserTable.SetId, bandId)
-                .Single(x => x.TableColumnId == Constants.UserTableColumn.KeyId)
-                .IsVisible;
-
-            var showSinger = _common.GetTableColumnList(_currentUser.Id, Constants.UserTable.SetId, bandId)
-                .Single(x => x.TableColumnId == Constants.UserTableColumn.SingerId)
-                .IsVisible;
-
-            var showMembers = _currentUser.UserPreferenceTableMembers
-                .Where(x => x.Table.Id == Constants.UserTable.SetId)
-                .Where(x => memberIds.Contains(x.Member.Id))
-                .Any(x => x.IsVisible);
-
-            if (showKey && !showSinger && !showMembers)
+            if (includeKey && !includeSinger && !includeInstrumentation)
             {
                 reportPath = "~/Reports/Sets_Key.rdlc";
             }
-            else if (showKey && showSinger && !showMembers)
+            else if (includeKey && includeSinger && !includeInstrumentation)
             {
                 reportPath = "~/Reports/Sets_Key_Singer.rdlc";
             }
-            else if (showKey && !showSinger && showMembers)
+            else if (includeKey && !includeSinger && includeInstrumentation)
             {
                 reportPath = "~/Reports/Sets_Key_Members.rdlc";
             }
-            else if (!showKey && showSinger && showMembers)
+            else if (!includeKey && includeSinger && includeInstrumentation)
             {
                 reportPath = "~/Reports/Sets_Singer_Members.rdlc";
             }
-            else if (!showKey && !showSinger && showMembers)
+            else if (!includeKey && !includeSinger && includeInstrumentation)
             {
                 reportPath = "~/Reports/Sets_Members.rdlc";
             }
-            else if (!showKey && showSinger && !showMembers)
+            else if (!includeKey && includeSinger && !includeInstrumentation)
             {
                 reportPath = "~/Reports/Sets_Singer.rdlc";
             }
-            else if (showKey && showMembers && showSinger)
+            else if (includeKey && includeSinger && includeInstrumentation)
             {
                 reportPath = "~/Reports/Sets_Key_Singer_Members.rdlc";
             }

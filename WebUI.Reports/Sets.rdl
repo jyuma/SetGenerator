@@ -72,13 +72,13 @@
         <TablixBody>
           <TablixColumns>
             <TablixColumn>
-              <Width>0.4375in</Width>
+              <Width>0.58333in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>0.45833in</Width>
+              <Width>0.58333in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>0.38542in</Width>
+              <Width>0.52083in</Width>
             </TablixColumn>
             <TablixColumn>
               <Width>0.63542in</Width>
@@ -104,7 +104,7 @@
                             </TextRun>
                           </TextRuns>
                           <Style>
-                            <TextAlign>Center</TextAlign>
+                            <TextAlign>Left</TextAlign>
                           </Style>
                         </Paragraph>
                       </Paragraphs>
@@ -293,9 +293,6 @@
                       </Textbox>
                     </CellContents>
                   </TablixHeader>
-                  <Visibility>
-                    <Hidden>=Fields!ShowKey.Value = 0</Hidden>
-                  </Visibility>
                 </TablixMember>
               </TablixMembers>
             </TablixMember>
@@ -362,9 +359,6 @@
                       </Textbox>
                     </CellContents>
                   </TablixHeader>
-                  <Visibility>
-                    <Hidden>=Fields!ShowSinger.Value = 0</Hidden>
-                  </Visibility>
                 </TablixMember>
               </TablixMembers>
             </TablixMember>
@@ -389,9 +383,6 @@
                       </Paragraph>
                     </Paragraphs>
                     <rd:DefaultName>Textbox40</rd:DefaultName>
-                    <Visibility>
-                      <Hidden>=Sum(Abs(CInt(Fields!ShowMember.Value)), "Setlists") = 0</Hidden>
-                    </Visibility>
                     <Style>
                       <Border>
                         <Style>None</Style>
@@ -446,9 +437,6 @@
                       </Textbox>
                     </CellContents>
                   </TablixHeader>
-                  <Visibility>
-                    <Hidden>=Fields!ShowMember.Value = False</Hidden>
-                  </Visibility>
                 </TablixMember>
                 <TablixMember>
                   <TablixHeader>
@@ -515,7 +503,7 @@
                     </SortExpression>
                   </SortExpressions>
                   <TablixHeader>
-                    <Size>5.125in</Size>
+                    <Size>4.77084in</Size>
                     <CellContents>
                       <Textbox Name="Title">
                         <CanGrow>true</CanGrow>
@@ -558,7 +546,7 @@
         <DataSetName>Setlists</DataSetName>
         <Left>0.05208in</Left>
         <Height>0.97916in</Height>
-        <Width>7.04167in</Width>
+        <Width>7.09375in</Width>
         <Style>
           <Border>
             <Style>None</Style>
@@ -569,7 +557,7 @@
     <Height>1.08333in</Height>
     <Style />
   </Body>
-  <Width>7.11458in</Width>
+  <Width>7.15625in</Width>
   <Page>
     <PageHeader>
       <Height>0.95708in</Height>
@@ -668,7 +656,7 @@
         <DataSourceName>SetGenerator</DataSourceName>
         <QueryParameters>
           <QueryParameter Name="@setlistId">
-            <Value>5</Value>
+            <Value>103</Value>
             <rd:UserDefined>true</rd:UserDefined>
           </QueryParameter>
           <QueryParameter Name="@userId">
@@ -716,25 +704,13 @@
           <DataField>Singer</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="ShowMember">
-          <DataField>ShowMember</DataField>
-          <rd:TypeName>System.Boolean</rd:TypeName>
-        </Field>
         <Field Name="Member">
           <DataField>Member</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="ShowKey">
-          <DataField>ShowKey</DataField>
-          <rd:TypeName>System.Boolean</rd:TypeName>
-        </Field>
         <Field Name="Instrument">
           <DataField>Instrument</DataField>
           <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="ShowSinger">
-          <DataField>ShowSinger</DataField>
-          <rd:TypeName>System.Boolean</rd:TypeName>
         </Field>
       </Fields>
     </DataSet>
@@ -744,7 +720,7 @@
       <DataType>Integer</DataType>
       <DefaultValue>
         <Values>
-          <Value>5</Value>
+          <Value>103</Value>
         </Values>
       </DefaultValue>
       <Prompt>setlistId</Prompt>

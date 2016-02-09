@@ -314,9 +314,11 @@ namespace SetGenerator.WebUI.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut();
-            Session["Bands"] = null;
             Session["UserId"] = null;
             Session["UserName"] = null;
+            Session["BandId"] = null;
+            Session["Bands"] = null;
+            Session["OwnerSearch"] = null;
             return RedirectToAction("Index", "Home");
         }
 

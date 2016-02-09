@@ -257,6 +257,41 @@
                     self.showSongDeleteDialog(row);
                 };
 
+                self.showColumnSelectorDialog = function () {
+                    
+                    var div = $(document.createElement("div")).addClass("panel");
+
+                    div.append("<div class='row'><div class='col-sm-4'><label class='label label-default'>Title</label><input type='checkbox' id='chkTitle' checked='checked' class='form-control' disabled='disabled' /></div></div>")
+                        .append("<div class='row'><div class='col-sm-4'><label class='label label-default'>Key</label><input type='checkbox' id='chkKey' checked='checked' class='form-control' /></div></div>")
+                        .append("<div class='row'><div class='col-sm-4'><label class='label label-default'>Singer</label><input type='checkbox' id='chkSinger' class='form-control' /></div></div>")
+                        .append("<div class='row'><div class='col-sm-4'><label class='label label-default'>Instrumentation</label><input type='checkbox' id='chkInstrumentation' class='form-control' /></div></div>");
+
+                    var html = div[0].outerHTML;
+
+                    dialog.custom.showModal({
+                        title: "Print Columns",
+                        message: html,
+                        callback: function () {
+                            return self.downloadPDF();
+                        },
+                        width: 180
+                    });
+                }
+
+                self.downloadPDF = function () {
+                    var includeKey = $("#chkKey").is(":checked");
+                    var includeSinger = $("#chkSinger").is(":checked");
+                    var includeInstrumentation = $("#chkInstrumentation").is(":checked");
+
+                    $(location).attr("href", site.url + "Setlists/Print/" +
+                        "?setlistId=" + config.setlistId +
+                        "&includeKey=" + includeKey +
+                        "&includeSinger=" + includeSinger +
+                        "&includeInstrumentation=" + includeInstrumentation);
+
+                    return true;
+                }
+
                 //---------------------------------------------- CONTROLLER (BEGIN) -------------------------------------------------------
 
                 self.deleteSetSong = function (id) {
@@ -281,7 +316,6 @@
                             $("body").css("cursor", "default");
                         }
                     });
-
                     return true;
                 };
 
@@ -355,7 +389,6 @@
                             $("body").css("cursor", "default");
                         }
                     });
-
                     return result;
                 };
 

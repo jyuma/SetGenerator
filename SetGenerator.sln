@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetGenerator.WebUI", "SetGe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetGenerator.NHibernateTests", "SetGenerator.NHibernateTests\SetGenerator.NHibernateTests.csproj", "{3B510B1E-0721-4D6D-915D-04B7044A3082}"
 EndProject
+Project("{F14B399A-7131-4C87-9E4B-1186C45EF12D}") = "WebUI.Reports", "WebUI.Reports\WebUI.Reports.rptproj", "{289FED9F-6105-4FD2-AE03-DBD58298E592}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,15 @@ Global
 		{3B510B1E-0721-4D6D-915D-04B7044A3082}.DebugLocal|Any CPU.Build.0 = Debug|Any CPU
 		{3B510B1E-0721-4D6D-915D-04B7044A3082}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B510B1E-0721-4D6D-915D-04B7044A3082}.Release|Any CPU.Build.0 = Release|Any CPU
+		{289FED9F-6105-4FD2-AE03-DBD58298E592}.Debug|Any CPU.ActiveCfg = Debug
+		{289FED9F-6105-4FD2-AE03-DBD58298E592}.Debug|Any CPU.Build.0 = Debug
+		{289FED9F-6105-4FD2-AE03-DBD58298E592}.Debug|Any CPU.Deploy.0 = Debug
+		{289FED9F-6105-4FD2-AE03-DBD58298E592}.DebugLocal|Any CPU.ActiveCfg = DebugLocal
+		{289FED9F-6105-4FD2-AE03-DBD58298E592}.DebugLocal|Any CPU.Build.0 = DebugLocal
+		{289FED9F-6105-4FD2-AE03-DBD58298E592}.DebugLocal|Any CPU.Deploy.0 = DebugLocal
+		{289FED9F-6105-4FD2-AE03-DBD58298E592}.Release|Any CPU.ActiveCfg = Release
+		{289FED9F-6105-4FD2-AE03-DBD58298E592}.Release|Any CPU.Build.0 = Release
+		{289FED9F-6105-4FD2-AE03-DBD58298E592}.Release|Any CPU.Deploy.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

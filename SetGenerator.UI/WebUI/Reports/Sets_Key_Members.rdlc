@@ -257,9 +257,6 @@
                       </Textbox>
                     </CellContents>
                   </TablixHeader>
-                  <Visibility>
-                    <Hidden>=Fields!ShowKey.Value = 0</Hidden>
-                  </Visibility>
                 </TablixMember>
               </TablixMembers>
             </TablixMember>
@@ -287,9 +284,6 @@
                       </Paragraph>
                     </Paragraphs>
                     <rd:DefaultName>Textbox40</rd:DefaultName>
-                    <Visibility>
-                      <Hidden>=Sum(Abs(CInt(Fields!ShowMember.Value)), "Sets") = 0</Hidden>
-                    </Visibility>
                     <Style>
                       <Border>
                         <Style>None</Style>
@@ -348,9 +342,6 @@
                       </Textbox>
                     </CellContents>
                   </TablixHeader>
-                  <Visibility>
-                    <Hidden>=Fields!ShowMember.Value = False</Hidden>
-                  </Visibility>
                 </TablixMember>
                 <TablixMember>
                   <TablixHeader>
@@ -620,18 +611,6 @@
         <Field Name="Singer">
           <DataField>Singer</DataField>
           <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="ShowMember">
-          <DataField>ShowMember</DataField>
-          <rd:TypeName>System.Boolean</rd:TypeName>
-        </Field>
-        <Field Name="ShowKey">
-          <DataField>ShowKey</DataField>
-          <rd:TypeName>System.Boolean</rd:TypeName>
-        </Field>
-        <Field Name="ShowSinger">
-          <DataField>ShowSinger</DataField>
-          <rd:TypeName>System.Boolean</rd:TypeName>
         </Field>
         <Field Name="Member">
           <DataField>Member</DataField>

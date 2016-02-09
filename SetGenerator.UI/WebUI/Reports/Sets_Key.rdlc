@@ -183,9 +183,6 @@
                       </Textbox>
                     </CellContents>
                   </TablixHeader>
-                  <Visibility>
-                    <Hidden>=Fields!ShowKey.Value = 0</Hidden>
-                  </Visibility>
                 </TablixMember>
               </TablixMembers>
             </TablixMember>
@@ -423,18 +420,6 @@
         <Field Name="Singer">
           <DataField>Singer</DataField>
           <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="ShowMember">
-          <DataField>ShowMember</DataField>
-          <rd:TypeName>System.Boolean</rd:TypeName>
-        </Field>
-        <Field Name="ShowKey">
-          <DataField>ShowKey</DataField>
-          <rd:TypeName>System.Boolean</rd:TypeName>
-        </Field>
-        <Field Name="ShowSinger">
-          <DataField>ShowSinger</DataField>
-          <rd:TypeName>System.Boolean</rd:TypeName>
         </Field>
         <Field Name="Member">
           <DataField>Member</DataField>

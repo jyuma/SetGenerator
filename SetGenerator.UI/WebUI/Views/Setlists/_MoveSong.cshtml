@@ -1,0 +1,8 @@
+﻿@model SetGenerator.WebUI.ViewModels.MoveSongViewModel
+
+<div id="setlist-edit-modal">
+    <div class="panel">
+        <div class="label label-default">Move To</div>
+        @Html.DropDownList("ddlLocation", @Model.LocationList, new { @class = "form-control" })
+    </div>
+</div>

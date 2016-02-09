@@ -19,10 +19,10 @@
     <div class="panel-heading">
         <ul class="nav nav-pills">
             <li>
-                <h3>View Sets for <i>@Model.Name</i>
-                </h3>
-            </li> <li style="float: right;">
-                <button class="btn btn-info" onclick="location.href = '@Url.Action("Print", "Setlists", new {@id = @Model.SetlistId})'">Download PDF</button>
+                <h3>View Sets for <i>@Model.Name</i></h3>
+            </li>
+            <li style="float: right;">
+                <button class="btn btn-info" data-bind="click: showColumnSelectorDialog">Download PDF</button>
             </li>
         </ul>
         <a href="#" onclick="location.href = '@Url.Action("Index", "Setlists", new {@id = @Model.SetlistId})'">Back To List</a>
