@@ -11,7 +11,9 @@
 
     setlists.index = {
         init: function(options) {
-            
+            var _sortDescending = false;
+            var _currentSortKey = "name";
+
             var config = {
                 setlistId: "",
                 currentUser: "",
@@ -106,12 +108,34 @@
                 };
 
                 self.sort = function(header) {
-                    var sortKey = header.sortKey;
+                    var afterSave = typeof header.afterSave != "undefined" ? header.afterSave : false;
+                    var sortKey;
 
-                    $(self.columns()).each(function(index, value) {
+                    if (!afterSave) {
+                        sortKey = header.sortKey;
+
+                        if (sortKey !== _currentSortKey) {
+                            _sortDescending = false;
+                        } else {
+                            _sortDescending = !_sortDescending;
+                        }
+                        _currentSortKey = sortKey;
+                    } else {
+                        sortKey = _currentSortKey;
+                    }
+
+                    $(self.columns()).each(function (index, value) {
                         if (value.sortKey === sortKey) {
-                            self.setlists.sort(function(a, b) {
-                                return a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0;
+                            self.setlists.sort(function (a, b) {
+                                if (_sortDescending) {
+                                    return a[sortKey].toString().toLowerCase() > b[sortKey].toString().toLowerCase()
+                                        ? -1 : a[sortKey].toString().toLowerCase() < b[sortKey].toString().toLowerCase()
+                                        || a.name.toLowerCase() > b.name.toLowerCase() ? 1 : 0;
+                                } else {
+                                    return a[sortKey].toString().toLowerCase() < b[sortKey].toString().toLowerCase()
+                                        ? -1 : a[sortKey].toString().toLowerCase() > b[sortKey].toString().toLowerCase()
+                                        || a.name.toLowerCase() > b.name.toLowerCase() ? 1 : 0;
+                                }
                             });
                         }
                     });
@@ -299,6 +323,7 @@
                                 lists.SetlistList = data.SetlistList;
                                 createSetlistArray(lists.SetlistList);
                                 self.selectedSetlist(self.getSetlist(data.SelectedId));
+                                self.sort({ afterSave: true });
                                 self.highlightRow(self.selectedSetlist());
                                 result = true;
                             } else {
@@ -339,6 +364,7 @@
                             if (data.Success) {
                                 lists.SetlistList = data.SetlistList;
                                 createSetlistArray(lists.SetlistList);
+                                self.sort({ afterSave: true });
                             }
                             $("body").css("cursor", "default");
                         }

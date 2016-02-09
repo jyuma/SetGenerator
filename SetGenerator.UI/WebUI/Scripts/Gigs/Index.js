@@ -9,6 +9,8 @@
 
     gigs.index = {
         init: function () {
+            var _sortDescending = false;
+            var _currentSortKey = "venue";
 
             var lists = {
                 GigList: [],
@@ -79,12 +81,34 @@
                 self.selectedGig(self.gigs()[0]);
 
                 self.sort = function (header) {
-                    var sortKey = header.sortKey;
+                    var afterSave = typeof header.afterSave != "undefined" ? header.afterSave : false;
+                    var sortKey;
+
+                    if (!afterSave) {
+                        sortKey = header.sortKey;
+
+                        if (sortKey !== _currentSortKey) {
+                            _sortDescending = false;
+                        } else {
+                            _sortDescending = !_sortDescending;
+                        }
+                        _currentSortKey = sortKey;
+                    } else {
+                        sortKey = _currentSortKey;
+                    }
 
                     $(self.columns()).each(function (index, value) {
                         if (value.sortKey === sortKey) {
                             self.gigs.sort(function (a, b) {
-                                return a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : a[sortKey] === b[sortKey] ? 0 : 0;
+                                if (_sortDescending) {
+                                    return a[sortKey].toString().toLowerCase() > b[sortKey].toString().toLowerCase()
+                                        ? -1 : a[sortKey].toString().toLowerCase() < b[sortKey].toString().toLowerCase()
+                                        || a.venue.toLowerCase() > b.venue.toLowerCase() ? 1 : 0;
+                                } else {
+                                    return a[sortKey].toString().toLowerCase() < b[sortKey].toString().toLowerCase()
+                                        ? -1 : a[sortKey].toString().toLowerCase() > b[sortKey].toString().toLowerCase()
+                                        || a.venue.toLowerCase() > b.venue.toLowerCase() ? 1 : 0;
+                                }
                             });
                         }
                     });
@@ -243,6 +267,7 @@
                                 lists.GigList = data.GigList;
                                 createGigArray(lists.GigList);
                                 self.selectedGig(self.getGig(data.SelectedId));
+                                self.sort({ afterSave: true });
                                 self.highlightRow(self.selectedGig());
                                 result = true;
                             } else {
@@ -283,6 +308,7 @@
                             if (data.Success) {
                                 lists.GigList = data.GigList;
                                 createGigArray(lists.GigList);
+                                self.sort({ afterSave: true });
                             }
                             $("body").css("cursor", "default");
                         }

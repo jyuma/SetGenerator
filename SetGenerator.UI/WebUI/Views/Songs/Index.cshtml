@@ -103,7 +103,7 @@
                     <!-- /ko -->
 
                     <!-- ko if: dataMember !== 'neverclose' && dataMember !== 'neveropen' -->
-                    <td data-bind="text: $parent[dataMember], visible: isVisible"></td>
+                    <td data-bind="text: $parent[dataMember], visible: isVisible, css: { 'col-audit': dataMember === 'updateuser' || dataMember === 'updatedate'}"></td>
                     <!-- /ko -->
 
                     <!-- /ko -->

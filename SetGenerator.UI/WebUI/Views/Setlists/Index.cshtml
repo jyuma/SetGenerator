@@ -56,7 +56,7 @@
                 <tr>
                     <th class="col-glyphicon"></th>
                     <th class="col-glyphicon"></th>
-                    <th class="col-link"></th>
+                    <th class="col-link-sets"></th>
                     <!-- ko foreach: columns -->
                     <th data-bind="visible: isVisible, click: $parent.sort, attr: { id: 'setlist-col-' + dataMember } "><a href="#" data-bind="text: title"></a></th>
                     <!-- /ko -->
@@ -65,11 +65,11 @@
 
             <tbody data-bind="foreach: setlistsTable">
             <tr data-bind="click: $parent.highlightRow, attr: {id: 'row_' +  id}">
-                <td class="table-edit"><a class="glyphicon glyphicon-remove" href="#" data-bind="click: $parent.showDeleteDialog"></a></td>
-                <td class="table-edit"><a class="glyphicon glyphicon-pencil" href="#" data-bind="click: $parent.showEditDialog"></a></td>
-                <td class="table-edit"><a data-bind="attr: { href: 'Setlists/' + id + '/Sets/' }, click: $parent.showSets">View Sets</a></td>
+                <td><a class="glyphicon glyphicon-remove" href="#" data-bind="click: $parent.showDeleteDialog"></a></td>
+                <td><a class="glyphicon glyphicon-pencil" href="#" data-bind="click: $parent.showEditDialog"></a></td>
+                <td ><a data-bind="attr: { href: 'Setlists/' + id + '/Sets/' }, click: $parent.showSets">View Sets</a></td>
                 <!-- ko foreach: $parent.columns -->
-                <td data-bind="text: $parent[dataMember], visible: isVisible"></td>
+                <td data-bind="text: $parent[dataMember], visible: isVisible, css: { 'col-audit': dataMember === 'owner' || dataMember === 'updateuser' || dataMember === 'updatedate'}"></td>
                 <!-- /ko -->
             </tr>
             </tbody>

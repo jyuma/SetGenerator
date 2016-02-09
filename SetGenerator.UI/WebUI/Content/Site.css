@@ -7,6 +7,7 @@ body {
 #registerLink {
   padding-right: 5px;
 }
+/* tableDnD */
 .dragClass {
   color: #e9e4e4;
   background-color: #92a892;
@@ -117,8 +118,17 @@ ul.dropdown-menu li label {
 table .col-glyphicon {
   width: 10px;
 }
-table .col-link {
-  width: 90px;
+table .col-date-gig {
+  width: 100px;
+}
+table .col-link-setlist {
+  width: 60px;
+}
+table .col-link-sets {
+  width: 80px;
+}
+table .col-audit {
+  width: 120px;
 }
 table th a:link {
   text-decoration: none;

@@ -16,7 +16,6 @@
 
     songs.index = {
         init: function () {
-
             var _singerNameList;
             var _currentSortKey = "title";
             var _sortDescending = false;
@@ -218,13 +217,13 @@
                         if (value.sortKey === sortKey) {
                             self.songs.sort(function (a, b) {
                                 if (_sortDescending) {
-                                    return a[sortKey] > b[sortKey]
-                                        ? -1 : a[sortKey] < b[sortKey] || a.title > b.title
-                                        ? 1 : 0;
+                                    return a[sortKey].toString().toLowerCase() > b[sortKey].toString().toLowerCase()
+                                        ? -1 : a[sortKey].toString().toLowerCase() < b[sortKey].toString().toLowerCase()
+                                        || a.title.toLowerCase() > b.title.toLowerCase() ? 1 : 0;
                                 } else {
-                                    return a[sortKey] < b[sortKey]
-                                        ? -1 : a[sortKey] > b[sortKey] || a.title > b.title
-                                        ? 1 : 0;
+                                    return a[sortKey].toString().toLowerCase() < b[sortKey].toString().toLowerCase()
+                                        ? -1 : a[sortKey].toString().toLowerCase() > b[sortKey].toString().toLowerCase()
+                                        || a.title.toLowerCase() > b.title.toLowerCase() ? 1 : 0;
                                 }
                             });
                         }
@@ -416,6 +415,7 @@
                                 lists.SongList = data.SongList;
                                 createSongArray();
                                 self.selectedSong(self.getSong(data.SelectedId));
+                                self.sort({ afterSave: true });
                                 self.highlightRow(self.selectedSong());
                                 result = true;
                             } else {
@@ -456,6 +456,7 @@
                             if (data.Success) {
                                 lists.SongList = data.SongList;
                                 createSongArray();
+                                self.sort({ afterSave: true });
                             }
                             $("body").css("cursor", "default");
                         }
@@ -480,6 +481,7 @@
                             if (data.Success) {
                                 lists.SongList = data.SongList;
                                 createSongArray();
+                                self.sort({ afterSave: true });
                             }
                             $("body").css("cursor", "default");
                         }
