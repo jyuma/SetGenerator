@@ -10,10 +10,10 @@ namespace SetGenerator.WebUI.ViewModels
         public SelectList TotalSongsPerSetlist { get; set; }
     }
 
-    public class AddSongToSetViewModel
+    public class MoveSongViewModel
     {
         public int SetlistId { get; set; }
         public string SetlistName { get; set; }
-        public SelectList TotalSetsList { get; set; }
+        public SelectList LocationList { get; set; }
     }
 }

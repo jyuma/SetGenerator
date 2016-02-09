@@ -419,7 +419,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Scripts\jquery-2.2.0.min.map" />
     <Content Include="Views\Gigs\_GigEdit.cshtml" />
-    <Content Include="Views\Setlists\_AddSongToSet.cshtml" />
+    <Content Include="Views\Setlists\_MoveSong.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

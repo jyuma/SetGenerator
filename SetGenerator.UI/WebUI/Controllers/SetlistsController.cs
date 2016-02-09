@@ -263,12 +263,12 @@ namespace SetGenerator.WebUI.Controllers
         }
 
         [HttpGet]
-        public PartialViewResult GetAddSongToSetView(int totalSets)
+        public PartialViewResult GetMoveSongView(int totalSets, int currentSet)
         {
-            return PartialView("_AddSongToSet", LoadAddSongToSetViewModel(totalSets));
+            return PartialView("_MoveSong", LoadMoveSongViewModel(totalSets, currentSet));
         }
 
-        private static AddSongToSetViewModel LoadAddSongToSetViewModel(int totalSets)
+        private static MoveSongViewModel LoadMoveSongViewModel(int totalSets, int currentSet)
         {
             var setNumberList = new Collection<int>();
             for (var n = 1; n <= totalSets; n++)
@@ -276,11 +276,16 @@ namespace SetGenerator.WebUI.Controllers
                 setNumberList.Add(n);
             }
 
-            var vm = new AddSongToSetViewModel
+            var vm = new MoveSongViewModel
             {
-                TotalSetsList = new SelectList(setNumberList
-                        .Select(x => new { Value = x, Display = x }),
-                        "Value", "Display"),
+                LocationList = new SelectList(
+                    setNumberList
+                        .Where(x => x != currentSet)
+                        .Select(x => new { Value = x, Display = string.Format("Set {0}", x) })
+                        .Union((currentSet != 0) 
+                        ? new Collection<object> { new { Value = 0, Display = "Spares" } }
+                        : new Collection<object>()),
+                        "Value", "Display")
             };
 
             return vm;
@@ -370,7 +375,7 @@ namespace SetGenerator.WebUI.Controllers
         }
 
         [HttpPost]
-        public JsonResult AddSongToSet(int setlistId, int setNumber, int songId)
+        public JsonResult MoveSong(int setlistId, int setNumber, int songId)
         {
             var setlist = _setlistRepository.Get(setlistId);
             var song = _songRepository.Get(songId);
@@ -378,6 +383,13 @@ namespace SetGenerator.WebUI.Controllers
             var sequence = setlist.SetSongs
                 .Where(x => x.SetNumber == setNumber)
                 .Max(m => m.Sequence) + 1;
+
+            if (setNumber > 0)
+            {
+                // delete it from its original location
+                var setSong = setlist.SetSongs.SingleOrDefault(x => x.Song.Id == songId);
+                setlist.SetSongs.Remove(setSong);
+            }
 
             setlist.SetSongs.Add(new SetSong
             {

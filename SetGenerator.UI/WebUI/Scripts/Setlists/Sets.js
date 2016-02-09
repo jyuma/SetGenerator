@@ -11,6 +11,7 @@
 
     setlists.sets = {
         init: function (options) {
+            var tblSetSong = $("#tblSetSong");
 
             var config = {
                 setlistId: 0
@@ -34,50 +35,6 @@
             ko.applyBindings(new SetsViewModel());
 
             initTableDnD();
-
-            function initTableDnD() {
-                var tblSetSong = $("#tblSetSong");
-                var tblSetSongRow = $("#tblSetSong tr");
-
-                tblSetSong.tableDnD(
-                {
-                    onDragClass: "dragClass",
-                    onDrop: function (table) {
-                        var rows = $(table.rows).filter(function (index, value) {
-                            return ((value.id.length > 0) && (value.id.indexOf("_0_") < 0));
-                        });
-                        if (rows.length > 0) {
-                            var cells = $(rows).find("td");
-                            $(cells).removeClass("dragClass");
-                        }
-                    },
-                    onDragStart: function (table, row) {
-                        var rows = $(table.rows).filter(function (index, value) {
-                            return ((value.id.length > 0) && (value.id.indexOf("_0_") < 0));
-                        });
-                        if (rows.length > 0) {
-                            var cells = $(rows).find("td");
-                            $(cells).removeClass("dragClass");
-                            $(row.cells).addClass("dragClass");
-                        }
-                    },
-                    onDragStop: function (table, row) {
-                        var rows = $(table.rows).filter(function (index, value) {
-                            return ((value.id.length > 0) && (value.id.indexOf("_0_") < 0));
-                        });
-                        if (rows.length > 0) {
-                            var cells = $(rows).find("td");
-                            $(cells).removeClass("dragClass");
-                        }
-                    }
-                });
-
-                tblSetSongRow.hover(function () {
-                    $(this.cells).addClass("showDragHandle");
-                }, function () {
-                    $(this.cells).removeClass("showDragHandle");
-                });
-            }
 
             function loadConfig() {
                 $.ajax({
@@ -196,7 +153,7 @@
 
                     // only turn on DnD if not on Spares
                     if (row.setnumber > 0) {
-                        $("#tblSetSong").tableDnDUpdate();
+                        tblSetSong.tableDnDUpdate();
                     }
                 };
 
@@ -241,15 +198,14 @@
                 self.highlightRow = function (row) {
                     if (row == null) return;
                     var id = row.id;
-                    var table = $("#tblSetSong");
                     var rows = $("#tblSetSong tr:gt(0)");
                     rows.each(function () {
                         $(this).css("background-color", "#ffffff");
                     });
 
-                    var r = table.find("#row_" + id);
+                    var r = tblSetSong.find("#row_" + id);
                     r.css("background-color", HIGHLIGHT_ROW_COLOUR);
-                    $("#tblSetSong").attr("tr:hover", HIGHLIGHT_ROW_COLOUR);
+                    tblSetSong.attr("tr:hover", HIGHLIGHT_ROW_COLOUR);
                 };
 
                 self.getSetSong = function (songid) {
@@ -263,50 +219,42 @@
                     return setsong;
                 };
 
-                self.showAddToSetDialog = function (row) {
+                self.showMoveSongDialog = function (row) {
                     var message;
                     var songId = row.id;
+                    var currentSet = self.selectedSetNumber();
 
                     $.ajax({
                         type: "GET",
                         async: false,
-                        url: site.url + "Setlists/GetAddSongToSetView",
-                        data: { totalSets: lists.SetNumberList.length },
+                        url: site.url + "Setlists/GetMoveSongView",
+                        data: { totalSets: lists.SetNumberList.length, currentSet: currentSet },
                         success: function (data) {
                             message = data;
                         }
                     });
 
                     dialog.custom.showModal({
-                        title: "Add To Set",
+                        title: "Move Song",
                         message: message,
                         callback: function () {
                             $("#validation-container").html("");
                             $("#validation-container").hide();
-                            return self.addSongToSet(songId);
+                            var setNumber = self.getSetNumberFromDialog();
+
+                            if (setNumber === 0) {
+                                return self.deleteSetSong(row.id); 
+                            } else {
+                                return self.moveSong(songId, setNumber);
+                            }
                         },
-                        width: 350
+                        width: 180
                     });
                 };
 
-                self.showDeleteDialog = function (row) {
+                self.showMoveDialog = function (row) {
                     self.highlightRow(row);
                     self.showSongDeleteDialog(row);
-                };
-
-                self.showSongDeleteDialog = function (row) {
-                    var id = (typeof row.id !== "undefined" ? row.id : 0);
-                    if (id <= 0) return;
-                    var s = self.getSetSong(id);
-
-                    dialog.custom.showModal({
-                        title: "Remove song?",
-                        message: "This will remove the song '" + s.title + "' from the setlist.",
-                        callback: function () {
-                            return self.deleteSetSong(row.id);
-                        },
-                        width: 500
-                    });
                 };
 
                 //---------------------------------------------- CONTROLLER (BEGIN) -------------------------------------------------------
@@ -328,7 +276,7 @@
                                 lists.SetSongList = data.SetSongList;
                                 lists.SpareList = data.SpareList;
                                 createSetSongArray(lists.SetSongList);
-                                $("#tblSetSong").tableDnDUpdate();
+                                tblSetSong.tableDnDUpdate();
                             }
                             $("body").css("cursor", "default");
                         }
@@ -362,13 +310,12 @@
                     }
                 };
 
-                self.addSongToSet = function (songId) {
-                    var setNumber = self.getSetNumberFromDialog();
+                self.moveSong = function (songId, setNumber) {
                     var result;
 
                     $("body").css("cursor", "wait");
 
-                    var url = site.url + "Setlists/AddSongToSet/";
+                    var url = site.url + "Setlists/MoveSong/";
 
                     $.ajax({
                         type: "POST",
@@ -388,7 +335,7 @@
                                 createSetSongArray(lists.SetSongList);
                                 self.selectedSetSong(self.getSetSong(data.SelectedId));
                                 self.highlightRow(self.selectedSetSong());
-                                $("#tblSetSong").tableDnDUpdate();
+                                tblSetSong.tableDnDUpdate();
                                 result = true;
                             } else {
                                 if (data.ErrorMessages.length > 0) {
@@ -413,11 +360,10 @@
                 };
 
                 self.saveSetSongOrder = function () {
-                    var rows = $("#tblSetSong tr").not("thead tr");
-                    // dig out the setnumber
-                    var idx1 = rows[0].id.indexOf("_");
-                    var idx2 = rows[0].id.lastIndexOf("_");
-                    var setNumber = rows[0].id.substring(idx1 + 1, idx2);
+                    var rows = tblSetSong.find("tr").not("thead tr");
+                    var rowid = rows[0].id;
+                    var setNumber = rowid.substring(rowid.indexOf("_") + 1,
+                        rowid.lastIndexOf("_"));
 
                     var ids = [];
                     rows.each(function (index, value) {
@@ -440,7 +386,7 @@
                                     createSetSongArray(lists.SetSongList);
                                     self.selectedSetSong(self.getSetSong(data.SelectedId));
                                     self.highlightRow(self.selectedSetSong());
-                                    $("#tblSetSong").tableDnDUpdate();
+                                    tblSetSong.tableDnDUpdate();
                                 }
                             }
                         });
@@ -450,7 +396,7 @@
                 //---------------------------------------------- CONTROLLER (END) -------------------------------------------------------
 
                 self.getSetNumberFromDialog = function () {
-                    var setnum = parseInt($("#ddlNumSets").val());
+                    var setnum = parseInt($("#ddlLocation").val());
                     return setnum;
                 };
 
@@ -471,13 +417,53 @@
 
             //---------------------------------------------- VIEW MODEL (END) -------------------------------------------------------
 
+            function getSetSongRows(table) {
+                return $(table.rows).filter(function (index, value) {
+                    return ((value.id.length > 0) && (value.id.indexOf("_0_") < 0));
+                });
+            }
+
+            function removeDragClass(rows) {
+                if (rows.length > 0) {
+                    var cells = $(rows).find("td");
+                    $(cells).removeClass("dragClass");
+                }
+            }
+
+            function initTableDnD() {
+                var tblSetSongRow = $("#tblSetSong tr");
+
+                tblSetSong.tableDnD(
+                {
+                    onDragClass: "dragClass",
+                    onDrop: function (table) {
+                        var rows = getSetSongRows(table);
+                        removeDragClass(rows);
+                    },
+                    onDragStart: function (table, row) {
+                        var rows = getSetSongRows(table);
+                        removeDragClass(rows);
+                        $(row.cells).addClass("dragClass");
+                    },
+                    onDragStop: function (table, row) {
+                        var rows = getSetSongRows(table);
+                        removeDragClass(rows);
+                    }
+                });
+
+                tblSetSongRow.hover(function () {
+                    $(this.cells).addClass("showDragHandle");
+                }, function () {
+                    $(this.cells).removeClass("showDragHandle");
+                });
+            }
+
             function GetSharpFlatNotation(sharpflatnat) {
                 var desc = "";
                 if (sharpflatnat > 0)
                     desc = sharpflatnat === 1 ? "#" : "b";
                 return desc;
             }
-
 
             function getValue(list, id, dataMember, valueMember) {
                 var name = "";
@@ -490,7 +476,6 @@
                 return name;
             }
 
-            //---------------------------------------------- DIALOG -------------------------------------------------------
         }
     }
 })(jQuery);

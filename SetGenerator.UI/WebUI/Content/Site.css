@@ -39,14 +39,19 @@ ul.dropdown-menu li label {
 .glyphicon {
   color: #555555;
 }
-.glyphicon-new-window {
+.glyphicon-share,
+.glyphicon-share-alt {
   color: #47a447;
 }
 .glyphicon-pencil {
   color: #457bc5;
 }
+.glyphicon-remove-sign,
 .glyphicon-remove {
   color: #b94a48;
+}
+.glyphicon-transfer {
+  color: #47a447;
 }
 .glyphicon-trash {
   color: #ed9c28;
@@ -227,12 +232,17 @@ h4 {
   line-height: normal;
   font-size: 9px;
   text-align: center;
+  width: 100%;
 }
 #footer a {
   color: #3185EB;
 }
 .modal-dialog {
   padding: 0;
+}
+.modal-dialog p {
+  padding: 0;
+  width: 100%;
 }
 .modal-body {
   padding-bottom: 0;

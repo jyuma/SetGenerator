@@ -160,7 +160,7 @@
                         callback : function () {
                             return self.deleteSetlist(row.id);
                         },
-                        width: 500
+                        width: 400
                     });
                 };
 
