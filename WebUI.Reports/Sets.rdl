@@ -86,7 +86,7 @@
           </TablixColumns>
           <TablixRows>
             <TablixRow>
-              <Height>0.58333in</Height>
+              <Height>0.5in</Height>
               <TablixCells>
                 <TablixCell>
                   <CellContents>
@@ -545,7 +545,7 @@
         <RepeatColumnHeaders>true</RepeatColumnHeaders>
         <DataSetName>Setlists</DataSetName>
         <Left>0.05208in</Left>
-        <Height>0.97916in</Height>
+        <Height>0.89583in</Height>
         <Width>7.09375in</Width>
         <Style>
           <Border>
@@ -554,13 +554,13 @@
         </Style>
       </Tablix>
     </ReportItems>
-    <Height>1.08333in</Height>
+    <Height>0.92708in</Height>
     <Style />
   </Body>
   <Width>7.15625in</Width>
   <Page>
     <PageHeader>
-      <Height>0.95708in</Height>
+      <Height>0.93625in</Height>
       <PrintOnFirstPage>true</PrintOnFirstPage>
       <PrintOnLastPage>true</PrintOnLastPage>
       <ReportItems>
@@ -573,7 +573,7 @@
                 <TextRun>
                   <Value>=First(Fields!Name.Value, "Setlists")</Value>
                   <Style>
-                    <FontSize>28pt</FontSize>
+                    <FontSize>20pt</FontSize>
                   </Style>
                 </TextRun>
               </TextRuns>
@@ -603,7 +603,7 @@
                 <TextRun>
                   <Value>=Iif(Globals!PageNumber &lt;= First(Fields!NumSets.Value, "Setlists"), "Set " + CStr(Globals!PageNumber), "Spares")</Value>
                   <Style>
-                    <FontSize>20pt</FontSize>
+                    <FontSize>24pt</FontSize>
                   </Style>
                 </TextRun>
               </TextRuns>
@@ -611,9 +611,9 @@
             </Paragraph>
           </Paragraphs>
           <rd:DefaultName>Textbox21</rd:DefaultName>
-          <Top>0.51389in</Top>
+          <Top>0.48264in</Top>
           <Left>0.05208in</Left>
-          <Height>0.37375in</Height>
+          <Height>0.44319in</Height>
           <Width>1.97917in</Width>
           <ZIndex>1</ZIndex>
           <Style>

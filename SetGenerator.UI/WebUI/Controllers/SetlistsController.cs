@@ -89,7 +89,7 @@ namespace SetGenerator.WebUI.Controllers
             return File(streamBytes, mimeType, filename);
         }
 
-        private string GetReportPath(bool includeKey, bool includeSinger, bool includeInstrumentation)
+        private static string GetReportPath(bool includeKey, bool includeSinger, bool includeInstrumentation)
         {
             var reportPath = "~/Reports/Sets.rdlc";
 
@@ -145,8 +145,12 @@ namespace SetGenerator.WebUI.Controllers
                 ? Session["OwnerSearch"].ToString() 
                 : string.Empty;
 
+            var bandId = Convert.ToInt32(Session["BandId"]);
+            var bandName = _bandRepository.Get(bandId).Name;
+
             var model = new SetlistViewModel
             {
+                BandName = bandName,
                 CurrentUser = _currentUser.UserName,
                 SelectedId = selectedId,
                 SelectedOwnerSearch = selectedOwnerSearch,

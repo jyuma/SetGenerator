@@ -3,7 +3,6 @@ using SetGenerator.Service;
 using SetGenerator.WebUI.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 
 namespace SetGenerator.WebUI.Common
 {

@@ -15,6 +15,7 @@ namespace SetGenerator.WebUI.ViewModels
 
     public class GigViewModel
     {
+        public string BandName { get; set; }
         public int SelectedId { get; set; }
         public List<string> ErrorMessages { get; set; }
         public bool Success { get; set; }

@@ -17,18 +17,23 @@
 
 <div class="panel panel-default">
     <div class="panel-heading">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3><i>@Model.BandName</i> Gigs</h3>
+            </div>
+        </div>
         <ul class="nav nav-pills">
             <li>
                 <input type="button" class="btn btn-success" value="Add Gig" data-bind="click: showEditDialog"/>
             </li>
             <li>
-                <input id="txtSearchVenue" type="text" class="form-control text-search" placeholder="Venue" data-bind="value: venueSearch, valueUpdate: 'keyup'" />
+                <input id="txtSearchVenue" type="text" class="form-control text-search" placeholder="Venue" data-bind="value: venueSearch, valueUpdate: 'keyup'"/>
             </li>
             <li>
-                <input id="txtSearchFrom" type="text" class="form-control date-search" placeholder="From" />
+                <input id="txtSearchFrom" type="text" class="form-control date-search" placeholder="From"/>
             </li>
             <li>
-                <input id="txtSearchTo" type="text" class="form-control date-search" placeholder="To" />
+                <input id="txtSearchTo" type="text" class="form-control date-search" placeholder="To"/>
             </li>
             <li style="float: right;">
                 <div id="ddlColumns" class="dropdown">
@@ -39,7 +44,7 @@
                     <ul class="dropdown-menu" aria-labelledby="btnShowHideColumns" data-bind="foreach: columns">
                         <li data-bind="if: !alwaysVisible">
                             <div>
-                                <input type="checkbox" data-bind="checked: isVisible, attr: { id: 'chk_' + dataMember }" /> <label for="" data-bind="text: title"></label>
+                                <input type="checkbox" data-bind="checked: isVisible, attr: { id: 'chk_' + dataMember }"/> <label for="" data-bind="text: title"></label>
                             </div>
                         </li>
                     </ul>

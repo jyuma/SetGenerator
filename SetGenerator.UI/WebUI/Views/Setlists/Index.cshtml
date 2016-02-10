@@ -23,6 +23,11 @@
 
 <div class="panel panel-default">
     <div class="panel-heading">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3><i>@Model.BandName</i> Setlists</h3>
+            </div>
+        </div>
         <ul class="nav nav-pills">
             <li>
                 <input type="button" class="btn btn-success" value="Generate New" data-bind="click: showEditDialog"/>
@@ -42,7 +47,7 @@
                     <ul class="dropdown-menu" aria-labelledby="btnShowHideColumns" data-bind="foreach: columns">
                         <li data-bind="if: !alwaysVisible">
                             <div>
-                                <input type="checkbox" data-bind="checked: isVisible, attr: { id: 'chk_' + dataMember }" /> <label for="" data-bind="text: title"></label>
+                                <input type="checkbox" data-bind="checked: isVisible, attr: { id: 'chk_' + dataMember }"/> <label for="" data-bind="text: title"></label>
                             </div>
                         </li>
                     </ul>

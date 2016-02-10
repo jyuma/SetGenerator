@@ -17,6 +17,11 @@
 
 <div class="panel panel-default">
     <div class="panel-heading">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3><i>@Model.BandName</i> Songs</h3>
+            </div>
+        </div>
         <ul class="nav nav-pills">
             <li>
                 <input type="button" class="btn btn-success" value="Add Song" data-bind="click: showSongEditDialog" />
@@ -37,10 +42,10 @@
                 <input class="form-control" type="text" id="txtSearchKey" placeholder="Key" data-bind="value: keySearch, valueUpdate: 'keyup'" maxlength="3" />
             </li>
             <li>
-                <input class="form-control" id="txtSearchTitle" type="text" placeholder="Title" data-bind="value: titleSearch, valueUpdate: 'keyup'"/>
+                <input class="form-control" id="txtSearchTitle" type="text" placeholder="Title" data-bind="value: titleSearch, valueUpdate: 'keyup'" />
             </li>
             <li>
-                <button class="btn btn-default" onclick="location.href='@Url.Action("Print", "Songs" )'"><span class="glyphicon glyphicon-print" aria-hidden="true"></span></button>
+                <button class="btn btn-default" onclick="location.href = '@Url.Action("Print", "Songs")'"><span class="glyphicon glyphicon-print" aria-hidden="true"></span></button>
             </li>
             <li style="float: right;">
                 <div id="ddlColumns" class="dropdown">

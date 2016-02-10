@@ -58,10 +58,14 @@ namespace SetGenerator.WebUI.Controllers
             return View(LoadSongViewModel(0, null));
         }
 
-        private static SongViewModel LoadSongViewModel(int selectedId, List<string> msgs)
+        private SongViewModel LoadSongViewModel(int selectedId, List<string> msgs)
         {
+            var bandId = Convert.ToInt32(Session["BandId"]);
+            var bandName = _bandRepository.Get(bandId).Name;
+
             var model = new SongViewModel
             {
+                BandName = bandName,
                 SelectedId = selectedId,
                 Success = (msgs == null),
                 ErrorMessages = msgs
@@ -95,8 +99,8 @@ namespace SetGenerator.WebUI.Controllers
             Warning[] warnings;
             var streamBytes = rv.LocalReport.Render("PDF", null, out mimeType, out encoding, out filenameExtension, out streamids, out warnings);
 
-            var bandName = _bandRepository.Get(bandId);
-            var filename = bandName.Name + ".pdf";
+            var bandName = _bandRepository.Get(bandId).Name;
+            var filename = bandName + ".pdf";
 
             return File(streamBytes, mimeType, filename);
         }

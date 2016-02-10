@@ -3,41 +3,6 @@
   <Body>
     <ReportItems>
       <Tablix Name="Tablix1">
-        <TablixCorner>
-          <TablixCornerRows>
-            <TablixCornerRow>
-              <TablixCornerCell>
-                <CellContents>
-                  <Textbox Name="Textbox37">
-                    <CanGrow>true</CanGrow>
-                    <KeepTogether>true</KeepTogether>
-                    <Paragraphs>
-                      <Paragraph>
-                        <TextRuns>
-                          <TextRun>
-                            <Value />
-                            <Style />
-                          </TextRun>
-                        </TextRuns>
-                        <Style />
-                      </Paragraph>
-                    </Paragraphs>
-                    <rd:DefaultName>Textbox37</rd:DefaultName>
-                    <Style>
-                      <Border>
-                        <Style>None</Style>
-                      </Border>
-                      <PaddingLeft>2pt</PaddingLeft>
-                      <PaddingRight>2pt</PaddingRight>
-                      <PaddingTop>2pt</PaddingTop>
-                      <PaddingBottom>2pt</PaddingBottom>
-                    </Style>
-                  </Textbox>
-                </CellContents>
-              </TablixCornerCell>
-            </TablixCornerRow>
-          </TablixCornerRows>
-        </TablixCorner>
         <TablixBody>
           <TablixColumns>
             <TablixColumn>
@@ -46,7 +11,7 @@
           </TablixColumns>
           <TablixRows>
             <TablixRow>
-              <Height>0.58333in</Height>
+              <Height>0.52083in</Height>
               <TablixCells>
                 <TablixCell>
                   <CellContents>
@@ -88,47 +53,7 @@
         </TablixBody>
         <TablixColumnHierarchy>
           <TablixMembers>
-            <TablixMember>
-              <TablixHeader>
-                <Size>0.1875in</Size>
-                <CellContents>
-                  <Textbox Name="Textbox40">
-                    <CanGrow>true</CanGrow>
-                    <KeepTogether>true</KeepTogether>
-                    <Paragraphs>
-                      <Paragraph>
-                        <TextRuns>
-                          <TextRun>
-                            <Value />
-                            <Style>
-                              <FontStyle>Italic</FontStyle>
-                              <FontSize>9pt</FontSize>
-                            </Style>
-                          </TextRun>
-                        </TextRuns>
-                        <Style />
-                      </Paragraph>
-                    </Paragraphs>
-                    <rd:DefaultName>Textbox40</rd:DefaultName>
-                    <Style>
-                      <Border>
-                        <Style>None</Style>
-                      </Border>
-                      <PaddingLeft>2pt</PaddingLeft>
-                      <PaddingRight>2pt</PaddingRight>
-                      <PaddingTop>2pt</PaddingTop>
-                      <PaddingBottom>2pt</PaddingBottom>
-                    </Style>
-                  </Textbox>
-                </CellContents>
-              </TablixHeader>
-              <TablixMembers>
-                <TablixMember />
-              </TablixMembers>
-              <Visibility>
-                <Hidden>true</Hidden>
-              </Visibility>
-            </TablixMember>
+            <TablixMember />
           </TablixMembers>
         </TablixColumnHierarchy>
         <TablixRowHierarchy>
@@ -160,7 +85,7 @@
                     </SortExpression>
                   </SortExpressions>
                   <TablixHeader>
-                    <Size>6.52083in</Size>
+                    <Size>6.84375in</Size>
                     <CellContents>
                       <Textbox Name="Title">
                         <CanGrow>true</CanGrow>
@@ -202,8 +127,8 @@
         <RepeatColumnHeaders>true</RepeatColumnHeaders>
         <DataSetName>Sets</DataSetName>
         <Left>0.05208in</Left>
-        <Height>0.77083in</Height>
-        <Width>6.57292in</Width>
+        <Height>0.52083in</Height>
+        <Width>6.89583in</Width>
         <Style>
           <Border>
             <Style>None</Style>
@@ -211,17 +136,17 @@
         </Style>
       </Tablix>
     </ReportItems>
-    <Height>1.08333in</Height>
+    <Height>0.55208in</Height>
     <Style>
       <Border>
         <Style>None</Style>
       </Border>
     </Style>
   </Body>
-  <Width>6.67708in</Width>
+  <Width>6.94791in</Width>
   <Page>
     <PageHeader>
-      <Height>0.95708in</Height>
+      <Height>0.83208in</Height>
       <PrintOnFirstPage>true</PrintOnFirstPage>
       <PrintOnLastPage>true</PrintOnLastPage>
       <ReportItems>
@@ -234,6 +159,7 @@
                 <TextRun>
                   <Value>=First(Fields!Name.Value, "Sets")</Value>
                   <Style>
+                    <FontStyle>Italic</FontStyle>
                     <FontSize>20pt</FontSize>
                   </Style>
                 </TextRun>
@@ -265,6 +191,7 @@
                   <Value>=Iif(Globals!PageNumber &lt;= First(Fields!NumSets.Value, "Sets"), "Set " + CStr(Globals!PageNumber), "Spares")</Value>
                   <Style>
                     <FontSize>24pt</FontSize>
+                    <FontWeight>Bold</FontWeight>
                   </Style>
                 </TextRun>
               </TextRuns>
@@ -272,7 +199,7 @@
             </Paragraph>
           </Paragraphs>
           <rd:DefaultName>Textbox21</rd:DefaultName>
-          <Top>0.43402in</Top>
+          <Top>0.37152in</Top>
           <Left>0.05208in</Left>
           <Height>0.45362in</Height>
           <Width>2.48959in</Width>

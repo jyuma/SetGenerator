@@ -77,10 +77,14 @@ namespace SetGenerator.WebUI.Controllers
             return (System.Web.HttpContext.Current.User.Identity.Name);
         }
 
-        private static GigViewModel LoadGigViewModel(int selectedId, List<string> msgs)
+        private GigViewModel LoadGigViewModel(int selectedId, List<string> msgs)
         {
+            var bandId = Convert.ToInt32(Session["BandId"]);
+            var bandName = _bandRepository.Get(bandId).Name;
+
             var model = new GigViewModel
             {
+                BandName = bandName,
                 SelectedId = selectedId,
                 Success = (msgs == null),
                 ErrorMessages = msgs
