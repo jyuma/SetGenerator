@@ -297,12 +297,6 @@ namespace SetGenerator.WebUI.Reports {
             
             private global::System.Data.DataColumn columnSinger;
             
-            private global::System.Data.DataColumn columnShowMember;
-            
-            private global::System.Data.DataColumn columnShowKey;
-            
-            private global::System.Data.DataColumn columnShowSinger;
-            
             private global::System.Data.DataColumn columnMember;
             
             private global::System.Data.DataColumn columnInstrument;
@@ -414,30 +408,6 @@ namespace SetGenerator.WebUI.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn ShowMemberColumn {
-                get {
-                    return this.columnShowMember;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn ShowKeyColumn {
-                get {
-                    return this.columnShowKey;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn ShowSingerColumn {
-                get {
-                    return this.columnShowSinger;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public global::System.Data.DataColumn MemberColumn {
                 get {
                     return this.columnMember;
@@ -489,7 +459,7 @@ namespace SetGenerator.WebUI.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public GetSetlistRow AddGetSetlistRow(long Id, int IsSpare, string Name, int NumSets, int SetNumber, int Sequence, string Title, string Key, string Singer, bool ShowMember, bool ShowKey, bool ShowSinger, string Member, string Instrument) {
+            public GetSetlistRow AddGetSetlistRow(long Id, int IsSpare, string Name, int NumSets, int SetNumber, int Sequence, string Title, string Key, string Singer, string Member, string Instrument) {
                 GetSetlistRow rowGetSetlistRow = ((GetSetlistRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Id,
@@ -501,9 +471,6 @@ namespace SetGenerator.WebUI.Reports {
                         Title,
                         Key,
                         Singer,
-                        ShowMember,
-                        ShowKey,
-                        ShowSinger,
                         Member,
                         Instrument};
                 rowGetSetlistRow.ItemArray = columnValuesArray;
@@ -537,9 +504,6 @@ namespace SetGenerator.WebUI.Reports {
                 this.columnTitle = base.Columns["Title"];
                 this.columnKey = base.Columns["Key"];
                 this.columnSinger = base.Columns["Singer"];
-                this.columnShowMember = base.Columns["ShowMember"];
-                this.columnShowKey = base.Columns["ShowKey"];
-                this.columnShowSinger = base.Columns["ShowSinger"];
                 this.columnMember = base.Columns["Member"];
                 this.columnInstrument = base.Columns["Instrument"];
             }
@@ -565,12 +529,6 @@ namespace SetGenerator.WebUI.Reports {
                 base.Columns.Add(this.columnKey);
                 this.columnSinger = new global::System.Data.DataColumn("Singer", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnSinger);
-                this.columnShowMember = new global::System.Data.DataColumn("ShowMember", typeof(bool), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnShowMember);
-                this.columnShowKey = new global::System.Data.DataColumn("ShowKey", typeof(bool), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnShowKey);
-                this.columnShowSinger = new global::System.Data.DataColumn("ShowSinger", typeof(bool), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnShowSinger);
                 this.columnMember = new global::System.Data.DataColumn("Member", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnMember);
                 this.columnInstrument = new global::System.Data.DataColumn("Instrument", typeof(string), null, global::System.Data.MappingType.Element);
@@ -588,9 +546,6 @@ namespace SetGenerator.WebUI.Reports {
                 this.columnKey.MaxLength = 50;
                 this.columnSinger.ReadOnly = true;
                 this.columnSinger.MaxLength = 20;
-                this.columnShowMember.ReadOnly = true;
-                this.columnShowKey.ReadOnly = true;
-                this.columnShowSinger.ReadOnly = true;
                 this.columnMember.ReadOnly = true;
                 this.columnMember.MaxLength = 20;
                 this.columnInstrument.ReadOnly = true;
@@ -881,54 +836,6 @@ namespace SetGenerator.WebUI.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool ShowMember {
-                get {
-                    try {
-                        return ((bool)(this[this.tableGetSetlist.ShowMemberColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'ShowMember\' in table \'GetSetlist\' is DBNull.", e);
-                    }
-                }
-                set {
-                    this[this.tableGetSetlist.ShowMemberColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool ShowKey {
-                get {
-                    try {
-                        return ((bool)(this[this.tableGetSetlist.ShowKeyColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'ShowKey\' in table \'GetSetlist\' is DBNull.", e);
-                    }
-                }
-                set {
-                    this[this.tableGetSetlist.ShowKeyColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool ShowSinger {
-                get {
-                    try {
-                        return ((bool)(this[this.tableGetSetlist.ShowSingerColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'ShowSinger\' in table \'GetSetlist\' is DBNull.", e);
-                    }
-                }
-                set {
-                    this[this.tableGetSetlist.ShowSingerColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public string Member {
                 get {
                     try {
@@ -1065,42 +972,6 @@ namespace SetGenerator.WebUI.Reports {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetSingerNull() {
                 this[this.tableGetSetlist.SingerColumn] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsShowMemberNull() {
-                return this.IsNull(this.tableGetSetlist.ShowMemberColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetShowMemberNull() {
-                this[this.tableGetSetlist.ShowMemberColumn] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsShowKeyNull() {
-                return this.IsNull(this.tableGetSetlist.ShowKeyColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetShowKeyNull() {
-                this[this.tableGetSetlist.ShowKeyColumn] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsShowSingerNull() {
-                return this.IsNull(this.tableGetSetlist.ShowSingerColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetShowSingerNull() {
-                this[this.tableGetSetlist.ShowSingerColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1296,9 +1167,6 @@ namespace SetGenerator.WebUI.Reports.SetsTableAdapters {
             tableMapping.ColumnMappings.Add("Title", "Title");
             tableMapping.ColumnMappings.Add("Key", "Key");
             tableMapping.ColumnMappings.Add("Singer", "Singer");
-            tableMapping.ColumnMappings.Add("ShowMember", "ShowMember");
-            tableMapping.ColumnMappings.Add("ShowKey", "ShowKey");
-            tableMapping.ColumnMappings.Add("ShowSinger", "ShowSinger");
             tableMapping.ColumnMappings.Add("Member", "Member");
             tableMapping.ColumnMappings.Add("Instrument", "Instrument");
             this._adapter.TableMappings.Add(tableMapping);

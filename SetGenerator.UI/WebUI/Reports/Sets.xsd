@@ -32,9 +32,6 @@
               <Mapping SourceColumn="Title" DataSetColumn="Title" />
               <Mapping SourceColumn="Key" DataSetColumn="Key" />
               <Mapping SourceColumn="Singer" DataSetColumn="Singer" />
-              <Mapping SourceColumn="ShowMember" DataSetColumn="ShowMember" />
-              <Mapping SourceColumn="ShowKey" DataSetColumn="ShowKey" />
-              <Mapping SourceColumn="ShowSinger" DataSetColumn="ShowSinger" />
               <Mapping SourceColumn="Member" DataSetColumn="Member" />
               <Mapping SourceColumn="Instrument" DataSetColumn="Instrument" />
             </Mappings>
@@ -48,7 +45,7 @@
   <xs:element name="Sets" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="Sets" msprop:Generator_UserDSName="Sets">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element name="GetSetlist" msprop:Generator_TableClassName="GetSetlistDataTable" msprop:Generator_TableVarName="tableGetSetlist" msprop:Generator_TablePropName="GetSetlist" msprop:Generator_RowDeletingName="GetSetlistRowDeleting" msprop:Generator_RowChangingName="GetSetlistRowChanging" msprop:Generator_RowEvHandlerName="GetSetlistRowChangeEventHandler" msprop:Generator_RowDeletedName="GetSetlistRowDeleted" msprop:Generator_UserTableName="GetSetlist" msprop:Generator_RowChangedName="GetSetlistRowChanged" msprop:Generator_RowEvArgName="GetSetlistRowChangeEvent" msprop:Generator_RowClassName="GetSetlistRow">
+        <xs:element name="GetSetlist" msprop:Generator_TableClassName="GetSetlistDataTable" msprop:Generator_TableVarName="tableGetSetlist" msprop:Generator_RowChangedName="GetSetlistRowChanged" msprop:Generator_TablePropName="GetSetlist" msprop:Generator_RowDeletingName="GetSetlistRowDeleting" msprop:Generator_RowChangingName="GetSetlistRowChanging" msprop:Generator_RowEvHandlerName="GetSetlistRowChangeEventHandler" msprop:Generator_RowDeletedName="GetSetlistRowDeleted" msprop:Generator_RowClassName="GetSetlistRow" msprop:Generator_UserTableName="GetSetlist" msprop:Generator_RowEvArgName="GetSetlistRowChangeEvent">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="Id" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnId" msprop:Generator_ColumnPropNameInRow="Id" msprop:Generator_ColumnPropNameInTable="IdColumn" msprop:Generator_UserColumnName="Id" type="xs:long" minOccurs="0" />
@@ -84,9 +81,6 @@
                   </xs:restriction>
                 </xs:simpleType>
               </xs:element>
-              <xs:element name="ShowMember" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnShowMember" msprop:Generator_ColumnPropNameInRow="ShowMember" msprop:Generator_ColumnPropNameInTable="ShowMemberColumn" msprop:Generator_UserColumnName="ShowMember" type="xs:boolean" minOccurs="0" />
-              <xs:element name="ShowKey" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnShowKey" msprop:Generator_ColumnPropNameInRow="ShowKey" msprop:Generator_ColumnPropNameInTable="ShowKeyColumn" msprop:Generator_UserColumnName="ShowKey" type="xs:boolean" minOccurs="0" />
-              <xs:element name="ShowSinger" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnShowSinger" msprop:Generator_ColumnPropNameInRow="ShowSinger" msprop:Generator_ColumnPropNameInTable="ShowSingerColumn" msprop:Generator_UserColumnName="ShowSinger" type="xs:boolean" minOccurs="0" />
               <xs:element name="Member" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnMember" msprop:Generator_ColumnPropNameInRow="Member" msprop:Generator_ColumnPropNameInTable="MemberColumn" msprop:Generator_UserColumnName="Member" minOccurs="0">
                 <xs:simpleType>
                   <xs:restriction base="xs:string">
