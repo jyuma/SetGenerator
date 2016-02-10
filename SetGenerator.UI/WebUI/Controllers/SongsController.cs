@@ -287,9 +287,11 @@ namespace SetGenerator.WebUI.Controllers
                     songId = AddSong(s);
             }
 
+            var bandId = Convert.ToInt32(Session["BandId"]);
             return Json(new
             {
                 SongList = GetSongList(),
+                SingerArrayList = _bandRepository.GetSingerNameArrayList(bandId),
                 SelectedId = songId,
                 Success = (null == msgs),
                 ErrorMessages = msgs
@@ -302,9 +304,11 @@ namespace SetGenerator.WebUI.Controllers
         {
             _songRepository.Delete(id);
 
+            var bandId = Convert.ToInt32(Session["BandId"]);
             return Json(new
             {
                 SongList = GetSongList(),
+                SingerArrayList = _bandRepository.GetSingerNameArrayList(bandId),
                 Success = true
             }, JsonRequestBehavior.AllowGet);
         }

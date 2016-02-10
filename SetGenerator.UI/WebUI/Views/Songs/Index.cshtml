@@ -30,7 +30,7 @@
                 <select class="form-control filter-bold" data-bind="options: listTypeSearchList(), value: listTypeSearch, style: { fontWeight: 'bold' }"></select>
             </li>
             <li>
-                <select class="form-control filter" data-bind="options: singerNameSearchList(), value: singerSearch, style: { color: singerSearch() != 'Singer' ? '#555' : '#8b8a8a' }"></select>
+                <select class="form-control filter" data-bind="options: singerNameSearchList, value: singerSearch, style: { color: singerSearch() != 'Singer' ? '#555' : '#8b8a8a' }"></select>
             </li>
             <li>
                 <select class="form-control filter" data-bind="options: genreNameSearchList(), value: genreSearch, style: { color: genreSearch() != 'Genre' ? '#555' : '#8b8a8a' }"></select>

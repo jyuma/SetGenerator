@@ -98,7 +98,7 @@
                 var self = this;
 
                 self.songs = ko.observableArray([]);
-                self.singerNameList = ko.observableArray(_singerNameList);
+                self.singerNameSearchList = ko.observableArray([]);
                 self.showDisabled = ko.observable(false);
                 self.selectedSong = ko.observable();
                 self.singerSearch = ko.observable(STRING_ALL_SINGERS);
@@ -109,6 +109,7 @@
                 self.listTypeSearch = ko.observable(LISTTYPE_ALIST);
 
                 createSongArray();
+                createSingerSearchListArray();
 
                 $("#ddlColumns").on("hidden.bs.dropdown", function () {
                     self.saveColumns();
@@ -131,23 +132,23 @@
                     return arr;
                 });
 
-                self.singerArrayList = ko.computed(function () {
-                    var arr = [];
-                    arr.push({ Value: 0, Display: STRING_NONE });
-                    $(lists.SingerArrayList).each(function (index, value) {
-                        arr.push({ Value: value.Value, Display: value.Display });
-                    });
-                    return arr;
-                });
+                //self.singerArrayList = ko.computed(function () {
+                //    var arr = [];
+                //    arr.push({ Value: 0, Display: STRING_NONE });
+                //    $(lists.SingerArrayList).each(function (index, value) {
+                //        arr.push({ Value: value.Value, Display: value.Display });
+                //    });
+                //    return arr;
+                //});
 
-                self.singerNameSearchList = ko.computed(function () {
-                    var arr = [];
-                    arr.push(STRING_ALL_SINGERS);
-                    $(_singerNameList).each(function (index, value) {
-                        arr.push(value);
-                    });
-                    return arr;
-                });
+                //self.singerNameSearchList = ko.computed(function () {
+                //    var arr = [];
+                //    arr.push(STRING_ALL_SINGERS);
+                //    $(_singerNameList).each(function (index, value) {
+                //        arr.push(value);
+                //    });
+                //    return arr;
+                //});
 
                 self.genreArrayList = ko.computed(function () {
                     var arr = [];
@@ -241,6 +242,15 @@
                         }
                     });
                 };
+
+                function createSingerSearchListArray() {
+                    self.singerNameSearchList.removeAll();
+
+                    self.singerNameSearchList.push(STRING_ALL_SINGERS);
+                    $(lists.SingerArrayList).each(function (index, value) {
+                        self.singerNameSearchList.push(value.Display);
+                    });
+                }
 
                 self.songsTable = self.songs;
 
@@ -413,10 +423,15 @@
                         success: function (data) {
                             if (data.Success) {
                                 lists.SongList = data.SongList;
+                                lists.SingerArrayList = data.SingerArrayList;
                                 createSongArray();
                                 self.selectedSong(self.getSong(data.SelectedId));
                                 self.sort({ afterSave: true });
                                 self.highlightRow(self.selectedSong());
+                                if (self.isNewSinger) {
+                                    createSingerSearchListArray();
+                                }
+
                                 result = true;
                             } else {
                                 if (data.ErrorMessages.length > 0) {
@@ -439,6 +454,10 @@
                     return result;
                 };
 
+                self.isNewSinger = ko.computed(function() {
+                    return (lists.SingerArrayList.length !== _singerNameList.length);
+                });
+
                 self.deleteSong = function (songid) {
                     $("body").css("cursor", "wait");
 
@@ -455,7 +474,11 @@
                         success: function (data) {
                             if (data.Success) {
                                 lists.SongList = data.SongList;
+                                lists.SingerArrayList = data.SingerArrayList;
                                 createSongArray();
+                                if (self.isNewSinger) {
+                                    createSingerSearchListArray();
+                                }
                                 self.sort({ afterSave: true });
                             }
                             $("body").css("cursor", "default");
