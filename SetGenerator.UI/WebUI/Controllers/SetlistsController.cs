@@ -66,7 +66,10 @@ namespace SetGenerator.WebUI.Controllers
             var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ReportConnectionString"].ConnectionString);
             ds.Connection = connection;
 
-            string reportPath = GetReportPath(includeKey, includeSinger, includeInstrumentation);
+            var reportPath = (Convert.ToInt32(Session["BandId"]) == 1
+                && includeInstrumentation && !includeSinger && !includeKey)
+                ? "~/Reports/Sets_Members_Slugfest.rdlc" 
+                : GetReportPath(includeKey, includeSinger, includeInstrumentation);
 
             rv.LocalReport.ReportPath = Server.MapPath(reportPath);
             rv.ProcessingMode = ProcessingMode.Local;

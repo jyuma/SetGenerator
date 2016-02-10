@@ -450,6 +450,9 @@
     <EmbeddedResource Include="Reports\Sets_Key_Singer_Members.rdlc">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Reports\Sets_Members_Slugfest.rdlc">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reports\Sets_Members.rdlc">
       <SubType>Designer</SubType>
     </EmbeddedResource>
