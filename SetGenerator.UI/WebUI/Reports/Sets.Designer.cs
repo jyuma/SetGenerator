@@ -297,9 +297,11 @@ namespace SetGenerator.WebUI.Reports {
             
             private global::System.Data.DataColumn columnSinger;
             
-            private global::System.Data.DataColumn columnMember;
+            private global::System.Data.DataColumn columnMember1;
             
-            private global::System.Data.DataColumn columnInstrument;
+            private global::System.Data.DataColumn columnMember2;
+            
+            private global::System.Data.DataColumn columnMember3;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
@@ -408,17 +410,25 @@ namespace SetGenerator.WebUI.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn MemberColumn {
+            public global::System.Data.DataColumn Member1Column {
                 get {
-                    return this.columnMember;
+                    return this.columnMember1;
                 }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn InstrumentColumn {
+            public global::System.Data.DataColumn Member2Column {
                 get {
-                    return this.columnInstrument;
+                    return this.columnMember2;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn Member3Column {
+                get {
+                    return this.columnMember3;
                 }
             }
             
@@ -459,7 +469,7 @@ namespace SetGenerator.WebUI.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public GetSetlistRow AddGetSetlistRow(long Id, int IsSpare, string Name, int NumSets, int SetNumber, int Sequence, string Title, string Key, string Singer, string Member, string Instrument) {
+            public GetSetlistRow AddGetSetlistRow(long Id, int IsSpare, string Name, int NumSets, int SetNumber, int Sequence, string Title, string Key, string Singer, string Member1, string Member2, string Member3) {
                 GetSetlistRow rowGetSetlistRow = ((GetSetlistRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Id,
@@ -471,8 +481,9 @@ namespace SetGenerator.WebUI.Reports {
                         Title,
                         Key,
                         Singer,
-                        Member,
-                        Instrument};
+                        Member1,
+                        Member2,
+                        Member3};
                 rowGetSetlistRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowGetSetlistRow);
                 return rowGetSetlistRow;
@@ -504,8 +515,9 @@ namespace SetGenerator.WebUI.Reports {
                 this.columnTitle = base.Columns["Title"];
                 this.columnKey = base.Columns["Key"];
                 this.columnSinger = base.Columns["Singer"];
-                this.columnMember = base.Columns["Member"];
-                this.columnInstrument = base.Columns["Instrument"];
+                this.columnMember1 = base.Columns["Member1"];
+                this.columnMember2 = base.Columns["Member2"];
+                this.columnMember3 = base.Columns["Member3"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -529,10 +541,12 @@ namespace SetGenerator.WebUI.Reports {
                 base.Columns.Add(this.columnKey);
                 this.columnSinger = new global::System.Data.DataColumn("Singer", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnSinger);
-                this.columnMember = new global::System.Data.DataColumn("Member", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnMember);
-                this.columnInstrument = new global::System.Data.DataColumn("Instrument", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnInstrument);
+                this.columnMember1 = new global::System.Data.DataColumn("Member1", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnMember1);
+                this.columnMember2 = new global::System.Data.DataColumn("Member2", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnMember2);
+                this.columnMember3 = new global::System.Data.DataColumn("Member3", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnMember3);
                 this.columnId.ReadOnly = true;
                 this.columnIsSpare.ReadOnly = true;
                 this.columnName.ReadOnly = true;
@@ -546,10 +560,10 @@ namespace SetGenerator.WebUI.Reports {
                 this.columnKey.MaxLength = 50;
                 this.columnSinger.ReadOnly = true;
                 this.columnSinger.MaxLength = 20;
-                this.columnMember.ReadOnly = true;
-                this.columnMember.MaxLength = 20;
-                this.columnInstrument.ReadOnly = true;
-                this.columnInstrument.MaxLength = 3;
+                this.columnMember1.MaxLength = 20;
+                this.columnMember2.MaxLength = 20;
+                this.columnMember3.ReadOnly = true;
+                this.columnMember3.MaxLength = 20;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -836,33 +850,49 @@ namespace SetGenerator.WebUI.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string Member {
+            public string Member1 {
                 get {
                     try {
-                        return ((string)(this[this.tableGetSetlist.MemberColumn]));
+                        return ((string)(this[this.tableGetSetlist.Member1Column]));
                     }
                     catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'Member\' in table \'GetSetlist\' is DBNull.", e);
+                        throw new global::System.Data.StrongTypingException("The value for column \'Member1\' in table \'GetSetlist\' is DBNull.", e);
                     }
                 }
                 set {
-                    this[this.tableGetSetlist.MemberColumn] = value;
+                    this[this.tableGetSetlist.Member1Column] = value;
                 }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public string Instrument {
+            public string Member2 {
                 get {
-                    try {
-                        return ((string)(this[this.tableGetSetlist.InstrumentColumn]));
+                    if (this.IsMember2Null()) {
+                        return null;
                     }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'Instrument\' in table \'GetSetlist\' is DBNull.", e);
+                    else {
+                        return ((string)(this[this.tableGetSetlist.Member2Column]));
                     }
                 }
                 set {
-                    this[this.tableGetSetlist.InstrumentColumn] = value;
+                    this[this.tableGetSetlist.Member2Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string Member3 {
+                get {
+                    if (this.IsMember3Null()) {
+                        return null;
+                    }
+                    else {
+                        return ((string)(this[this.tableGetSetlist.Member3Column]));
+                    }
+                }
+                set {
+                    this[this.tableGetSetlist.Member3Column] = value;
                 }
             }
             
@@ -976,26 +1006,38 @@ namespace SetGenerator.WebUI.Reports {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsMemberNull() {
-                return this.IsNull(this.tableGetSetlist.MemberColumn);
+            public bool IsMember1Null() {
+                return this.IsNull(this.tableGetSetlist.Member1Column);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetMemberNull() {
-                this[this.tableGetSetlist.MemberColumn] = global::System.Convert.DBNull;
+            public void SetMember1Null() {
+                this[this.tableGetSetlist.Member1Column] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsInstrumentNull() {
-                return this.IsNull(this.tableGetSetlist.InstrumentColumn);
+            public bool IsMember2Null() {
+                return this.IsNull(this.tableGetSetlist.Member2Column);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetInstrumentNull() {
-                this[this.tableGetSetlist.InstrumentColumn] = global::System.Convert.DBNull;
+            public void SetMember2Null() {
+                this[this.tableGetSetlist.Member2Column] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsMember3Null() {
+                return this.IsNull(this.tableGetSetlist.Member3Column);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetMember3Null() {
+                this[this.tableGetSetlist.Member3Column] = global::System.Convert.DBNull;
             }
         }
         
@@ -1167,8 +1209,6 @@ namespace SetGenerator.WebUI.Reports.SetsTableAdapters {
             tableMapping.ColumnMappings.Add("Title", "Title");
             tableMapping.ColumnMappings.Add("Key", "Key");
             tableMapping.ColumnMappings.Add("Singer", "Singer");
-            tableMapping.ColumnMappings.Add("Member", "Member");
-            tableMapping.ColumnMappings.Add("Instrument", "Instrument");
             this._adapter.TableMappings.Add(tableMapping);
         }
         
@@ -1176,7 +1216,7 @@ namespace SetGenerator.WebUI.Reports.SetsTableAdapters {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         private void InitConnection() {
             this._connection = new global::System.Data.SqlClient.SqlConnection();
-            this._connection.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["ReportConnectionString"].ConnectionString;
+            this._connection.ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["MyIdentityConnection"].ConnectionString;
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1189,14 +1229,16 @@ namespace SetGenerator.WebUI.Reports.SetsTableAdapters {
             this._commandCollection[0].CommandType = global::System.Data.CommandType.StoredProcedure;
             this._commandCollection[0].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@RETURN_VALUE", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.ReturnValue, 10, 0, null, global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[0].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@setlistId", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 10, 0, null, global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._commandCollection[0].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@userId", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 10, 0, null, global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[0].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@member1", global::System.Data.SqlDbType.VarChar, 20, global::System.Data.ParameterDirection.Input, 0, 0, null, global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[0].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@member2", global::System.Data.SqlDbType.VarChar, 20, global::System.Data.ParameterDirection.Input, 0, 0, null, global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[0].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@member3", global::System.Data.SqlDbType.VarChar, 20, global::System.Data.ParameterDirection.Input, 0, 0, null, global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, true)]
-        public virtual int Fill(Sets.GetSetlistDataTable dataTable, global::System.Nullable<int> setlistId, global::System.Nullable<int> userId) {
+        public virtual int Fill(Sets.GetSetlistDataTable dataTable, global::System.Nullable<int> setlistId, string member1, string member2, string member3) {
             this.Adapter.SelectCommand = this.CommandCollection[0];
             if ((setlistId.HasValue == true)) {
                 this.Adapter.SelectCommand.Parameters[1].Value = ((int)(setlistId.Value));
@@ -1204,11 +1246,23 @@ namespace SetGenerator.WebUI.Reports.SetsTableAdapters {
             else {
                 this.Adapter.SelectCommand.Parameters[1].Value = global::System.DBNull.Value;
             }
-            if ((userId.HasValue == true)) {
-                this.Adapter.SelectCommand.Parameters[2].Value = ((int)(userId.Value));
+            if ((member1 == null)) {
+                this.Adapter.SelectCommand.Parameters[2].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.SelectCommand.Parameters[2].Value = global::System.DBNull.Value;
+                this.Adapter.SelectCommand.Parameters[2].Value = ((string)(member1));
+            }
+            if ((member2 == null)) {
+                this.Adapter.SelectCommand.Parameters[3].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.SelectCommand.Parameters[3].Value = ((string)(member2));
+            }
+            if ((member3 == null)) {
+                this.Adapter.SelectCommand.Parameters[4].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.SelectCommand.Parameters[4].Value = ((string)(member3));
             }
             if ((this.ClearBeforeFill == true)) {
                 dataTable.Clear();
@@ -1221,7 +1275,7 @@ namespace SetGenerator.WebUI.Reports.SetsTableAdapters {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, true)]
-        public virtual Sets.GetSetlistDataTable GetData(global::System.Nullable<int> setlistId, global::System.Nullable<int> userId) {
+        public virtual Sets.GetSetlistDataTable GetData(global::System.Nullable<int> setlistId, string member1, string member2, string member3) {
             this.Adapter.SelectCommand = this.CommandCollection[0];
             if ((setlistId.HasValue == true)) {
                 this.Adapter.SelectCommand.Parameters[1].Value = ((int)(setlistId.Value));
@@ -1229,11 +1283,23 @@ namespace SetGenerator.WebUI.Reports.SetsTableAdapters {
             else {
                 this.Adapter.SelectCommand.Parameters[1].Value = global::System.DBNull.Value;
             }
-            if ((userId.HasValue == true)) {
-                this.Adapter.SelectCommand.Parameters[2].Value = ((int)(userId.Value));
+            if ((member1 == null)) {
+                this.Adapter.SelectCommand.Parameters[2].Value = global::System.DBNull.Value;
             }
             else {
-                this.Adapter.SelectCommand.Parameters[2].Value = global::System.DBNull.Value;
+                this.Adapter.SelectCommand.Parameters[2].Value = ((string)(member1));
+            }
+            if ((member2 == null)) {
+                this.Adapter.SelectCommand.Parameters[3].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.SelectCommand.Parameters[3].Value = ((string)(member2));
+            }
+            if ((member3 == null)) {
+                this.Adapter.SelectCommand.Parameters[4].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.SelectCommand.Parameters[4].Value = ((string)(member3));
             }
             Sets.GetSetlistDataTable dataTable = new Sets.GetSetlistDataTable();
             this.Adapter.Fill(dataTable);

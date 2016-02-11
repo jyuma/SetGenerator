@@ -7,6 +7,7 @@ using SetGenerator.WebUI.Reports.SetsTableAdapters;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
@@ -59,24 +60,37 @@ namespace SetGenerator.WebUI.Controllers
 
         [Authorize]
         [HttpGet]
-        public FileResult Print(int setlistId, bool includeKey, bool includeSinger, bool includeInstrumentation)
+        public FileResult Print(
+            int setlistId, 
+            bool includeKey, 
+            bool includeSinger, 
+            string member1,
+            string member2,
+            string member3)
         {
             var rv = new ReportViewer {ProcessingMode = ProcessingMode.Local};
             var ds = new GetSetlistTableAdapter();
             var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ReportConnectionString"].ConnectionString);
             ds.Connection = connection;
 
-            var reportPath = (Convert.ToInt32(Session["BandId"]) == 1
-                && includeInstrumentation && !includeSinger && !includeKey)
-                ? "~/Reports/Sets_Members_Slugfest.rdlc" 
-                : GetReportPath(includeKey, includeSinger, includeInstrumentation);
+            var paramMember1 = (member1.Length > 0 ? member1 : null);
+            var paramMember2 = (member2.Length > 0 ? member2 : null);
+            var paramMember3 = (member3.Length > 0 ? member3 : null);
+            var includeInstrumentation = ((paramMember1 != null) || (paramMember2 != null) || (paramMember3 != null));
 
+            var reportPath = GetReportPath(includeKey, includeSinger, includeInstrumentation);
             rv.LocalReport.ReportPath = Server.MapPath(reportPath);
             rv.ProcessingMode = ProcessingMode.Local;
 
-            var userId = Convert.ToInt32(System.Web.HttpContext.Current.User.Identity.GetUserId());
-            ReportDataSource rds = new ReportDataSource("Sets", (object)ds.GetData(setlistId, userId));
+            ReportDataSource rds = new ReportDataSource("Sets", (object)ds.GetData(setlistId, paramMember1, paramMember2, paramMember3));
+
             rv.LocalReport.DataSources.Add(rds);
+
+            var reportParam1 = new ReportParameter("member1", paramMember1);
+            var reportParam2 = new ReportParameter("member2", paramMember2);
+            var reportParam3 = new ReportParameter("member3", paramMember3);
+            rv.LocalReport.SetParameters(new []{ reportParam1, reportParam2, reportParam3 });
+
             rv.LocalReport.Refresh();
 
             string mimeType = string.Empty;

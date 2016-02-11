@@ -266,6 +266,10 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers\SetlistHelpers\SetlistHelper.cs" />
+    <Compile Include="Reports\Sets.cs">
+      <DependentUpon>Sets.xsd</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Reports\Sets.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -438,6 +442,12 @@
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap.min.css.map" />
     <Content Include="Content\bootstrap.css.map" />
+    <EmbeddedResource Include="Reports\Report1.rdlc">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\Sets.rdlc">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reports\Sets_Key.rdlc">
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -465,9 +475,6 @@
     <EmbeddedResource Include="Reports\Songs.rdlc" />
     <None Include="Project_Readme.html" />
     <None Include="Properties\PublishProfiles\setgenerator.pubxml" />
-    <EmbeddedResource Include="Reports\Sets.rdlc">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <Content Include="Views\Songs\_SongEdit.cshtml" />
     <Content Include="Views\Setlists\_SetlistEdit.cshtml" />
   </ItemGroup>

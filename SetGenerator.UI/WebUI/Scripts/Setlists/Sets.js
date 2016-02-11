@@ -281,13 +281,19 @@
                 self.downloadPDF = function () {
                     var includeKey = $("#chkKey").is(":checked");
                     var includeSinger = $("#chkSinger").is(":checked");
-                    var includeInstrumentation = $("#chkInstrumentation").is(":checked");
+                    //var includeInstrumentation = $("#chkInstrumentation").is(":checked");
+
+                    var member1 = "Frank";
+                    var member2 = "Jerry";
+                    var member3 = "Tom";
 
                     $(location).attr("href", site.url + "Setlists/Print/" +
                         "?setlistId=" + config.setlistId +
                         "&includeKey=" + includeKey +
                         "&includeSinger=" + includeSinger +
-                        "&includeInstrumentation=" + includeInstrumentation);
+                        "&member1=" + member1 + 
+                        "&member2=" + member2 +
+                        "&member3=" + member3);
 
                     return true;
                 }

@@ -6,7 +6,7 @@
         <TablixBody>
           <TablixColumns>
             <TablixColumn>
-              <Width>0.58333in</Width>
+              <Width>0.05208in</Width>
             </TablixColumn>
           </TablixColumns>
           <TablixRows>
@@ -50,7 +50,7 @@
               </TablixCells>
             </TablixRow>
             <TablixRow>
-              <Height>0.52083in</Height>
+              <Height>0.58333in</Height>
               <TablixCells>
                 <TablixCell>
                   <CellContents>
@@ -61,7 +61,7 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Fields!Key.Value</Value>
+                              <Value />
                               <Style>
                                 <FontSize>18pt</FontSize>
                               </Style>
@@ -114,7 +114,7 @@
               <TablixMembers>
                 <TablixMember>
                   <TablixHeader>
-                    <Size>6.29166in</Size>
+                    <Size>6.81042in</Size>
                     <CellContents>
                       <Textbox Name="Textbox9">
                         <CanGrow>true</CanGrow>
@@ -162,7 +162,7 @@
                     </SortExpression>
                   </SortExpressions>
                   <TablixHeader>
-                    <Size>6.29166in</Size>
+                    <Size>6.81042in</Size>
                     <CellContents>
                       <Textbox Name="Title">
                         <CanGrow>true</CanGrow>
@@ -205,8 +205,8 @@
         <DataSetName>Sets</DataSetName>
         <Top>0.01875in</Top>
         <Left>0.05416in</Left>
-        <Height>0.70833in</Height>
-        <Width>6.87499in</Width>
+        <Height>0.77083in</Height>
+        <Width>6.8625in</Width>
         <Style>
           <Border>
             <Style>None</Style>
@@ -214,7 +214,7 @@
         </Style>
       </Tablix>
     </ReportItems>
-    <Height>0.75833in</Height>
+    <Height>0.81041in</Height>
     <Style>
       <Border>
         <Style>None</Style>
@@ -307,30 +307,19 @@
   </Page>
   <AutoRefresh>0</AutoRefresh>
   <DataSources>
-    <DataSource Name="SetGenerator">
+    <DataSource Name="Sets">
       <ConnectionProperties>
-        <DataProvider>SQL</DataProvider>
-        <ConnectString>Data Source=YUMA-SERVER2008;Initial Catalog=SetGenerator</ConnectString>
+        <DataProvider>System.Data.DataSet</DataProvider>
+        <ConnectString>/* Local Connection */</ConnectString>
       </ConnectionProperties>
-      <rd:DataSourceID>148d347d-15db-40b4-9461-f760307d484b</rd:DataSourceID>
+      <rd:DataSourceID>d68f8776-4a8f-4962-9b3b-40bef0557825</rd:DataSourceID>
     </DataSource>
   </DataSources>
   <DataSets>
     <DataSet Name="Sets">
       <Query>
-        <DataSourceName>SetGenerator</DataSourceName>
-        <QueryParameters>
-          <QueryParameter Name="@setlistId">
-            <Value>1</Value>
-            <rd:UserDefined>true</rd:UserDefined>
-          </QueryParameter>
-          <QueryParameter Name="@userId">
-            <Value>=Parameters!userId.Value</Value>
-          </QueryParameter>
-        </QueryParameters>
-        <CommandType>StoredProcedure</CommandType>
-        <CommandText>GetSetlist</CommandText>
-        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
+        <DataSourceName>Sets</DataSourceName>
+        <CommandText>/* Local Query */</CommandText>
       </Query>
       <Fields>
         <Field Name="Id">
@@ -369,18 +358,22 @@
           <DataField>Singer</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="Member">
-          <DataField>Member</DataField>
+        <Field Name="Member1">
+          <DataField>Member1</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="Instrument">
-          <DataField>Instrument</DataField>
+        <Field Name="Member2">
+          <DataField>Member2</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Member3">
+          <DataField>Member3</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
       </Fields>
       <rd:DataSetInfo>
         <rd:DataSetName>Sets</rd:DataSetName>
-        <rd:SchemaPath>C:\Users\jyuma\Documents\GitHub\SetGenerator\UI\WebUI\Sets.xsd</rd:SchemaPath>
+        <rd:SchemaPath>C:\Users\jyuma\Documents\GitHub\SetGenerator\SetGenerator.UI\WebUI\Reports\Sets.xsd</rd:SchemaPath>
         <rd:TableName>GetSetlist</rd:TableName>
         <rd:TableAdapterFillMethod>Fill</rd:TableAdapterFillMethod>
         <rd:TableAdapterGetDataMethod>GetData</rd:TableAdapterGetDataMethod>
@@ -389,25 +382,23 @@
     </DataSet>
   </DataSets>
   <ReportParameters>
-    <ReportParameter Name="setlistId">
-      <DataType>Integer</DataType>
-      <DefaultValue>
-        <Values>
-          <Value>1</Value>
-        </Values>
-      </DefaultValue>
-      <Prompt>setlistId</Prompt>
-      <Hidden>true</Hidden>
+    <ReportParameter Name="member1">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>MemberName1</Prompt>
     </ReportParameter>
-    <ReportParameter Name="userId">
-      <DataType>Integer</DataType>
-      <DefaultValue>
-        <Values>
-          <Value>10020</Value>
-        </Values>
-      </DefaultValue>
-      <Prompt>user Id</Prompt>
-      <Hidden>true</Hidden>
+    <ReportParameter Name="member2">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>MemberName2</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="member3">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>MemberName3</Prompt>
     </ReportParameter>
   </ReportParameters>
   <Language>en-US</Language>
