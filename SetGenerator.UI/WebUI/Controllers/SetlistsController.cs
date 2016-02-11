@@ -78,7 +78,12 @@ namespace SetGenerator.WebUI.Controllers
             var paramMember3 = (member3.Length > 0 ? member3 : null);
             var includeInstrumentation = ((paramMember1 != null) || (paramMember2 != null) || (paramMember3 != null));
 
-            var reportPath = GetReportPath(includeKey, includeSinger, includeInstrumentation);
+            var reportPath = GetReportPath(includeKey, includeSinger, includeInstrumentation); 
+                //(Convert.ToInt32(Session["BandId"]) == 1
+                //&& includeInstrumentation && !includeSinger && !includeKey)
+                //? "~/Reports/Sets_Members_Slugfest.rdlc"
+                //: GetReportPath(includeKey, includeSinger, includeInstrumentation);
+
             rv.LocalReport.ReportPath = Server.MapPath(reportPath);
             rv.ProcessingMode = ProcessingMode.Local;
 

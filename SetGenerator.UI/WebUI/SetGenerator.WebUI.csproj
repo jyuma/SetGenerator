@@ -442,9 +442,6 @@
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap.min.css.map" />
     <Content Include="Content\bootstrap.css.map" />
-    <EmbeddedResource Include="Reports\Report1.rdlc">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Reports\Sets.rdlc">
       <SubType>Designer</SubType>
     </EmbeddedResource>

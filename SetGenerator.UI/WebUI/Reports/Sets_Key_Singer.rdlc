@@ -41,15 +41,15 @@
         <TablixBody>
           <TablixColumns>
             <TablixColumn>
-              <Width>0.59376in</Width>
+              <Width>0.65626in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>0.52082in</Width>
+              <Width>0.65625in</Width>
             </TablixColumn>
           </TablixColumns>
           <TablixRows>
             <TablixRow>
-              <Height>0.58333in</Height>
+              <Height>0.50001in</Height>
               <TablixCells>
                 <TablixCell>
                   <CellContents>
@@ -67,7 +67,7 @@
                             </TextRun>
                           </TextRuns>
                           <Style>
-                            <TextAlign>Left</TextAlign>
+                            <TextAlign>Center</TextAlign>
                           </Style>
                         </Paragraph>
                       </Paragraphs>
@@ -96,7 +96,7 @@
                             <TextRun>
                               <Value>=Fields!Singer.Value</Value>
                               <Style>
-                                <FontSize>11pt</FontSize>
+                                <FontSize>12pt</FontSize>
                               </Style>
                             </TextRun>
                           </TextRuns>
@@ -129,7 +129,7 @@
               <TablixHeader>
                 <Size>0.20833in</Size>
                 <CellContents>
-                  <Textbox Name="Textbox15">
+                  <Textbox Name="Member">
                     <CanGrow>true</CanGrow>
                     <KeepTogether>true</KeepTogether>
                     <Paragraphs>
@@ -137,13 +137,17 @@
                         <TextRuns>
                           <TextRun>
                             <Value />
-                            <Style />
+                            <Style>
+                              <FontStyle>Italic</FontStyle>
+                            </Style>
                           </TextRun>
                         </TextRuns>
-                        <Style />
+                        <Style>
+                          <TextAlign>Center</TextAlign>
+                        </Style>
                       </Paragraph>
                     </Paragraphs>
-                    <rd:DefaultName>Textbox15</rd:DefaultName>
+                    <rd:DefaultName>Member</rd:DefaultName>
                     <Style>
                       <Border>
                         <Style>None</Style>
@@ -161,7 +165,7 @@
               <TablixHeader>
                 <Size>0.20833in</Size>
                 <CellContents>
-                  <Textbox Name="Textbox19">
+                  <Textbox Name="Textbox3">
                     <CanGrow>true</CanGrow>
                     <KeepTogether>true</KeepTogether>
                     <Paragraphs>
@@ -171,7 +175,6 @@
                             <Value>Singer</Value>
                             <Style>
                               <FontStyle>Italic</FontStyle>
-                              <TextDecoration>Underline</TextDecoration>
                             </Style>
                           </TextRun>
                         </TextRuns>
@@ -180,7 +183,7 @@
                         </Style>
                       </Paragraph>
                     </Paragraphs>
-                    <rd:DefaultName>Textbox19</rd:DefaultName>
+                    <rd:DefaultName>Textbox3</rd:DefaultName>
                     <Style>
                       <Border>
                         <Style>None</Style>
@@ -225,7 +228,7 @@
                     </SortExpression>
                   </SortExpressions>
                   <TablixHeader>
-                    <Size>5.72916in</Size>
+                    <Size>5.56249in</Size>
                     <CellContents>
                       <Textbox Name="Title">
                         <CanGrow>true</CanGrow>
@@ -267,8 +270,8 @@
         <RepeatColumnHeaders>true</RepeatColumnHeaders>
         <DataSetName>Sets</DataSetName>
         <Left>0.05208in</Left>
-        <Height>0.79166in</Height>
-        <Width>6.84374in</Width>
+        <Height>0.70834in</Height>
+        <Width>6.875in</Width>
         <Style>
           <Border>
             <Style>None</Style>
@@ -276,7 +279,7 @@
         </Style>
       </Tablix>
     </ReportItems>
-    <Height>0.8125in</Height>
+    <Height>0.76042in</Height>
     <Style>
       <Border>
         <Style>None</Style>
@@ -286,7 +289,7 @@
   <Width>6.94791in</Width>
   <Page>
     <PageHeader>
-      <Height>0.83555in</Height>
+      <Height>0.86333in</Height>
       <PrintOnFirstPage>true</PrintOnFirstPage>
       <PrintOnLastPage>true</PrintOnLastPage>
       <ReportItems>
@@ -321,7 +324,7 @@
             <PaddingBottom>2pt</PaddingBottom>
           </Style>
         </Textbox>
-        <Textbox Name="Textbox21">
+        <Textbox Name="Textbox1">
           <CanGrow>true</CanGrow>
           <KeepTogether>true</KeepTogether>
           <Paragraphs>
@@ -338,11 +341,11 @@
               <Style />
             </Paragraph>
           </Paragraphs>
-          <rd:DefaultName>Textbox21</rd:DefaultName>
-          <Top>0.37152in</Top>
-          <Left>0.05416in</Left>
-          <Height>0.45362in</Height>
-          <Width>2.48959in</Width>
+          <rd:DefaultName>Textbox1</rd:DefaultName>
+          <Top>0.38402in</Top>
+          <Left>0.05208in</Left>
+          <Height>0.4675in</Height>
+          <Width>3.76042in</Width>
           <ZIndex>1</ZIndex>
           <Style>
             <Border>
@@ -463,6 +466,7 @@
       <Prompt>MemberName3</Prompt>
     </ReportParameter>
   </ReportParameters>
+  <Language>en-US</Language>
   <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
   <rd:ReportUnitType>Inch</rd:ReportUnitType>
   <rd:ReportID>5e143901-036a-4675-9a3b-268b314433af</rd:ReportID>

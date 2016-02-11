@@ -60,6 +60,8 @@ namespace SetGenerator.Data.Repositories
             var members = Session.QueryOver<Member>()
                 .Where(x => x.Band.Id == bandId)
                 .List()
+                .OrderBy(x => x.FirstName)
+                .ThenBy(x => x.LastName)
                 .ToArray();
 
             var al = new ArrayList();
@@ -96,6 +98,7 @@ namespace SetGenerator.Data.Repositories
                     x.Singer.FirstName
                 })
                 .Distinct()
+                .OrderBy(o => o.FirstName)
                 .ToDictionary(x => x.Id, y => y.FirstName);
         }
     }

@@ -259,12 +259,16 @@
 
                 self.showColumnSelectorDialog = function () {
                     
-                    var div = $(document.createElement("div")).addClass("panel");
+                    var div = $(document.createElement("div")).attr("id", "select-columns").addClass("panel");
 
-                    div.append("<div class='row'><div class='col-sm-4'><label class='label label-default'>Title</label><input type='checkbox' id='chkTitle' checked='checked' class='form-control' disabled='disabled' /></div></div>")
-                        .append("<div class='row'><div class='col-sm-4'><label class='label label-default'>Key</label><input type='checkbox' id='chkKey' checked='checked' class='form-control' /></div></div>")
-                        .append("<div class='row'><div class='col-sm-4'><label class='label label-default'>Singer</label><input type='checkbox' id='chkSinger' class='form-control' /></div></div>")
-                        .append("<div class='row'><div class='col-sm-4'><label class='label label-default'>Instrumentation</label><input type='checkbox' id='chkInstrumentation' class='form-control' /></div></div>");
+                    div.append("<div class='row'><div class='col-sm-5'><span>Title</span><div class='col-sm-1 pull-right'><input type='checkbox' id='chkTitle' checked='checked' disabled='disabled' /></div></div></div>")
+                        .append("<div class='row'><div class='col-sm-5'><span>Key</span><div class='col-sm-1 pull-right'><input type='checkbox' id='chkKey' checked='checked' /></div></div></div>")
+                        .append("<div class='row'><div class='col-sm-5'><span>Singer</span><div class='col-sm-1 pull-right'><input type='checkbox' id='chkSinger' /></div></div></div>")
+                        .append("<div class='row'><div class='col-sm-12'><label>Member Instrument (3 Max)</label></div></div>");
+
+                    $(lists.MemberArrayList).each(function(index, value) {
+                        div.append("<div class='row'><div class='col-sm-5'><span>" + value.Display + "</span><div class='col-sm-1 pull-right'><input type='checkbox' onclick='enableMemberCheckboxes()' id='chkMember_" + value.Display + "' /></div></div></div>");
+                    });
 
                     var html = div[0].outerHTML;
 
@@ -274,18 +278,29 @@
                         callback: function () {
                             return self.downloadPDF();
                         },
-                        width: 180
+                        width: 250
                     });
                 }
 
                 self.downloadPDF = function () {
                     var includeKey = $("#chkKey").is(":checked");
                     var includeSinger = $("#chkSinger").is(":checked");
-                    //var includeInstrumentation = $("#chkInstrumentation").is(":checked");
+                    var chkMembers = $("#select-columns").find(":checkbox[id^='chkMember_']:checked");
+                    var member1 = "";
+                    var member2 = "";
+                    var member3 = "";
 
-                    var member1 = "Frank";
-                    var member2 = "Jerry";
-                    var member3 = "Tom";
+                    if (chkMembers.length > 0) {
+                        member1 = chkMembers[0].id.substring(chkMembers[0].id.indexOf("_") + 1, chkMembers[0].id.length);
+                    }
+
+                    if (chkMembers.length > 1) {
+                        member2 = chkMembers[1].id.substring(chkMembers[1].id.indexOf("_") + 1, chkMembers[1].id.length);
+                    }
+
+                    if (chkMembers.length > 2) {
+                        member3 = chkMembers[2].id.substring(chkMembers[2].id.indexOf("_") + 1, chkMembers[2].id.length);
+                    }
 
                     $(location).attr("href", site.url + "Setlists/Print/" +
                         "?setlistId=" + config.setlistId +
@@ -514,7 +529,6 @@
                 });
                 return name;
             }
-
         }
     }
 })(jQuery);
