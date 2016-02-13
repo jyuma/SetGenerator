@@ -25,7 +25,7 @@ namespace SetGenerator.WebUI
                     "~/Content/tablednd.css",
                     "~/Content/bootstrap.css",
                     "~/Content/bootstrap-theme.css",
-                    "~/Content/bootstrap-datepicker3.css",
+                    "~/Content/bootstrap-datepicker.css",
                     "~/Content/Site.less");
             commonStylesBundle.Builder = nullBuilder;
             commonStylesBundle.Orderer = nullOrderer;
@@ -34,11 +34,10 @@ namespace SetGenerator.WebUI
 
             var commonScriptsBundle = new Bundle("~/bundles/CommonScripts");
             commonScriptsBundle.Include(
-                    "~/Scripts/jquery-{version}.js",
-                    "~/Scripts/knockout-{version}.js",
-                    "~/Scripts/bootstrap-datepicker.js",
-                    "~/Scripts/bootstrap-datepicker.js",
-                    "~/Scripts/jquery.tablednd.js");
+                "~/Scripts/jquery-{version}.js",
+                "~/Scripts/knockout-{version}.js",
+                "~/Scripts/bootstrap-datepicker.js",
+                "~/Scripts/jquery.tablednd.js");
             commonScriptsBundle.Builder = nullBuilder;
             commonScriptsBundle.Transforms.Add(scriptTransformer);
             bundles.Add(commonScriptsBundle);

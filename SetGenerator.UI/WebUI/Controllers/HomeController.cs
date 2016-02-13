@@ -4,7 +4,6 @@ using SetGenerator.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
@@ -19,10 +18,9 @@ namespace SetGenerator.WebUI.Controllers
     public class HomeController : Controller
     {
         private const int DefaultBandId = 1;
+        private readonly User _currentUser;
 
         private readonly IAccount _account;
-        // for testing
-        public HomeController() { }
 
         public HomeController(IAccount account)
         {
@@ -43,12 +41,6 @@ namespace SetGenerator.WebUI.Controllers
 
         public ActionResult Index(LogonViewModel model)
         {
-            if (Session["Bands"] == null)
-            {
-                var bands = GetBands();
-                Session["Bands"] = bands;
-            }
-
             return View(LoadLogonViewModel());
         }
 
@@ -199,7 +191,6 @@ namespace SetGenerator.WebUI.Controllers
             return Json(new { success = false, messages = msgs });
         }
 
-
         // POST: /Home/LogOff
 
         [AllowAnonymous]
@@ -209,7 +200,6 @@ namespace SetGenerator.WebUI.Controllers
             ClearAdminCookie();
             return RedirectToAction("Index", "Home");
         }
-
 
         // profile 
 
@@ -278,25 +268,6 @@ namespace SetGenerator.WebUI.Controllers
 
         // private methods
 
-        private IEnumerable<Band> GetBands()
-        {
-            var user = _account.GetUserByUserName(System.Web.HttpContext.Current.User.Identity.Name);
-            var userBands = _account.GetUserBands(System.Web.HttpContext.Current.User.Identity.Name);
-
-            if (userBands != null)
-            {
-                if (userBands.Any())
-                {
-                    if (Session["BandId"] == null)
-                    {
-                        Session["BandId"] = user.DefaultBandId;
-                    }
-                }
-            }
-
-            return userBands;
-        }
-
         private static ProfileEditViewModel LoadProfileEditViewModel(User u)
         {
             var vm = new ProfileEditViewModel
@@ -309,11 +280,11 @@ namespace SetGenerator.WebUI.Controllers
 
         private LogonViewModel LoadLogonViewModel()
         {
-            var model = new LogonViewModel();
-            var usernameCookie = Request.Cookies["userName"];
+            var model = new LogonViewModel
+            {
+                UserName = GetCurrentSessionUser()
+            };
 
-            if (usernameCookie != null)
-                model.UserName = usernameCookie.Value;
 
             return model;
         }

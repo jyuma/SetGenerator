@@ -3,19 +3,25 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
 using SetGenerator.WebUI.Models;
 using System;
+using System.Collections;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using SetGenerator.Service;
 
 namespace SetGenerator.WebUI.Controllers
 {
     [Authorize]
     public class AccountController : Controller
     {
-        public AccountController()
+        private readonly IAccount _account;
+
+        public AccountController(IAccount account)
             : this(new UserManager<MyUser, long>(new UserStore<MyUser, MyRole, long, MyLogin, MyUserRole, MyClaim>(new ApplicationDbContext()))
             )
         {
+            _account = account;
         }
 
         public AccountController(UserManager<MyUser, long> userManager)
@@ -47,6 +53,9 @@ namespace SetGenerator.WebUI.Controllers
                 if (user != null)
                 {
                     await SignInAsync(user, model.RememberMe);
+                    Session["UserId"] = user.Id;
+                    Session["BandId"] = user.DefaultBandId;
+                    Session["Bands"] = GetUserBandArrayList(user);
                     return RedirectToLocal(returnUrl);
                 }
                 ModelState.AddModelError("", "Invalid username or password.");
@@ -54,6 +63,25 @@ namespace SetGenerator.WebUI.Controllers
 
             // If we got this far, something failed, redisplay form
             return View(model);
+        }
+
+        private string GetUserBandArrayList(MyUser user)
+        {
+            var json = string.Empty;
+            var userBands = _account.GetUserBands(user.UserName).ToArray();
+
+            json = "[";
+            foreach (var b in userBands)
+            {
+                json += "{";
+                json += string.Format("\"Value\": {0}, \"Display\": \"{1}\"", b.Band.Id, b.Band.Name);
+                json += "},";
+            }
+            var idx = json.LastIndexOf(",", StringComparison.Ordinal);
+            json = json.Substring(0, idx);
+            json += "]";
+
+            return json;
         }
 
         //
@@ -317,7 +345,6 @@ namespace SetGenerator.WebUI.Controllers
             Session["UserId"] = null;
             Session["UserName"] = null;
             Session["BandId"] = null;
-            Session["Bands"] = null;
             Session["OwnerSearch"] = null;
             return RedirectToAction("Index", "Home");
         }

@@ -1,15 +1,19 @@
-﻿@using System.Collections
-@using Microsoft.AspNet.Identity
+﻿@using Microsoft.AspNet.Identity
+@using ServiceStack
 
 <script type="text/javascript">
     $(document).ready(function() {
         shared._logonpartial.init(
         {
             controller: "@ViewContext.RouteData.Values["controller"].ToString()",
-            actionName: "@ViewContext.RouteData.Values["action"].ToString()"
+            actionName: "@ViewContext.RouteData.Values["action"].ToString()",
+            userId: "@Session["UserId"]",
+            currentBandId: "@Session["BandId"]",
+            userBands: "@Session["Bands"]"
         });
     });
 </script>
+
 @if (Request.IsAuthenticated)
 {
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
@@ -17,10 +21,10 @@
         @Html.AntiForgeryToken()
         
         <span class="band-dropdown">
-            @if (Session["Bands"] != null)
-            {
-                @Html.DropDownList("ddlUserBand", new SelectList((IEnumerable)Session["Bands"], "Id", "Name", Session["BandId"]), new { @class = "filter-bold", @onchange = "shared._layout.setCurrentBand()" })
-            }
+
+                <select id="ddlUserBand" class="filter-bold"></select>
+                @*@Html.DropDownList("ddlUserBand", new SelectList((IEnumerable)Session["Bands"], "Id", "Name", Session["BandId"]), new { @class = "filter-bold" })*@
+
         </span>
         <text><strong>
                 @if (User.Identity.GetUserName() == "admin")

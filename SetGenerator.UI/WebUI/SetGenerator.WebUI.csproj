@@ -424,6 +424,9 @@
     <Content Include="Scripts\jquery-2.2.0.min.map" />
     <Content Include="Views\Gigs\_GigEdit.cshtml" />
     <Content Include="Views\Setlists\_MoveSong.cshtml" />
+    <Content Include="Scripts\jquery.validate.min.js.map">
+      <DependentUpon>jquery.validate.min.js</DependentUpon>
+    </Content>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

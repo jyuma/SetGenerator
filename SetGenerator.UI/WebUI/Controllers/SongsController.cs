@@ -113,7 +113,7 @@ namespace SetGenerator.WebUI.Controllers
             var bandId = Convert.ToInt32(Session["BandId"]);
             var vm = new
             {
-                SongList = GetSongList(),
+                SongList = GetSongList(bandId),
                 MemberArrayList = _bandRepository.GetMemberNameArrayList(bandId),
                 SingerArrayList = _bandRepository.GetSingerNameArrayList(bandId),
                 KeyListFull = GetKeyListFull(),
@@ -125,9 +125,8 @@ namespace SetGenerator.WebUI.Controllers
             return Json(vm, JsonRequestBehavior.AllowGet);
         }
 
-        private IEnumerable<SongDetail> GetSongList()
+        private IEnumerable<SongDetail> GetSongList(int bandId)
         {
-            var bandId = Convert.ToInt32(Session["BandId"]);
             var songs = _songRepository.GetByBandId(bandId)
                 .ToArray();
 
@@ -290,7 +289,7 @@ namespace SetGenerator.WebUI.Controllers
             var bandId = Convert.ToInt32(Session["BandId"]);
             return Json(new
             {
-                SongList = GetSongList(),
+                SongList = GetSongList(bandId),
                 SingerArrayList = _bandRepository.GetSingerNameArrayList(bandId),
                 SelectedId = songId,
                 Success = (null == msgs),
@@ -307,7 +306,7 @@ namespace SetGenerator.WebUI.Controllers
             var bandId = Convert.ToInt32(Session["BandId"]);
             return Json(new
             {
-                SongList = GetSongList(),
+                SongList = GetSongList(bandId),
                 SingerArrayList = _bandRepository.GetSingerNameArrayList(bandId),
                 Success = true
             }, JsonRequestBehavior.AllowGet);
@@ -324,9 +323,10 @@ namespace SetGenerator.WebUI.Controllers
                 _songRepository.Update(s);
             }
 
+            var bandId = Convert.ToInt32(Session["BandId"]);
             return Json(new
             {
-                SongList = GetSongList(),
+                SongList = GetSongList(bandId),
                 Success = true
             }, JsonRequestBehavior.AllowGet);
         }

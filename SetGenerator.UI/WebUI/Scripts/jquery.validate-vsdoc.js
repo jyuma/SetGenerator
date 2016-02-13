@@ -608,8 +608,8 @@ $.extend($.validator, {
 						return false;
 					}
 				} catch(e) {
-					this.settings.debug && window.console && console.log("exception occured when checking element " + element.id
-						 + ", check the '" + rule.method + "' method", e);
+					//this.settings.debug && window.console && console.log("exception occured when checking element " + element.id
+					//	 + ", check the '" + rule.method + "' method", e);
 					throw e;
 				}
 			}

@@ -23,12 +23,12 @@ namespace SetGenerator.Service
         void UpdateUserPreferenceTableColumns(string userName, IDictionary cols);
         void UpdateUserPreferenceTableMembers(string userName, IDictionary cols);
         User GetUserByUserName(string username);
-        ICollection<Band> GetUserBands(string uname = null);
         User GetUser(int userId);
         List<string> ValidateLogin(string username, string password);
         List<string> ValidateProfile(string username, string email);
         List<string> ValidateRegister(string username, string email, string password, string confirmPassword);
         List<string> ValidateChangePassword(string password, string confirmPassword);
+        IEnumerable<UserBand> GetUserBands(string uname);
     }
 
     public class Account : IAccount
@@ -144,12 +144,9 @@ namespace SetGenerator.Service
             return -1;
         }
 
-        public ICollection<Band> GetUserBands(string uname = null)
+        public IEnumerable<UserBand> GetUserBands(string uname = null)
         {
-            var u = _userRepository.GetByUserName(uname);
-            if (u == null) return null;
-
-            return u.UserBands.Select(x => x.Band).ToArray();
+            return _userRepository.GetUserBands(uname);
         }
 
         private IEnumerable<UserPreferenceTableColumn> GetUserPreferenceTableColumns()

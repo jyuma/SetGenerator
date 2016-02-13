@@ -132,24 +132,6 @@
                     return arr;
                 });
 
-                //self.singerArrayList = ko.computed(function () {
-                //    var arr = [];
-                //    arr.push({ Value: 0, Display: STRING_NONE });
-                //    $(lists.SingerArrayList).each(function (index, value) {
-                //        arr.push({ Value: value.Value, Display: value.Display });
-                //    });
-                //    return arr;
-                //});
-
-                //self.singerNameSearchList = ko.computed(function () {
-                //    var arr = [];
-                //    arr.push(STRING_ALL_SINGERS);
-                //    $(_singerNameList).each(function (index, value) {
-                //        arr.push(value);
-                //    });
-                //    return arr;
-                //});
-
                 self.genreArrayList = ko.computed(function () {
                     var arr = [];
                     

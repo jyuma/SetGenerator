@@ -10,6 +10,7 @@ namespace SetGenerator.Data.Repositories
         User GetByUserName(string uname);
         IEnumerable<UserPreferenceTableColumn> GetTableColumnsByBandId(int userId, int tableId, int bandId);
         IEnumerable<UserPreferenceTableMember> GetTableMembersByBandId(int userId, int tableId, int bandId);
+        IEnumerable<UserBand> GetUserBands(string uname);
     }
 
     public class UserRepository : RepositoryBase<User>, IUserRepository
@@ -50,6 +51,20 @@ namespace SetGenerator.Data.Repositories
                 .List()
                 .OrderBy(o => o.Member.FirstName)
                 .ThenBy(o => o.Member.LastName);
+
+            return list;
+        }
+
+        public IEnumerable<UserBand> GetUserBands(string uname)
+        {
+            if (uname.Length == 0) return null;
+
+            var user = GetByUserName(uname);
+
+            var list = Session.QueryOver<User>()
+                .Where(x => x.Id == user.Id)
+                .SingleOrDefault()
+                .UserBands;
 
             return list;
         }

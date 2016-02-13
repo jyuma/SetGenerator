@@ -8,6 +8,7 @@
 
     home.index = {
         init: function () {
+
         }
     }
 })(jQuery);
