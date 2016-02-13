@@ -30,7 +30,7 @@
             if (config.userId > 0) {
                 var optBands = ddlUserBand.find("option");
                 if (optBands.length === 0) {
-                    var json = config.userBands.replace(/&quot;/g, '"');
+                    var json = config.userBands.replace(/&quot;/g, "\"");
                     var bands = JSON.parse(json);
 
                     var ddlOptions = "";
@@ -60,8 +60,7 @@
                     traditional: true,
                     async: false,
                     success: function () {
-                        if (navigator.appName === "Microsoft Internet Explorer" ||  !!(navigator.userAgent.match(/Trident/) || navigator.userAgent.match(/rv 11/)) || $.browser.msie === 1)
-                        {
+                        if (isNotSafariChromeFirefox()) {
                             window.location.reload();
                         } else {
                             window.location.href = site.url + config.controller;
@@ -71,6 +70,19 @@
             });
 
             //-------------------------------------- events -----------------------------------------
+
+            //-------------------------------------- private -----------------------------------------
+
+            function isNotSafariChromeFirefox() {
+                var myNav = navigator.userAgent.toLowerCase();
+                var isFF = myNav.indexOf("firefox") !== -1;
+                var isChrome = myNav.indexOf("chrome") !== -1;
+                var isSafari = myNav.indexOf("safari") !== -1;
+
+                return (!(isFF || isChrome || isSafari));
+            }
+
+            //-------------------------------------- private -----------------------------------------
         }
     }
 })(jQuery);
