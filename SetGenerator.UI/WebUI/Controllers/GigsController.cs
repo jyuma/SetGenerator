@@ -176,15 +176,6 @@ namespace SetGenerator.WebUI.Controllers
             return Json(JsonRequestBehavior.AllowGet);
         }
 
-        //// --- for the autocomplete
-        //[HttpGet]
-        //public ActionResult GetVenueList()
-        //{
-        //    var bandId = Convert.ToInt32(Session["BandId"]);
-        //    var list = _gigRepository.GetVenueList(bandId);
-        //    return Json(list, JsonRequestBehavior.AllowGet);
-        //}
-
         private int AddGig(GigDetail gigDetail)
         {
             var bandId = Convert.ToInt32(Session["BandId"]);

@@ -1,6 +1,7 @@
 ﻿// define global namespaces
 ; (function () {
     window.shared = {};
+    window.utility = {};
     window.dialog = {};
     window.home = {};
     window.songs = {};

@@ -7,13 +7,6 @@ body {
 #registerLink {
   padding-right: 5px;
 }
-/* tableDnD */
-.dragClass {
-  color: #e9e4e4;
-  background-color: #92a892;
-  border: 1px solid #47a447;
-  cursor: move;
-}
 #wrapper {
   position: relative;
   margin: 0 0 0 150px;
@@ -129,6 +122,7 @@ table .col-link-sets {
 }
 table .col-audit {
   width: 120px;
+  text-align: center;
 }
 table th a:link {
   text-decoration: none;

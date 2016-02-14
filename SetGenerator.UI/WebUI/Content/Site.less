@@ -2,6 +2,7 @@
 @colourBlack: #555;
 @colourBlackSelected: #8a8a8a;
 @colourIvoryHover: #f3f1f1;
+@colourYellowDrag: #f8ee98;
 @colourIvory: #e9e4e4;
 @colourWhite: #ffffff;
 @colourPrimary: #457bc5;
@@ -12,7 +13,7 @@
 @colourTableHeaderTextHover: #6ea5f3;
 @colourBanner: #e5e0e0;
 @colourGrey: #8b8a8a;
-@colourDragClass: #92a892;
+@colourDragClass: #b5e2b5;
 
 body {
     margin: 0;
@@ -22,14 +23,6 @@ body {
 /* Home main image */
 #registerLink {
     padding-right: 5px;
-}
-
-/* tableDnD */
-.dragClass {
-    color: @colourIvory;
-    background-color: @colourDragClass;
-    border: 1px solid @colourSuccess;
-    cursor: move;
 }
 
 #wrapper {
@@ -177,6 +170,7 @@ table {
     }
     .col-audit {
         width: 120px;
+        text-align: center;
     }
     th {
         a, a:link, span {

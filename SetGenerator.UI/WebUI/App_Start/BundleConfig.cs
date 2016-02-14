@@ -37,7 +37,8 @@ namespace SetGenerator.WebUI
                 "~/Scripts/jquery-{version}.js",
                 "~/Scripts/knockout-{version}.js",
                 "~/Scripts/bootstrap-datepicker.js",
-                "~/Scripts/jquery.tablednd.js");
+                "~/Scripts/jquery.tablednd.js",
+                "~/Scripts/moment.js");
             commonScriptsBundle.Builder = nullBuilder;
             commonScriptsBundle.Transforms.Add(scriptTransformer);
             bundles.Add(commonScriptsBundle);

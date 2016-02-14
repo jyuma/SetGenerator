@@ -337,6 +337,10 @@
     <Content Include="Scripts\Gigs\Index.js" />
     <Content Include="Scripts\Home\Index.js" />
     <Content Include="Scripts\jquery.tablednd.js" />
+    <Content Include="Scripts\moment-with-locales.js" />
+    <Content Include="Scripts\moment-with-locales.min.js" />
+    <Content Include="Scripts\moment.js" />
+    <Content Include="Scripts\moment.min.js" />
     <Content Include="Scripts\Setlists\Index.js" />
     <Content Include="Scripts\Setlists\Sets.js" />
     <Content Include="Scripts\Shared\_LogonPartial.js" />

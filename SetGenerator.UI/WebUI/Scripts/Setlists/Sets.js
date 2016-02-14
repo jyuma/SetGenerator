@@ -34,7 +34,7 @@
 
             ko.applyBindings(new SetsViewModel());
 
-            initTableDnD();
+            tblSetSong.tableDnD({ onDragClass: "myDragClass" });
 
             function loadConfig() {
                 $.ajax({
@@ -235,7 +235,7 @@
                     });
 
                     dialog.custom.showModal({
-                        title: "Move Song",
+                        title: "Move From " + (currentSet > 0 ? "Set " + currentSet : "Spares"),
                         message: message,
                         callback: function () {
                             $("#validation-container").html("");
@@ -261,13 +261,13 @@
                     
                     var div = $(document.createElement("div")).attr("id", "select-columns").addClass("panel");
 
-                    div.append("<div class='row'><div class='col-sm-5'><span>Title</span><div class='col-sm-1 pull-right'><input type='checkbox' id='chkTitle' checked='checked' disabled='disabled' /></div></div></div>")
-                        .append("<div class='row'><div class='col-sm-5'><span>Key</span><div class='col-sm-1 pull-right'><input type='checkbox' id='chkKey' checked='checked' /></div></div></div>")
-                        .append("<div class='row'><div class='col-sm-5'><span>Singer</span><div class='col-sm-1 pull-right'><input type='checkbox' id='chkSinger' /></div></div></div>")
-                        .append("<div class='row'><div class='col-sm-12'><label>Member Instrument (3 Max)</label></div></div>");
-
+                    div.append("<div class='row'><div class='col-sm-6'><span>Title</span><div class='col-sm-1 pull-right'><input type='checkbox' id='chkTitle' checked='checked' disabled='disabled' /></div></div></div>")
+                        .append("<div class='row'><div class='col-sm-6'><span>Key</span><div class='col-sm-1 pull-right'><input type='checkbox' id='chkKey' checked='checked' /></div></div></div>")
+                        .append("<div class='row'><div class='col-sm-6'><span>Singer</span><div class='col-sm-1 pull-right'><input type='checkbox' id='chkSinger' /></div></div></div>")
+                        .append("<hr/><div class='row'><div class='col-sm-12'><label>Member Instrument (3 Max)</label></div></div>");
+                        
                     $(lists.MemberArrayList).each(function(index, value) {
-                        div.append("<div class='row'><div class='col-sm-5'><span>" + value.Display + "</span><div class='col-sm-1 pull-right'><input type='checkbox' onclick='enableMemberCheckboxes()' id='chkMember_" + value.Display + "' /></div></div></div>");
+                        div.append("<div class='row'><div class='col-sm-6'><span>" + value.Display + "</span><div class='col-sm-1 pull-right'><input type='checkbox' onclick='enableMemberCheckboxes()' id='chkMember_" + value.Display + "' /></div></div></div>");
                     });
 
                     var html = div[0].outerHTML;
@@ -470,47 +470,6 @@
             }
 
             //---------------------------------------------- VIEW MODEL (END) -------------------------------------------------------
-
-            function getSetSongRows(table) {
-                return $(table.rows).filter(function (index, value) {
-                    return ((value.id.length > 0) && (value.id.indexOf("_0_") < 0));
-                });
-            }
-
-            function removeDragClass(rows) {
-                if (rows.length > 0) {
-                    var cells = $(rows).find("td");
-                    $(cells).removeClass("dragClass");
-                }
-            }
-
-            function initTableDnD() {
-                var tblSetSongRow = $("#tblSetSong tr");
-
-                tblSetSong.tableDnD(
-                {
-                    onDragClass: "dragClass",
-                    onDrop: function (table) {
-                        var rows = getSetSongRows(table);
-                        removeDragClass(rows);
-                    },
-                    onDragStart: function (table, row) {
-                        var rows = getSetSongRows(table);
-                        removeDragClass(rows);
-                        $(row.cells).addClass("dragClass");
-                    },
-                    onDragStop: function (table, row) {
-                        var rows = getSetSongRows(table);
-                        removeDragClass(rows);
-                    }
-                });
-
-                tblSetSongRow.hover(function () {
-                    $(this.cells).addClass("showDragHandle");
-                }, function () {
-                    $(this.cells).removeClass("showDragHandle");
-                });
-            }
 
             function GetSharpFlatNotation(sharpflatnat) {
                 var desc = "";
