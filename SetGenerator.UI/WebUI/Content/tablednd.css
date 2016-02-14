@@ -171,12 +171,12 @@ td {
 
 tr.myDragClass td {
     /* position: fixed;*/
-    color: #f8ee98;
+    color: #f3f1f1;
     background-color: #92a892;
     /*border: 1px solid #555;*/
-    text-shadow: 0 0 10px #555, 0 0 10px #555, 0 0 8px black, 0 0 6px #555, 0 0 6px #555;
+    /*text-shadow: 0 0 10px #555, 0 0 10px #555, 0 0 8px black, 0 0 6px #555, 0 0 6px #555;*/
     /*background-color: #999;*/
-    -webkit-box-shadow: 0 12px 14px -12px #555 inset, 0 -2px 2px -1px #555 inset;
+    /*-webkit-box-shadow: 0 12px 14px -12px #555 inset, 0 -2px 2px -1px #555 inset;*/
 }
 tr.myDragClass td:first-child {
     -webkit-box-shadow: 0 12px 14px -12px #555 inset, 12px 0 14px -12px #555 inset, 0 -2px 2px -1px #333 inset;
