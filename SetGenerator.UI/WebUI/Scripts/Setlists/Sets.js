@@ -261,7 +261,7 @@
                     self.showSongDeleteDialog(row);
                 };
 
-                self.showColumnSelectorDialog = function () {
+                self.showPrintDialog = function () {
                     
                     var div = $(document.createElement("div")).attr("id", "select-columns").addClass("panel");
 

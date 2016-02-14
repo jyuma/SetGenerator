@@ -21,10 +21,7 @@
         @Html.AntiForgeryToken()
         
         <span class="band-dropdown">
-
-                <select id="ddlUserBand" class="filter-bold"></select>
-                @*@Html.DropDownList("ddlUserBand", new SelectList((IEnumerable)Session["Bands"], "Id", "Name", Session["BandId"]), new { @class = "filter-bold" })*@
-
+            <select id="ddlUserBand" class="filter-bold"></select>
         </span>
         <text><strong>
                 @if (User.Identity.GetUserName() == "admin")

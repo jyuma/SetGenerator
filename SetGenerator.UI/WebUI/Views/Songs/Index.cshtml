@@ -22,8 +22,8 @@
                 <h3><i>@Model.BandName</i> Songs
                 </h3>
             </div>
-            <div class="col-sm-2 pullright">
-                <label>Total:</label><span data-bind="text: totalSongs(), style: { 'padding-left': '5px' }"></span>
+            <div class="pull-right record-total">
+                <label>Total:</label> <span data-bind="text: totalSongs()"></span>
             </div>
         </div>
         <ul class="nav nav-pills">
@@ -51,7 +51,7 @@
             <li>
                 <button class="btn btn-default" onclick="location.href = '@Url.Action("Print", "Songs")'"><span class="glyphicon glyphicon-print" aria-hidden="true"></span></button>
             </li>
-            <li style="float: right;">
+            <li class="navbar-right">
                 <div id="ddlColumns" class="dropdown">
                     <button class="btn btn-default dropdown-toggle" type="button" id="btnShowHideColumns" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                         Show Columns

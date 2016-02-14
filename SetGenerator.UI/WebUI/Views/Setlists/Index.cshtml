@@ -28,7 +28,7 @@
                 <h3><i>@Model.BandName</i> Setlists
                 </h3>
             </div>
-            <div class="col-sm-2 pullright">
+            <div class="pull-right record-total">
                 <label>Total:</label><span data-bind="text: totalSetlists(), style: { 'padding-left': '5px' }"></span>
             </div>
         </div>
@@ -42,7 +42,7 @@
             <li>
                 <select class="form-control" data-bind="options: ownerSearchList(), value: ownerSearch"></select>
             </li>
-            <li style="float: right;">
+            <li class="navbar-right">
                 <div id="ddlColumns" class="dropdown">
                     <button class="btn btn-default dropdown-toggle" type="button" id="btnShowHideColumns" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                         Show Columns
@@ -51,7 +51,7 @@
                     <ul class="dropdown-menu" aria-labelledby="btnShowHideColumns" data-bind="foreach: columns">
                         <li data-bind="if: !alwaysVisible">
                             <div>
-                                <input type="checkbox" data-bind="checked: isVisible, attr: { id: 'chk_' + dataMember }"/> <label for="" data-bind="text: title"></label>
+                                <input type="checkbox" data-bind="checked: isVisible, attr: { id: 'chk_' + dataMember }" /> <label for="" data-bind="text: title"></label>
                             </div>
                         </li>
                     </ul>

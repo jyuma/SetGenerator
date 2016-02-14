@@ -50,6 +50,15 @@ ul.dropdown-menu li label {
 .glyphicon-trash {
   color: #ed9c28;
 }
+.record-total {
+  padding: 0 5px 0 5px;
+}
+.record-total-sets {
+  padding: 6px 0 0 5px;
+}
+.pad-right {
+  padding: 0 5px 0 0;
+}
 .band-dropdown {
   margin-right: 10px;
 }
