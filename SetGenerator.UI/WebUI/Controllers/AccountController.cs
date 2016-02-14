@@ -55,7 +55,7 @@ namespace SetGenerator.WebUI.Controllers
                     await SignInAsync(user, model.RememberMe);
                     Session["UserId"] = user.Id;
                     Session["BandId"] = user.DefaultBandId;
-                    Session["Bands"] = GetUserBandArrayList(user);
+                    Session["Bands"] = GetUserBandSelectList(user);
                     return RedirectToLocal(returnUrl);
                 }
                 ModelState.AddModelError("", "Invalid username or password.");
@@ -65,23 +65,18 @@ namespace SetGenerator.WebUI.Controllers
             return View(model);
         }
 
-        private string GetUserBandArrayList(MyUser user)
+        private ICollection GetUserBandSelectList(MyUser user)
         {
-            var json = string.Empty;
-            var userBands = _account.GetUserBands(user.UserName).ToArray();
+            var bands = _account.GetUserBands(user.UserName);
 
-            json = "[";
-            foreach (var b in userBands)
-            {
-                json += "{";
-                json += string.Format("\"Value\": {0}, \"Display\": \"{1}\"", b.Band.Id, b.Band.Name);
-                json += "},";
-            }
-            var idx = json.LastIndexOf(",", StringComparison.Ordinal);
-            json = json.Substring(0, idx);
-            json += "]";
+            var result = bands
+                .Select(x => new 
+                    {
+                       Id = x.Band.Id, 
+                       Name = x.Band.Name
+                    }).ToArray();
 
-            return json;
+            return result;
         }
 
         //

@@ -25,28 +25,6 @@
                 ddlUserBand.removeAttr("disabled");
             };
 
-            //------------------------------------ initialize ---------------------------------------
-
-            if (config.userId > 0) {
-                var optBands = ddlUserBand.find("option");
-                if (optBands.length === 0) {
-                    var json = config.userBands.replace(/&quot;/g, "\"");
-                    var bands = JSON.parse(json);
-
-                    var ddlOptions = "";
-                    $(bands).each(function (index, value) {
-                        ddlOptions = ddlOptions + "<option value=" + value.Value;
-                        if (value.Value.toString() === config.currentBandId) {
-                            ddlOptions = ddlOptions + " selected";
-                        }
-                        ddlOptions = ddlOptions + ">" + value.Display + "</option>";
-                    });
-                    ddlUserBand.append(ddlOptions);
-                }
-            }
-
-            //------------------------------------ initialize ---------------------------------------
-
             //-------------------------------------- events -----------------------------------------
 
             ddlUserBand.change(function () {

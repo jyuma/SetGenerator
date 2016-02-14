@@ -1,5 +1,7 @@
-﻿@using Microsoft.AspNet.Identity
-@using ServiceStack
+﻿@using System.Collections
+@using System.Web.Mvc.Html
+@using FluentNHibernate.Conventions
+@using Microsoft.AspNet.Identity
 
 <script type="text/javascript">
     $(document).ready(function() {
@@ -19,10 +21,13 @@
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
     {
         @Html.AntiForgeryToken()
-        
-        <span class="band-dropdown">
-            <select id="ddlUserBand" class="filter-bold"></select>
-        </span>
+
+        if (@Session["Bands"] != null)
+         {
+            <span class="band-dropdown">
+                @Html.DropDownList("ddlUserBand", new SelectList((IEnumerable)@Session["Bands"], "Id", "Name", @Session["BandId"]), @Session["BandId"])
+            </span>
+        }
         <text><strong>
                 @if (User.Identity.GetUserName() == "admin")
                 {
