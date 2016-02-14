@@ -16,16 +16,21 @@
 </script>
 
 <div class="panel panel-default">
-    <div class="panel-heading">
+    <div class="panel-heading" style="padding-bottom: 1px">
         <ul class="nav nav-pills">
             <li>
                 <h3>View Sets for <i>@Model.Name</i></h3>
+                <a style="padding: 5px 0 0 0" href="#" onclick="location.href = '@Url.Action("Index", "Setlists", new {@id = @Model.SetlistId})'">Back To List</a>
             </li>
             <li style="float: right;">
-                <button class="btn btn-info" data-bind="click: showColumnSelectorDialog">Download PDF</button>
+                <div>
+                    <button class="btn btn-info" data-bind="click: showColumnSelectorDialog">Download PDF</button>
+                </div>
+                <div data-bind="style: { 'margin-top': '3px'} ">
+                    <label>Total:</label><span data-bind="text: totalSongs(), style: { 'padding-left': '5px' }"></span>
+                </div>
             </li>
         </ul>
-        <a href="#" onclick="location.href = '@Url.Action("Index", "Setlists", new {@id = @Model.SetlistId})'">Back To List</a>
     </div>
     <div class="panel-body">
         <ul class="nav nav-pills">
@@ -52,7 +57,7 @@
 
         <table class="table table-bordered" id="tblSetSong">
             <thead>
-                <tr class="headerDragClass">
+                <tr>
                     <th class="col-glyphicon"></th>
                     <!-- ko foreach: columns -->
                     <!-- ko if: !isMemberColumn -->

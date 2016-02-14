@@ -46,12 +46,16 @@
             }
 
             function GigViewModel() {
+                var tblGig = $("#tblGig");
+                var ddlColumns = $("#ddlColumns");
+
                 var self = this;
 
                 self.gigs = ko.observableArray([]);
                 self.selectedGig = ko.observable();
-                self.venueSearch = ko.observable('');
-                self.editFormHeader = ko.observable('');
+                self.venueSearch = ko.observable("");
+                self.editFormHeader = ko.observable("");
+                self.totalGigs = ko.observable(0);
 
                 createGigArray(lists.GigList);
 
@@ -62,7 +66,7 @@
                     });
                 };
 
-                $("#ddlColumns").on("hidden.bs.dropdown", function () {
+                ddlColumns.on("hidden.bs.dropdown", function () {
                     self.saveColumns();
                 });
 
@@ -123,7 +127,10 @@
                 });
 
                 self.gigsTable = ko.computed(function () {
-                    return self.filteredGigs();
+                    var filteredGigs = self.filteredGigs();
+                    self.totalGigs(filteredGigs.length);
+
+                    return filteredGigs;
                 });
 
                 self.showEditDialog = function (row) {
@@ -210,14 +217,13 @@
 
                 self.highlightRow = function (row) {
                     if (row == null) return;
-                    var id = row.id;
-                    var table = $("#tblGig");
-                    var rows = $("#tblGig tr:gt(0)");
+
+                    var rows = tblGig.find("tr:gt(0)");
                     rows.each(function () {
                         $(this).css("background-color", "#ffffff");
                     });
 
-                    var r = table.find("#row_" + id);
+                    var r = tblGig.find("#row_" + row.id);
                     r.css("background-color", HIGHLIGHT_ROW_COLOUR);
                     $("#tblGig").attr("tr:hover", HIGHLIGHT_ROW_COLOUR);
                 };

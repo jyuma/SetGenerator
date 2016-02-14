@@ -61,6 +61,9 @@
             }
 
             function SetlistViewModel() {
+                var tblSetlist = $("#tblSetlist");
+                var ddlColumns = $("#ddlColumns");
+
                 var self = this;
 
                 self.setlists = ko.observableArray([]);
@@ -74,6 +77,7 @@
                 self.selectedNumSets = ko.observable(3);
                 self.selectedNumSongs = ko.observable(10);
                 self.editFormHeader = ko.observable("");
+                self.totalSetlists = ko.observable(0);
 
                 createSetlistArray(lists.SetlistList);
 
@@ -84,7 +88,7 @@
                     });
                 };
 
-                $("#ddlColumns").on("hidden.bs.dropdown", function () {
+                ddlColumns.on("hidden.bs.dropdown", function () {
                     self.saveColumns();
                 });
 
@@ -150,8 +154,11 @@
                     });
                 });
 
-                self.setlistsTable = ko.computed(function() {
-                    return self.filteredSetlists();
+                self.setlistsTable = ko.computed(function () {
+                    var filteredSetlists = self.filteredSetlists();
+                    self.totalSetlists(filteredSetlists.length);
+
+                    return filteredSetlists;
                 });
 
                 self.showEditDialog = function(row) {
@@ -238,16 +245,15 @@
 
                 self.highlightRow = function(row) {
                     if (row == null) return;
-                    var id = row.id;
-                    var table = $("#tblSetlist");
-                    var rows = $("#tblSetlist tr:gt(0)");
+
+                    var rows = tblSetlist.find(" tr:gt(0)");
                     rows.each(function() {
                         $(this).css("background-color", "#ffffff");
                     });
 
-                    var r = table.find("#row_" + id);
+                    var r = tblSetlist.find("#row_" + row.id);
                     r.css("background-color", HIGHLIGHT_ROW_COLOUR);
-                    $("#tblSetlist").attr("tr:hover", HIGHLIGHT_ROW_COLOUR);
+                    tblSetlist.attr("tr:hover", HIGHLIGHT_ROW_COLOUR);
                 };
 
                 self.ownerSearch.subscribe(function() {

@@ -11,8 +11,6 @@
 
     setlists.sets = {
         init: function (options) {
-            var tblSetSong = $("#tblSetSong");
-
             var config = {
                 setlistId: 0
             }
@@ -34,7 +32,7 @@
 
             ko.applyBindings(new SetsViewModel());
 
-            tblSetSong.tableDnD({ onDragClass: "myDragClass" });
+            $("#tblSetSong").tableDnD({ onDragClass: "myDragClass" });
 
             function loadConfig() {
                 $.ajax({
@@ -93,15 +91,19 @@
             //---------------------------------------------- VIEW MODEL (BEGIN) -------------------------------------------------------
 
             function SetsViewModel() {
+                var tblSetSong = $("#tblSetSong");
+                var ddlColumns = $("#ddlColumns");
+
                 var self = this;
 
                 self.setSongs = ko.observableArray([]);
                 self.selectedSetSong = ko.observable();
                 self.selectedSetNumber = ko.observable(1);
-                
+                self.totalSongs = ko.observable(0);
+
                 createSetSongArray(lists.SetSongList);
 
-                $("#ddlColumns").on("hidden.bs.dropdown", function () {
+                ddlColumns.on("hidden.bs.dropdown", function () {
                     self.saveColumns();
                 });
 
@@ -136,6 +138,8 @@
                             pushSetSong(value);
                         });
                     }
+                    var setSongs = self.setSongs();
+                    self.totalSongs(setSongs.length);
                 };
 
                 function pushSetSong(value) {
@@ -168,7 +172,7 @@
                     });
 
                     // get new order
-                    var newOrder = $("#tblSetSong tr").not("thead tr");
+                    var newOrder = tblSetSong.find("tr").not("thead tr");
                     var newIds = [];
                     $(newOrder).each(function (index, value) {
                         var idx = value.id.lastIndexOf("_");
@@ -197,13 +201,13 @@
 
                 self.highlightRow = function (row) {
                     if (row == null) return;
-                    var id = row.id;
-                    var rows = $("#tblSetSong tr:gt(0)");
+
+                    var rows = tblSetSong.find("tr:gt(0)");
                     rows.each(function () {
                         $(this).css("background-color", "#ffffff");
                     });
 
-                    var r = tblSetSong.find("#row_" + id);
+                    var r = tblSetSong.find("#row_" + row.id);
                     r.css("background-color", HIGHLIGHT_ROW_COLOUR);
                     tblSetSong.attr("tr:hover", HIGHLIGHT_ROW_COLOUR);
                 };

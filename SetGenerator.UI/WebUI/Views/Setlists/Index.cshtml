@@ -24,8 +24,12 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <div class="row">
-            <div class="col-sm-12">
-                <h3><i>@Model.BandName</i> Setlists</h3>
+            <div class="col-sm-10">
+                <h3><i>@Model.BandName</i> Setlists
+                </h3>
+            </div>
+            <div class="col-sm-2 pullright">
+                <label>Total:</label><span data-bind="text: totalSetlists(), style: { 'padding-left': '5px' }"></span>
             </div>
         </div>
         <ul class="nav nav-pills">
@@ -72,7 +76,7 @@
             <tr data-bind="click: $parent.highlightRow, attr: {id: 'row_' +  id}">
                 <td><a class="glyphicon glyphicon-remove" href="#" data-bind="click: $parent.showDeleteDialog"></a></td>
                 <td><a class="glyphicon glyphicon-pencil" href="#" data-bind="click: $parent.showEditDialog"></a></td>
-                <td ><a data-bind="attr: { href: 'Setlists/' + id + '/Sets/' }, click: $parent.showSets">View Sets</a></td>
+                <td ><a data-bind="attr: { href: 'Setlists/' + id + '/Sets/' }, click: $parent.showSets">Sets</a></td>
                 <!-- ko foreach: $parent.columns -->
                 <td data-bind="text: (dataMember.indexOf('updatedate') >= 0 || dataMember.indexOf('dategig') >= 0) ? moment($parent[dataMember]).format('ll') : $parent[dataMember], visible: isVisible, css: { 'col-audit': dataMember.indexOf('updateuser') >= 0 || dataMember.indexOf('updatedate') >= 0 || dataMember.indexOf('owner') >= 0  }"></td>
                 <!-- /ko -->

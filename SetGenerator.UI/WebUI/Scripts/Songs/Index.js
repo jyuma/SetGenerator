@@ -95,6 +95,9 @@
             //---------------------------------------------- VIEW MODEL (BEGIN) ---------------------------------------------------
 
             function SongViewModel() {
+                var tblSong = $("#tblSong");
+                var ddlColumns = $("#ddlColumns");
+
                 var self = this;
 
                 self.songs = ko.observableArray([]);
@@ -107,11 +110,12 @@
                 self.keySearch = ko.observable("");
                 self.titleSearch = ko.observable("");
                 self.listTypeSearch = ko.observable(LISTTYPE_ALIST);
+                self.totalSongs = ko.observable(0);
 
                 createSongArray();
                 createSingerSearchListArray();
 
-                $("#ddlColumns").on("hidden.bs.dropdown", function () {
+                ddlColumns.on("hidden.bs.dropdown", function () {
                     self.saveColumns();
                 });
 
@@ -254,7 +258,10 @@
                 });
 
                 self.songsTable = ko.computed(function () {
-                    return self.filteredSongs();
+                    var filteredSongs = self.filteredSongs();
+                    self.totalSongs(filteredSongs.length);
+
+                    return filteredSongs;
                 });
 
                 self.toggleDisabled = ko.computed(function () {
@@ -372,16 +379,15 @@
 
                 self.highlightRow = function (row) {
                     if (row == null) return;
-                        var id = row.id;
-                        var table = $("#tblSong");
-                        var rows = $("#tblSong tr:gt(0)");
+
+                        var rows = tblSong.find("tr:gt(0)");
                         rows.each(function() {
                             $(this).css("background-color", "#ffffff");
                     });
 
-                    var r = table.find("#row_" + id);
+                        var r = tblSong.find("#row_" + row.id);
                     r.css("background-color", HIGHLIGHT_ROW_COLOUR);
-                    $("#tblSong").attr("tr:hover", HIGHLIGHT_ROW_COLOUR);
+                    tblSong.attr("tr:hover", HIGHLIGHT_ROW_COLOUR);
                 };
 
                 self.saveSong = function () {
