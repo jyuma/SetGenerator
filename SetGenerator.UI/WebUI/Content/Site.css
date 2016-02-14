@@ -84,17 +84,11 @@ ul.dropdown-menu li label {
 .form-control.filter option:not(:nth-child(1)) {
   color: #555555;
 }
-#txtSearchKey {
-  width: 55px;
-}
-#txtSearchTitle {
-  width: 200px;
-}
 .date-search {
   width: 80px;
 }
 .text-search {
-  width: 200px;
+  width: 150px;
 }
 .input-date {
   width: 90px;

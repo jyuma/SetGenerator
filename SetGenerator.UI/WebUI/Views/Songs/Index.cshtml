@@ -39,10 +39,10 @@
                 <select class="form-control filter" data-bind="options: tempoNameSearchList(), value: tempoSearch, style: { color: tempoSearch() != 'Tempo' ? '#555' : '#8b8a8a' }"></select>
             </li>
             <li>
-                <input class="form-control" type="text" id="txtSearchKey" placeholder="Key" data-bind="value: keySearch, valueUpdate: 'keyup'" maxlength="3" />
+                <input class="form-control" type="text" placeholder="Key" data-bind="value: keySearch, valueUpdate: 'keyup', style: { width: '55px' }" maxlength="3" />
             </li>
             <li>
-                <input class="form-control" id="txtSearchTitle" type="text" placeholder="Title" data-bind="value: titleSearch, valueUpdate: 'keyup'" />
+                <input class="form-control" type="text" placeholder="Title" data-bind="value: titleSearch, valueUpdate: 'keyup', style: { width: '150px' }" " />
             </li>
             <li>
                 <button class="btn btn-default" onclick="location.href = '@Url.Action("Print", "Songs")'"><span class="glyphicon glyphicon-print" aria-hidden="true"></span></button>
