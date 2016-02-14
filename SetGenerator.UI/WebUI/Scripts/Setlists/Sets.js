@@ -83,7 +83,7 @@
                 self.id = detail.Id;
                 self.nameid = detail.NameId;
                 self.sharpflatnat = detail.SharpFlatNatural;
-                self.sharpflatnatdesc = GetSharpFlatNotation(detail.SharpFlatNatural);
+                self.sharpflatnatdesc = getSharpFlatNotation(detail.SharpFlatNatural);
                 self.majminor = detail.MajorMinor;
                 self.name = detail.Name + self.sharpflatnatdesc + (detail.MajorMinor == 1 ? "m" : "");
             }
@@ -124,6 +124,14 @@
                 });
 
                 function createSetSongArray(list) {
+                    var songs = list.filter(function (value) {
+                        return value.SetNumber > 0;
+                    });
+                    
+                    if (songs.length === 0) {
+                        self.selectedSetNumber(0);
+                    } 
+
                     self.setSongs.removeAll();
 
                     if (self.selectedSetNumber() > 0) {
@@ -475,7 +483,7 @@
 
             //---------------------------------------------- VIEW MODEL (END) -------------------------------------------------------
 
-            function GetSharpFlatNotation(sharpflatnat) {
+            function getSharpFlatNotation(sharpflatnat) {
                 var desc = "";
                 if (sharpflatnat > 0)
                     desc = sharpflatnat === 1 ? "#" : "b";

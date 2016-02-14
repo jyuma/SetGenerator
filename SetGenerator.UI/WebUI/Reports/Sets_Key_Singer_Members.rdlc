@@ -58,7 +58,7 @@
           </TablixColumns>
           <TablixRows>
             <TablixRow>
-              <Height>0.50001in</Height>
+              <Height>0.59376in</Height>
               <TablixCells>
                 <TablixCell>
                   <CellContents>
@@ -458,7 +458,7 @@
                               <TextRun>
                                 <Value>=Fields!Title.Value</Value>
                                 <Style>
-                                  <FontSize>24pt</FontSize>
+                                  <FontSize>22pt</FontSize>
                                 </Style>
                               </TextRun>
                             </TextRuns>
@@ -489,7 +489,7 @@
         <RepeatColumnHeaders>true</RepeatColumnHeaders>
         <DataSetName>Sets</DataSetName>
         <Left>0.05208in</Left>
-        <Height>0.70834in</Height>
+        <Height>0.80209in</Height>
         <Width>6.86457in</Width>
         <Style>
           <Border>
@@ -498,7 +498,7 @@
         </Style>
       </Tablix>
     </ReportItems>
-    <Height>0.76042in</Height>
+    <Height>0.83334in</Height>
     <Style>
       <Border>
         <Style>None</Style>

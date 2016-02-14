@@ -35,7 +35,7 @@
             <li><button class="btn btn-success" data-bind="text: 'Set ' + setnumber, value: $parent.selectedSetNumber(), click: $parent.showSet, attr: { id: 'set_' + setnumber }"></button></li>
             <!-- /ko -->
             <li><button class="btn btn-warning" data-bind="text: 'Spares', value: selectedSetNumber(), click: showSet "></button></li>
-            <li class="record-total-sets"><label>Total:</label><span data-bind="text: totalSongs(), style: { 'padding-left': '5px' }"></span></li>
+            <li class="record-total-sets"><label data-bind="text: selectedSetNumber() > 0? 'Set ' + selectedSetNumber() + ':' : 'Spares:'"></label><span data-bind="text: totalSongs() + ' songs', style: { 'padding-left': '5px' }"></span></li>
             <li class="navbar-right pad-right">
                 <div id="ddlColumns" class="dropdown">
                     <button class="btn btn-default dropdown-toggle" type="button" id="btnShowHideColumns" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
