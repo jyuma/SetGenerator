@@ -1,4 +1,47 @@
 ﻿/* Body texture */
+.pagination {
+  margin: 10px 5px 0 10px;
+}
+.pagination > li > a,
+.pagination > li > span {
+  position: relative;
+  float: left;
+  padding: 6px 12px;
+  margin-left: -1px;
+  line-height: 1.42857143;
+  color: #8a8a8a;
+  text-decoration: none;
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+.pagination > li > a:hover,
+.pagination > li > span:hover,
+.pagination > li > a:focus,
+.pagination > li > span:focus {
+  z-index: 2;
+  color: #575454;
+  background-color: #eee;
+  border-color: #ddd;
+}
+.pagination > .active > a,
+.pagination > .active > span,
+.pagination > .active > a:hover,
+.pagination > .active > span:hover,
+.pagination > .active > a:focus,
+.pagination > .active > span:focus {
+  z-index: 3;
+  color: #e9e4e4;
+  cursor: default;
+  background-color: #3d68a4;
+  border-color: #8ebbfb;
+}
+table {
+  margin-top: 3px;
+}
+table thead > tr > th {
+  background-color: #efefef;
+  color: #575454;
+}
 body {
   margin: 0;
   /*background: url('Images/background.png') repeat center;*/
@@ -11,6 +54,32 @@ body {
   position: relative;
   margin: 0 0 0 150px;
   max-width: 1200px;
+}
+.navbar {
+  border-radius: 0;
+  height: 65px;
+  margin-bottom: 0;
+  background-color: #375a8d;
+}
+.navbar .navbar-brand > li {
+  display: inline-block;
+  padding: 0 0 0 10px;
+  margin-top: 5px;
+}
+.navbar .navbar-brand > li > a {
+  color: #e9e4e4;
+  text-decoration: none;
+  font-size: 1.2em;
+}
+.navbar .navbar-brand > li > a:hover {
+  color: #ffffff;
+}
+.navbar-text > a {
+  color: #e9e4e4;
+  text-decoration: none;
+}
+.navbar-text > a:hover {
+  color: #ffffff;
 }
 #home-content {
   background: url('images/home.jpg');
@@ -53,11 +122,17 @@ ul.dropdown-menu li label {
 .record-total {
   padding: 0 5px 0 5px;
 }
-.record-total-sets {
-  padding: 6px 0 0 5px;
-}
 .pad-right {
   padding: 0 5px 0 0;
+}
+.record-total-sets {
+  float: left;
+  padding: 20px 0 0 5px;
+}
+.setsongs-columns {
+  float: right;
+  margin: 0;
+  padding: 10px 5px 0 0;
 }
 .band-dropdown {
   margin-right: 10px;
@@ -145,51 +220,28 @@ table td {
 .panel {
   margin: 0;
 }
+.panel .panel-heading {
+  background-color: #ffffff;
+}
 .panel .panel-body {
   padding: 0;
 }
 .panel .panel-body > .nav-pills {
   padding: 8px 10px 8px 10px;
 }
-.navbar {
-  border-radius: 0;
-  height: 65px;
-  margin-bottom: 0;
-  background-color: #457bc5;
-}
-.navbar .navbar-brand > li {
-  display: inline-block;
-  padding: 0 0 0 10px;
-  margin-top: 5px;
-}
-.navbar .navbar-brand > li > a {
-  color: #e9e4e4;
-  text-decoration: none;
-  font-size: 1.2em;
-}
-.navbar .navbar-brand > li > a:hover {
-  color: #f3f1f1;
-}
-.navbar-text > a {
-  color: #e9e4e4;
-  text-decoration: none;
-}
-.navbar-text > a:hover {
-  color: #f3f1f1;
-}
 #logoutForm.navbar-right strong > a {
   color: #e9e4e4;
   text-decoration: none;
 }
 #logoutForm.navbar-right strong > a:hover {
-  color: #f3f1f1;
+  color: #ffffff;
 }
 #logoutForm.navbar-right strong span > a {
   color: #e9e4e4;
   text-decoration: none;
 }
 #logoutForm.navbar-right strong span > a:hover {
-  color: #f3f1f1;
+  color: #ffffff;
 }
 h1,
 h2,
@@ -236,7 +288,7 @@ h4 {
   margin-left: auto;
   margin-right: auto;
   font-family: Arial, Helvetica, sans-serif;
-  background: #457bc5;
+  background: #375a8d;
   clear: both;
 }
 #footer p {

@@ -32,7 +32,13 @@
 
             ko.applyBindings(new SetsViewModel());
 
-            $("#tblSetSong").tableDnD({ onDragClass: "myDragClass" });
+            $("#tblSetSong").tableDnD(
+            {
+                onDragClass: "myDragClass",
+                onDragStart: function(table, row) {
+                    $(row).addClass("myDragClass");
+                }
+            });
 
             function loadConfig() {
                 $.ajax({
@@ -167,6 +173,8 @@
                     if (row.setnumber > 0) {
                         tblSetSong.tableDnDUpdate();
                     }
+
+                    $("#set_" + row.setnumber).focus();
                 };
 
                 self.isSequenceChanged = function () {

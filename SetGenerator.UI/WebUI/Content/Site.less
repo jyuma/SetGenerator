@@ -1,9 +1,14 @@
 ﻿/* Body texture */
+@colourMediumBlack: #575454;
 @colourBlack: #555;
-@colourBlackSelected: #8a8a8a;
-@colourIvoryHover: #f3f1f1;
+@colourBlackDisabled: #8a8a8a;
+@colourIvoryHover:  #fff;
 @colourIvory: #e9e4e4;
 @colourWhite: #ffffff;
+@colourBlue: #3d68a4;
+@colourDarkBlue: #375a8d;
+@colourLightBlue: #8ebbfb;
+@colourNavbar: #375a8d;
 @colourPrimary: #457bc5;
 @colourDanger: #b94a48;
 @colourWarning: #ED9C28;
@@ -12,7 +17,57 @@
 @colourTableHeaderTextHover: #6ea5f3;
 @colourBanner: #e5e0e0;
 @colourGrey: #8b8a8a;
+@colourLightGrey: #d9d8d8;
 @colourDragClass: #b5e2b5;
+
+
+.pagination {
+    margin: 10px 5px 0 10px;
+}
+
+.pagination > li > a,
+.pagination > li > span {
+  position: relative;
+  float: left;
+  padding: 6px 12px;
+  margin-left: -1px;
+  line-height: 1.42857143;
+  color: @colourBlackDisabled;
+  text-decoration: none;
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+
+.pagination > li > a:hover,
+.pagination > li > span:hover,
+.pagination > li > a:focus,
+.pagination > li > span:focus {
+  z-index: 2;
+  color: @colourMediumBlack;
+  background-color: #eee;
+  border-color: #ddd;
+}
+.pagination > .active > a,
+.pagination > .active > span,
+.pagination > .active > a:hover,
+.pagination > .active > span:hover,
+.pagination > .active > a:focus,
+.pagination > .active > span:focus {
+  z-index: 3;
+  color: @colourIvory;
+  cursor: default;
+  background-color: @colourBlue;
+  border-color: @colourLightBlue;
+}
+
+table {
+    margin-top: 3px;
+    thead > tr > th {
+        background-color: #efefef; 
+        color: #575454;
+    }
+}
+
 
 body {
     margin: 0;
@@ -28,6 +83,39 @@ body {
     position: relative;
     margin: 0 0 0 150px;
     max-width: 1200px;
+}
+
+.navbar {
+    border-radius: 0;
+    height: 65px;
+    margin-bottom: 0;
+    background-color: @colourNavbar;
+    .navbar-brand {
+        > li {
+            display: inline-block;
+            padding: 0 0 0 10px;
+            margin-top: 5px;
+            > a {
+                color: @colourIvory;
+                text-decoration: none;
+                font-size: 1.2em;
+                &:hover {
+                    color: @colourIvoryHover;
+                }
+            }
+        }
+    }
+}
+
+.navbar-text {
+    > a {
+        color: @colourIvory;
+        text-decoration: none;
+
+        &:hover {
+            color: @colourIvoryHover;
+        }
+    }
 }
 
 #home-content {
@@ -79,11 +167,18 @@ ul.dropdown-menu {
     padding: 0 5px 0 5px;
 }
 
-.record-total-sets {
-    padding: 6px 0 0 5px;
-}
 .pad-right {
     padding: 0 5px 0 0;
+}
+
+.record-total-sets {
+    float: left;
+    padding: 20px 0 0 5px;
+}
+.setsongs-columns {
+    float: right;
+    margin: 0;
+    padding: 10px 5px 0 0;
 }
 
 .band-dropdown
@@ -201,6 +296,9 @@ table {
 
 .panel {
     margin: 0;
+    .panel-heading {
+        background-color: #fff
+    }
     .panel-body {
         padding: 0;
         > .nav-pills {
@@ -208,39 +306,6 @@ table {
         }
     }
 } 
-
-.navbar {
-    border-radius: 0;
-    height: 65px;
-    margin-bottom: 0;
-    background-color: @colourPrimary;
-    .navbar-brand {
-        > li {
-            display: inline-block;
-            padding: 0 0 0 10px;
-            margin-top: 5px;
-            > a {
-                color: @colourIvory;
-                text-decoration: none;
-                font-size: 1.2em;
-                &:hover {
-                    color: @colourIvoryHover;
-                }
-            }
-        }
-    }
-}
-
-.navbar-text {
-    > a {
-        color: @colourIvory;
-        text-decoration: none;
-
-        &:hover {
-            color: @colourIvoryHover;
-        }
-    }
-}
 
 #logoutForm.navbar-right {
     strong {
@@ -321,7 +386,7 @@ h4 {
     margin-left: auto;
     margin-right: auto;
     font-family: Arial, Helvetica, sans-serif;
-    background: @colourPrimary;
+    background: @colourNavbar;
     clear: both;
 }
 
