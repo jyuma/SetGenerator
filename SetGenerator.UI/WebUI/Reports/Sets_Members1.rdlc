@@ -41,7 +41,7 @@
         <TablixBody>
           <TablixColumns>
             <TablixColumn>
-              <Width>0.76042in</Width>
+              <Width>0.65626in</Width>
             </TablixColumn>
           </TablixColumns>
           <TablixRows>
@@ -50,14 +50,14 @@
               <TablixCells>
                 <TablixCell>
                   <CellContents>
-                    <Textbox Name="Singer">
+                    <Textbox Name="Member1">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
                       <Paragraphs>
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>=Fields!Singer.Value</Value>
+                              <Value>=Fields!Member1.Value</Value>
                               <Style>
                                 <FontSize>12pt</FontSize>
                               </Style>
@@ -68,7 +68,7 @@
                           </Style>
                         </Paragraph>
                       </Paragraphs>
-                      <rd:DefaultName>Singer</rd:DefaultName>
+                      <rd:DefaultName>Member1</rd:DefaultName>
                       <Style>
                         <Border>
                           <Style>None</Style>
@@ -92,14 +92,14 @@
               <TablixHeader>
                 <Size>0.20833in</Size>
                 <CellContents>
-                  <Textbox Name="Textbox2">
+                  <Textbox Name="Member">
                     <CanGrow>true</CanGrow>
                     <KeepTogether>true</KeepTogether>
                     <Paragraphs>
                       <Paragraph>
                         <TextRuns>
                           <TextRun>
-                            <Value>Singer</Value>
+                            <Value>=Parameters!member1.Value</Value>
                             <Style>
                               <FontStyle>Italic</FontStyle>
                             </Style>
@@ -110,7 +110,7 @@
                         </Style>
                       </Paragraph>
                     </Paragraphs>
-                    <rd:DefaultName>Textbox2</rd:DefaultName>
+                    <rd:DefaultName>Member</rd:DefaultName>
                     <Style>
                       <Border>
                         <Style>None</Style>
@@ -155,7 +155,7 @@
                     </SortExpression>
                   </SortExpressions>
                   <TablixHeader>
-                    <Size>6.10416in</Size>
+                    <Size>6.21874in</Size>
                     <CellContents>
                       <Textbox Name="Title">
                         <CanGrow>true</CanGrow>
@@ -200,7 +200,7 @@
         <DataSetName>Sets</DataSetName>
         <Left>0.05208in</Left>
         <Height>0.80209in</Height>
-        <Width>6.86458in</Width>
+        <Width>6.875in</Width>
         <Style>
           <Border>
             <Style>None</Style>
@@ -215,7 +215,7 @@
       </Border>
     </Style>
   </Body>
-  <Width>6.9479in</Width>
+  <Width>6.94791in</Width>
   <Page>
     <PageHeader>
       <Height>0.86333in</Height>

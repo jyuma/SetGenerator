@@ -76,13 +76,9 @@ namespace SetGenerator.WebUI.Controllers
             var paramMember1 = (member1.Length > 0 ? member1 : null);
             var paramMember2 = (member2.Length > 0 ? member2 : null);
             var paramMember3 = (member3.Length > 0 ? member3 : null);
-            var includeInstrumentation = ((paramMember1 != null) || (paramMember2 != null) || (paramMember3 != null));
+            
 
-            var reportPath = //GetReportPath(includeKey, includeSinger, includeInstrumentation);
-                (Convert.ToInt32(Session["BandId"]) == 1 // Slugfest
-                    && includeInstrumentation && !includeSinger && !includeKey)
-                ? "~/Reports/Sets_Members_Slugfest.rdlc"
-                : GetReportPath(includeKey, includeSinger, includeInstrumentation);
+            var reportPath = GetReportPath(includeKey, includeSinger, paramMember1, paramMember2, paramMember3);
 
             rv.LocalReport.ReportPath = Server.MapPath(reportPath);
             rv.ProcessingMode = ProcessingMode.Local;
@@ -111,37 +107,66 @@ namespace SetGenerator.WebUI.Controllers
             return File(streamBytes, mimeType, filename);
         }
 
-        private static string GetReportPath(bool includeKey, bool includeSinger, bool includeInstrumentation)
+        private string GetReportPath(bool includeKey, bool includeSinger, string member1, string member2, string member3)
         {
-            var reportPath = "~/Reports/Sets.rdlc";
+            string reportPath;
 
-            if (includeKey && !includeSinger && !includeInstrumentation)
+            string numMembers;
+            if (member1 != null && member2 != null && member3 != null) 
+                numMembers = "3";
+            else if (member1 != null && member2 != null) 
+                numMembers = "2";
+            else 
+                numMembers = "1";
+
+            var includeInstrumentation = (member1 != null || member2 != null || member3 != null);
+
+            // special one-off report for Slugfest
+            if (Convert.ToInt32(Session["BandId"]) == 1) 
             {
-                reportPath = "~/Reports/Sets_Key.rdlc";
+                if (includeInstrumentation && !includeSinger && !includeKey)
+                    return "~/Reports/Sets_Members_Slugfest.rdlc";
             }
-            else if (includeKey && includeSinger && !includeInstrumentation)
+
+            if (!includeInstrumentation)
             {
-                reportPath = "~/Reports/Sets_Key_Singer.rdlc";
+                if (includeKey && includeSinger)
+                {
+                    reportPath = "~/Reports/Sets_Key_Singer.rdlc";
+                }
+                else if (includeKey)
+                {
+                    reportPath = "~/Reports/Sets_Key.rdlc";
+                }
+                else if (includeSinger)
+                {
+                    reportPath = "~/Reports/Sets_Singer.rdlc";
+                }
+                else
+                {
+                    reportPath = "~/Reports/Sets.rdlc";
+                }
             }
-            else if (includeKey && !includeSinger && includeInstrumentation)
+            else
             {
-                reportPath = "~/Reports/Sets_Key_Members.rdlc";
-            }
-            else if (!includeKey && includeSinger && includeInstrumentation)
-            {
-                reportPath = "~/Reports/Sets_Singer_Members.rdlc";
-            }
-            else if (!includeKey && !includeSinger && includeInstrumentation)
-            {
-                reportPath = "~/Reports/Sets_Members.rdlc";
-            }
-            else if (!includeKey && includeSinger && !includeInstrumentation)
-            {
-                reportPath = "~/Reports/Sets_Singer.rdlc";
-            }
-            else if (includeKey && includeSinger && includeInstrumentation)
-            {
-                reportPath = "~/Reports/Sets_Key_Singer_Members.rdlc";
+                if (includeKey && includeSinger)
+                {
+                    reportPath = string.Format("~/Reports/Sets_Key_Singer_Members{0}.rdlc", numMembers);
+                }
+
+                else if (includeKey)
+                {
+                    reportPath = string.Format("~/Reports/Sets_Key_Members{0}.rdlc", numMembers);
+                }
+
+                else if (includeSinger)
+                {
+                    reportPath = string.Format("~/Reports/Sets_Singer_Members{0}.rdlc", numMembers);
+                }
+                else
+                {
+                    reportPath = string.Format("~/Reports/Sets_Members{0}.rdlc", numMembers);
+                }
             }
 
             return reportPath;
