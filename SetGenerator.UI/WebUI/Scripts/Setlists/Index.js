@@ -186,7 +186,7 @@
                     var sl = self.getSetlist(id);
 
                     dialog.custom.showModal({
-                        title: "<span style='color: #fff' class='glyphicon glyphicon-remove'></span> Delete Setlist?",
+                        title: "<span class='glyphicon glyphicon-remove'></span> Delete Setlist?",
                         message: "This will permanently delete the Setlist '" + sl.name + "'.",
                         callback : function () {
                             return self.deleteSetlist(row.id);
@@ -197,7 +197,7 @@
 
                 self.showSetlistEditDialog = function (row) {
                     var id = (typeof row.id !== "undefined" ? row.id : 0);
-                    var title = "<span style='color: #fff' class='glyphicon glyphicon-{0}'></span>";
+                    var title = "<span class='glyphicon glyphicon-{0}'></span>";
                     var message;
 
                     if (id > 0) {

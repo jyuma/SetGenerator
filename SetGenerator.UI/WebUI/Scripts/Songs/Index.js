@@ -298,7 +298,7 @@
                     var s = self.getSong(id);
 
                     dialog.custom.showModal({
-                        title: "<span style='color: #fff' class='glyphicon glyphicon-remove'></span> Delete Song?",
+                        title: "<span class='glyphicon glyphicon-remove'></span> Delete Song?",
                         message: "This will permanently delete the song '" + s.title + "'.",
                         callback: function () {
                             return self.deleteSong(row.id);
@@ -314,7 +314,7 @@
 
                     var title = self.showDisabled()
                         ? "<span class='glyphicon glyphicon-check'></span> Ressurrect It?"
-                        : "<span style='color: #fff' class='glyphicon glyphicon-trash'></span> Shitcan It?";
+                        : "<span class='glyphicon glyphicon-trash'></span> Shitcan It?";
 
                     var message = self.showDisabled()
                         ? "This will ressurrect the song <i>" + s.title + "</i> and place it back into the A List."
@@ -332,7 +332,7 @@
 
                 self.showSongEditDialog = function (row) {
                     var id = (typeof row.id !== "undefined" ? row.id : 0);
-                    var title = "<span style='color: #fff' class='glyphicon glyphicon-pencil'></span>";
+                    var title = "<span class='glyphicon glyphicon-pencil'></span>";
                     var message;
 
                     if (id > 0) {

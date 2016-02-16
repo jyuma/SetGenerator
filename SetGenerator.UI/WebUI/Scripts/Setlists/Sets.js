@@ -5,10 +5,6 @@
  */
 
 ; (function ($) {
-
-    var STRING_ALL_SINGERS = "Singer";
-    var STRING_ALL_GENRES = "Genre";
-    var STRING_ALL_TEMPOS = "Tempo";
     var DEFAULT_BAND_ID = 1;
     var HIGHLIGHT_ROW_COLOUR = "#e3e8ff";
 
@@ -306,7 +302,7 @@
                     });
 
                     dialog.custom.showModal({
-                        title: "<span style='color: #fff' class='glyphicon glyphicon-share-alt'></span> From " + (currentSet > 0 ? "Set " + currentSet : "Spares"),
+                        title: "<span class='glyphicon glyphicon-share-alt'></span> From " + (currentSet > 0 ? "Set " + currentSet : "Spares"),
                         message: message,
                         callback: function () {
                             $("#validation-container").html("");
