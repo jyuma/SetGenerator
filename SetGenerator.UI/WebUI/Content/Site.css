@@ -7,21 +7,21 @@
   position: relative;
   float: left;
   padding: 6px 12px;
-  margin-left: -1px;
+  margin: -5px 0 0 -1px;
   line-height: 1.42857143;
-  color: #8a8a8a;
+  color: #799acb;
   text-decoration: none;
-  background-color: #fff;
-  border: 1px solid #ddd;
+  background-color: #ffffff;
+  border: 1px solid #bebdbd;
 }
 .pagination > li > a:hover,
 .pagination > li > span:hover,
 .pagination > li > a:focus,
 .pagination > li > span:focus {
   z-index: 2;
-  color: #575454;
-  background-color: #eee;
-  border-color: #ddd;
+  color: #ffffff;
+  background-color: #bebdbd;
+  border-color: #9eb6d9;
 }
 .pagination > .active > a,
 .pagination > .active > span,
@@ -30,10 +30,10 @@
 .pagination > .active > a:focus,
 .pagination > .active > span:focus {
   z-index: 3;
-  color: #e9e4e4;
+  color: #ffffff;
   cursor: default;
-  background-color: #3d68a4;
-  border-color: #8ebbfb;
+  background-image: radial-gradient(circle, #71a671, #589e57);
+  border: 1px solid #62be62;
 }
 table {
   margin-top: 3px;
@@ -99,7 +99,7 @@ ul.dropdown-menu li {
 ul.dropdown-menu li label {
   font-weight: 400;
 }
-.glyphicon {
+.glyphicon-ok {
   color: #555555;
 }
 .glyphicon-share,
@@ -125,11 +125,15 @@ ul.dropdown-menu li label {
 .pad-right {
   padding: 0 5px 0 0;
 }
-.record-total-sets {
+.set-songs-record-count {
   float: left;
-  padding: 20px 0 0 5px;
+  padding: 15px 0 0 5px;
 }
-.setsongs-columns {
+.set-songs-search {
+  float: left;
+  padding-left: 10px;
+}
+.set-songs-col-picker {
   float: right;
   margin: 0;
   padding: 10px 5px 0 0;
@@ -304,12 +308,15 @@ h4 {
 .modal-dialog {
   padding: 0;
 }
+.modal-dialog .modal-header {
+  background-color: #375a8d;
+}
 .modal-dialog p {
   padding: 0;
   width: 100%;
 }
 .modal-body {
-  padding-bottom: 0;
+  padding: 0 15px 0 15px;
 }
 .modal-header {
   color: #e9e4e4;

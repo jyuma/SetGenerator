@@ -158,7 +158,7 @@
                     var g = self.getGig(id);
 
                     dialog.custom.showModal({
-                        title: "Delete Gig?",
+                        title: "<span style='color: #fff' class='glyphicon glyphicon-remove'></span> Delete Gig?",
                         message: "This will permanently delete the gig for venue '" + g.venue + "' on " + g.dategig + ".",
                         callback: function () {
                             return self.deleteGig(row.id);
@@ -169,15 +169,15 @@
 
                 self.showGigEditDialog = function (row) {
                     var id = (typeof row.id !== "undefined" ? row.id : 0);
-                    var title;
+                    var title = "<span style='color: #fff' class='glyphicon glyphicon-pencil'></span>";
                     var message;
 
                     if (id > 0) {
-                        title = "Edit Gig";
+                        title = title + " Edit Gig";
                         var gig = self.getGig(id);
                         self.selectedGig(gig);
                     } else {
-                        title = "Add Gig";
+                        title = title + " Add Gig";
                         self.selectedGig([]);
                     }
 

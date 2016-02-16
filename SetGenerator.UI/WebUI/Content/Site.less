@@ -1,25 +1,22 @@
 ﻿/* Body texture */
-@colourMediumBlack: #575454;
 @colourBlack: #555;
 @colourBlackDisabled: #8a8a8a;
 @colourIvoryHover:  #fff;
 @colourIvory: #e9e4e4;
-@colourWhite: #ffffff;
-@colourBlue: #3d68a4;
-@colourDarkBlue: #375a8d;
-@colourLightBlue: #8ebbfb;
-@colourNavbar: #375a8d;
+@colourWhite: #fff;
+@colourGreen: #3e963e;
+@colourGreen2: #6aa16a;
+@colourYellow: #c2c829;
+@colourBlue: #375a8d;
 @colourPrimary: #457bc5;
 @colourDanger: #b94a48;
 @colourWarning: #ED9C28;
 @colourSuccess: #47A447;
-@colourTableHeaderText: #2c71d0;
-@colourTableHeaderTextHover: #6ea5f3;
 @colourBanner: #e5e0e0;
 @colourGrey: #8b8a8a;
-@colourLightGrey: #d9d8d8;
 @colourDragClass: #b5e2b5;
-
+@tableHeaderBackground:  #efefef;
+@tableHeaderColor:  #575454;
 
 .pagination {
     margin: 10px 5px 0 10px;
@@ -30,12 +27,12 @@
   position: relative;
   float: left;
   padding: 6px 12px;
-  margin-left: -1px;
+  margin: -5px 0 0 -1px;
   line-height: 1.42857143;
-  color: @colourBlackDisabled;
+  color: Lighten(@colourBlue, 25);
   text-decoration: none;
-  background-color: #fff;
-  border: 1px solid #ddd;
+  background-color: @colourWhite;
+  border: 1px solid Lighten(@colourGrey, 20);
 }
 
 .pagination > li > a:hover,
@@ -43,9 +40,9 @@
 .pagination > li > a:focus,
 .pagination > li > span:focus {
   z-index: 2;
-  color: @colourMediumBlack;
-  background-color: #eee;
-  border-color: #ddd;
+  color: @colourWhite;
+  background-color: Lighten(@colourGrey, 20);
+  border-color: Lighten(@colourBlue, 35);
 }
 .pagination > .active > a,
 .pagination > .active > span,
@@ -54,20 +51,19 @@
 .pagination > .active > a:focus,
 .pagination > .active > span:focus {
   z-index: 3;
-  color: @colourIvory;
+  color: @colourWhite;
   cursor: default;
-  background-color: @colourBlue;
-  border-color: @colourLightBlue;
+  background-image: radial-gradient(circle, Mix(@colourGreen, Lighten(@colourGrey, 20), 60%), Mix(@colourGreen, Lighten(@colourGrey, 20), 80%));
+  border: 1px solid Lighten(@colourGreen, 15);
 }
 
 table {
     margin-top: 3px;
     thead > tr > th {
-        background-color: #efefef; 
-        color: #575454;
+        background-color: @tableHeaderBackground; 
+        color: @tableHeaderColor;
     }
 }
-
 
 body {
     margin: 0;
@@ -89,7 +85,7 @@ body {
     border-radius: 0;
     height: 65px;
     margin-bottom: 0;
-    background-color: @colourNavbar;
+    background-color: @colourBlue;
     .navbar-brand {
         > li {
             display: inline-block;
@@ -139,7 +135,7 @@ ul.dropdown-menu {
     }
 }
 
-.glyphicon {
+.glyphicon-ok {
     color: @colourBlack;
 }
 
@@ -171,11 +167,17 @@ ul.dropdown-menu {
     padding: 0 5px 0 0;
 }
 
-.record-total-sets {
+.set-songs-record-count {
     float: left;
-    padding: 20px 0 0 5px;
+    padding: 15px 0 0 5px;
 }
-.setsongs-columns {
+
+.set-songs-search {
+    float: left;
+    padding-left: 10px;
+}
+
+.set-songs-col-picker {
     float: right;
     margin: 0;
     padding: 10px 5px 0 0;
@@ -386,7 +388,7 @@ h4 {
     margin-left: auto;
     margin-right: auto;
     font-family: Arial, Helvetica, sans-serif;
-    background: @colourNavbar;
+    background: @colourBlue;
     clear: both;
 }
 
@@ -403,6 +405,9 @@ h4 {
 }
 
 .modal-dialog {
+    .modal-header {
+        background-color: @colourBlue;
+    }
     padding:0;
     p {
         padding: 0;
@@ -411,7 +416,7 @@ h4 {
 }
 
 .modal-body {
-    padding-bottom: 0;
+    padding: 0 15px 0 15px;
 }
 .modal-header {
     color: @colourIvory;

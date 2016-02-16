@@ -42,10 +42,15 @@
                 </li>
             </ul>
         </div>
-        <div class="record-total-sets">
+        <div class="set-songs-record-count">
             <span data-bind="text: 'Total: ' + totalSongs()"></span>
         </div>
-        <div class="setsongs-columns">
+        <!-- ko if: selectedSetNumber() === 0 -->
+        <div class="set-songs-search">
+            <input class="form-control" type="text" placeholder="Title" data-bind="value: titleSearch, valueUpdate: 'keyup', style: { width: '150px' }" "/>
+        </div>
+        <!-- /ko -->
+        <div class="set-songs-col-picker">
             <div id="ddlColumns" class="dropdown">
                 <button class="btn btn-default dropdown-toggle" type="button" id="btnShowHideColumns" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                     Show Columns
@@ -67,16 +72,30 @@
                     <th class="col-glyphicon"></th>
                     <!-- ko foreach: columns -->
                     <!-- ko if: !isMemberColumn -->
-                    <th data-bind="style: { cursor: 'default' }, visible: isVisible, click: $parent.sort, attr: { id: 'song-col-' + dataMember }"><span data-bind="text: title"></span></th>
+                    <th data-bind="style: { cursor: 'default' }, visible: isVisible, click: $parent.sort, attr: { id: 'song-col-' + dataMember }">
+                        <!-- ko if: $parent.selectedSetNumber() > 0 -->
+                        <span data-bind="text: title"></span>
+                        <!-- /ko -->
+                        <!-- ko if: $parent.selectedSetNumber() === 0 -->
+                        <a href="#" data-bind="text: title"></a>
+                        <!-- /ko -->
+                    </th>
                     <!-- /ko -->
                     <!-- ko if: isMemberColumn > 0 -->
-                    <th class="column-member" data-bind="visible: isVisible, click: $parent.sort"><span data-bind="text: title"></span></th>
+                    <th class="column-member" data-bind="visible: isVisible, click: $parent.sort">
+                        <!-- ko if: $parent.selectedSetNumber() > 0 -->
+                        <span data-bind="text: title"></span>
+                        <!-- /ko -->
+                        <!-- ko if: $parent.selectedSetNumber() === 0 -->
+                        <a href="#" data-bind="text: title"></a>
+                        <!-- /ko -->
+                    </th>
                     <!-- /ko -->
                     <!-- /ko -->
                 </tr>
             </thead>
 
-            <tbody data-bind="foreach: setSongs">
+            <tbody data-bind="foreach: setSongsTable">
                 <tr data-bind="attr: {id: 'row_' +  setnumber + '_' + id }, event: { mouseup: function(data, event) { $parent.setNewSongOrder(setnumber, data, event) } }">
                     <td><a class="glyphicon glyphicon-share-alt" href="#" data-bind="click: $parent.showMoveSongDialog"></a></td>
                     <!-- ko foreach: $parent.columns -->

@@ -6,11 +6,17 @@
 
 ; (function ($) {
 
+    var STRING_ALL_SINGERS = "Singer";
+    var STRING_ALL_GENRES = "Genre";
+    var STRING_ALL_TEMPOS = "Tempo";
     var DEFAULT_BAND_ID = 1;
     var HIGHLIGHT_ROW_COLOUR = "#e3e8ff";
 
     setlists.sets = {
         init: function (options) {
+            var _currentSortKey = "title";
+            var _sortDescending = false;
+
             var config = {
                 setlistId: 0
             }
@@ -105,9 +111,8 @@
                 self.setSongs = ko.observableArray([]);
                 self.selectedSetSong = ko.observable();
                 self.selectedSetNumber = ko.observable(1);
+                self.titleSearch = ko.observable("");
                 self.totalSongs = ko.observable(0);
-
-                createSetSongArray(lists.SetSongList);
 
                 ddlColumns.on("hidden.bs.dropdown", function () {
                     self.saveColumns();
@@ -127,6 +132,59 @@
                         arr.push({ setnumber: value });
                     });
                     return arr;
+                });
+
+                createSetSongArray(lists.SetSongList);
+
+                self.sort = function (header) {
+                    if (self.selectedSetNumber() !== 0) return;
+
+                    var afterSave = typeof header.afterSave != "undefined" ? header.afterSave : false;
+                    var sortKey;
+
+                    if (!afterSave) {
+                        sortKey = header.sortKey;
+
+                        if (sortKey !== _currentSortKey) {
+                            _sortDescending = false;
+                        } else {
+                            _sortDescending = !_sortDescending;
+                        }
+                        _currentSortKey = sortKey;
+                    } else {
+                        sortKey = _currentSortKey;
+                    }
+
+                    $(self.columns()).each(function (index, value) {
+                        if (value.sortKey === sortKey) {
+                            self.setSongs.sort(function (a, b) {
+                                if (_sortDescending) {
+                                    return a[sortKey].toString().toLowerCase() > b[sortKey].toString().toLowerCase()
+                                        ? -1 : a[sortKey].toString().toLowerCase() < b[sortKey].toString().toLowerCase()
+                                        || a.title.toLowerCase() > b.title.toLowerCase() ? 1 : 0;
+                                } else {
+                                    return a[sortKey].toString().toLowerCase() < b[sortKey].toString().toLowerCase()
+                                        ? -1 : a[sortKey].toString().toLowerCase() > b[sortKey].toString().toLowerCase()
+                                        || a.title.toLowerCase() > b.title.toLowerCase() ? 1 : 0;
+                                }
+                            });
+                        }
+                    });
+                };
+
+                self.filteredSongs = ko.computed(function () {
+                    return ko.utils.arrayFilter(self.setSongs(), function (s) {
+                        return (
+                                ((self.titleSearch().length === 0 || s.title.toLowerCase().indexOf(self.titleSearch().toLowerCase()) !== -1))
+                        );
+                    });
+                });
+
+                self.setSongsTable = ko.computed(function () {
+                    var filteredSongs = self.filteredSongs();
+                    self.totalSongs(filteredSongs.length);
+
+                    return filteredSongs;
                 });
 
                 function createSetSongArray(list) {
@@ -255,7 +313,7 @@
                     });
 
                     dialog.custom.showModal({
-                        title: "Move From " + (currentSet > 0 ? "Set " + currentSet : "Spares"),
+                        title: "<span style='color: #fff' class='glyphicon glyphicon-share-alt'></span> From " + (currentSet > 0 ? "Set " + currentSet : "Spares"),
                         message: message,
                         callback: function () {
                             $("#validation-container").html("");

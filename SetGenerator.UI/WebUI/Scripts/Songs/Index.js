@@ -238,8 +238,6 @@
                     });
                 }
 
-                self.songsTable = self.songs;
-
                 self.memberInstrumentHeaders = [
                     { title: "Member", sortKey: "member" },
                     { title: "Instrument", sortKey: "instrument" }
@@ -300,7 +298,7 @@
                     var s = self.getSong(id);
 
                     dialog.custom.showModal({
-                        title: "Delete Song?",
+                        title: "<span style='color: #fff' class='glyphicon glyphicon-remove'></span> Delete Song?",
                         message: "This will permanently delete the song '" + s.title + "'.",
                         callback: function () {
                             return self.deleteSong(row.id);
@@ -314,11 +312,11 @@
                     var s = self.getSong(id);
                     if (id <= 0) return;
 
-                    var title = self.showDisabled() ? "Ressurrect It?" : "Shitcan It?";
+                    var title = self.showDisabled() ? "<span class='glyphicon glyphicon-check'></span> Ressurrect It?" : "<span class='glyphicon glyphicon-trash'></span> Shitcan It?";
 
                     var message = self.showDisabled()
-                        ? "This will ressurrect the song '" + s.title + "' and place it back into the A List."
-                        : "This will place the song '" + s.title + "' into the Shitcan.";
+                        ? "This will ressurrect the song <i>" + s.title + "</i> and place it back into the A List."
+                        : "This will move the song <i>" + s.title + "</i> into the Shitcan.";
                     
                     dialog.custom.showModal({
                         title: title,
@@ -326,21 +324,21 @@
                         callback: function () {
                             return self.setDisabled(row.id);
                         },
-                        width: 500
+                        width: 480
                     });
                 };
 
                 self.showSongEditDialog = function (row) {
                     var id = (typeof row.id !== "undefined" ? row.id : 0);
-                    var title;
+                    var title = "<span style='color: #fff' class='glyphicon glyphicon-pencil'></span>";
                     var message;
 
                     if (id > 0) {
-                        title = "Edit Song";
+                        title = title + " Edit Song";
                         var song = self.getSong(id);
                         self.selectedSong(song);
                     } else {
-                        title = "Add Song";
+                        title = title + " Add Song";
                         self.selectedSong([]);
                     }
 
