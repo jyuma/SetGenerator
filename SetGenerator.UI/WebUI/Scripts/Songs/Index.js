@@ -312,7 +312,9 @@
                     var s = self.getSong(id);
                     if (id <= 0) return;
 
-                    var title = self.showDisabled() ? "<span class='glyphicon glyphicon-check'></span> Ressurrect It?" : "<span class='glyphicon glyphicon-trash'></span> Shitcan It?";
+                    var title = self.showDisabled()
+                        ? "<span class='glyphicon glyphicon-check'></span> Ressurrect It?"
+                        : "<span style='color: #fff' class='glyphicon glyphicon-trash'></span> Shitcan It?";
 
                     var message = self.showDisabled()
                         ? "This will ressurrect the song <i>" + s.title + "</i> and place it back into the A List."
