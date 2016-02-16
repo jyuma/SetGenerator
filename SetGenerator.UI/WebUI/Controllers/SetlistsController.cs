@@ -73,6 +73,7 @@ namespace SetGenerator.WebUI.Controllers
             var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ReportConnectionString"].ConnectionString);
             ds.Connection = connection;
 
+            var paramBand = _setlistRepository.Get(setlistId).Band.Name;
             var paramName = _setlistRepository.Get(setlistId).Name;
             var paramMember1 = (member1.Length > 0 ? member1 : null);
             var paramMember2 = (member2.Length > 0 ? member2 : null);
@@ -87,11 +88,12 @@ namespace SetGenerator.WebUI.Controllers
 
             rv.LocalReport.DataSources.Add(rds);
 
-            var reportParam1 = new ReportParameter("name", paramName);
-            var reportParam2 = new ReportParameter("member1", paramMember1);
-            var reportParam3 = new ReportParameter("member2", paramMember2);
-            var reportParam4 = new ReportParameter("member3", paramMember3);
-            rv.LocalReport.SetParameters(new[] { reportParam1, reportParam2, reportParam3, reportParam4 });
+            var reportParam1 = new ReportParameter("band", paramBand);
+            var reportParam2 = new ReportParameter("name", paramName);
+            var reportParam3 = new ReportParameter("member1", paramMember1);
+            var reportParam4 = new ReportParameter("member2", paramMember2);
+            var reportParam5 = new ReportParameter("member3", paramMember3);
+            rv.LocalReport.SetParameters(new[] { reportParam1, reportParam2, reportParam3, reportParam4, reportParam5 });
 
             rv.LocalReport.Refresh();
 

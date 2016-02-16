@@ -155,7 +155,7 @@
                     </SortExpression>
                   </SortExpressions>
                   <TablixHeader>
-                    <Size>6.24999in</Size>
+                    <Size>6.39582in</Size>
                     <CellContents>
                       <Textbox Name="Title">
                         <CanGrow>true</CanGrow>
@@ -185,7 +185,6 @@
                           <PaddingBottom>2pt</PaddingBottom>
                         </Style>
                       </Textbox>
-                      <rd:Selected>true</rd:Selected>
                     </CellContents>
                   </TablixHeader>
                   <TablixMembers>
@@ -200,7 +199,7 @@
         <DataSetName>Sets</DataSetName>
         <Left>0.05208in</Left>
         <Height>0.80209in</Height>
-        <Width>6.86457in</Width>
+        <Width>7.0104in</Width>
         <Style>
           <Border>
             <Style>None</Style>
@@ -215,7 +214,7 @@
       </Border>
     </Style>
   </Body>
-  <Width>6.9479in</Width>
+  <Width>7.08333in</Width>
   <Page>
     <PageHeader>
       <Height>0.86333in</Height>
@@ -229,20 +228,22 @@
             <Paragraph>
               <TextRuns>
                 <TextRun>
-                  <Value>=First(Fields!Name.Value, "Sets")</Value>
+                  <Value>=Parameters!band.Value + " - " + Parameters!name.Value</Value>
                   <Style>
                     <FontStyle>Italic</FontStyle>
-                    <FontSize>20pt</FontSize>
+                    <FontSize>12pt</FontSize>
                   </Style>
                 </TextRun>
               </TextRuns>
-              <Style />
+              <Style>
+                <TextAlign>Right</TextAlign>
+              </Style>
             </Paragraph>
           </Paragraphs>
           <rd:DefaultName>Name</rd:DefaultName>
           <Left>0.05208in</Left>
           <Height>0.36458in</Height>
-          <Width>6.1875in</Width>
+          <Width>6.98958in</Width>
           <Style>
             <Border>
               <Style>None</Style>
@@ -375,7 +376,16 @@
       </rd:DataSetInfo>
     </DataSet>
   </DataSets>
-    <ReportParameters>
+  <ReportParameters>
+    <ReportParameter Name="band">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>My Band</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>Name</Prompt>
+    </ReportParameter>
     <ReportParameter Name="name">
       <DataType>String</DataType>
       <DefaultValue>
@@ -385,7 +395,7 @@
       </DefaultValue>
       <Prompt>Name</Prompt>
     </ReportParameter>
-        <ReportParameter Name="member1">
+    <ReportParameter Name="member1">
       <DataType>String</DataType>
       <Nullable>true</Nullable>
       <DefaultValue>

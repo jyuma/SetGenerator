@@ -359,7 +359,7 @@
       </Border>
     </Style>
   </Body>
-  <Width>6.94791in</Width>
+  <Width>7.08333in</Width>
   <Page>
     <PageHeader>
       <Height>0.37375in</Height>
@@ -373,14 +373,16 @@
             <Paragraph>
               <TextRuns>
                 <TextRun>
-                  <Value>=Parameters!name.Value</Value>
+                  <Value>=Parameters!band.Value + " - " + Parameters!name.Value</Value>
                   <Style>
                     <FontStyle>Italic</FontStyle>
-                    <FontSize>20pt</FontSize>
+                    <FontSize>12pt</FontSize>
                   </Style>
                 </TextRun>
               </TextRuns>
-              <Style />
+              <Style>
+                <TextAlign>Right</TextAlign>
+              </Style>
             </Paragraph>
           </Paragraphs>
           <rd:DefaultName>Name</rd:DefaultName>
@@ -487,6 +489,15 @@
     </DataSet>
   </DataSets>
   <ReportParameters>
+	<ReportParameter Name="band">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>My Band</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>Name</Prompt>
+    </ReportParameter>
     <ReportParameter Name="name">
       <DataType>String</DataType>
       <DefaultValue>
