@@ -1,6 +1,6 @@
 ﻿/* Body texture */
 .pagination {
-  margin: 10px 5px 0 10px;
+  margin: 10px 5px 0 5px;
 }
 .pagination > li > a,
 .pagination > li > span {
@@ -32,8 +32,13 @@
   z-index: 3;
   color: #ffffff;
   cursor: default;
-  background-image: radial-gradient(circle, #71a671, #589e57);
-  border: 1px solid #62be62;
+  border: 1px solid #799acb;
+}
+.pagination > .active.sets > a {
+  background-image: radial-gradient(circle, #3e963e, #50b750);
+}
+.pagination > .active.spares > a {
+  background-image: radial-gradient(circle, #ed9c28, #f1b257);
 }
 table {
   margin-top: 3px;
@@ -127,16 +132,16 @@ ul.dropdown-menu li label {
 }
 .set-songs-record-count {
   float: left;
-  padding: 15px 0 0 5px;
+  padding: 12px 0 0 5px;
 }
 .set-songs-search {
   float: left;
-  padding-left: 10px;
+  padding: 5px 0 0 10px;
 }
 .set-songs-col-picker {
   float: right;
   margin: 0;
-  padding: 10px 5px 0 0;
+  padding: 5px 5px 0 0;
 }
 .band-dropdown {
   margin-right: 10px;

@@ -523,9 +523,10 @@
             <Paragraph>
               <TextRuns>
                 <TextRun>
-                  <Value>=First(Fields!Name.Value, "Setlists")</Value>
+                  <Value>=Parameters!name.Value</Value>
                   <Style>
-                    <FontSize>20pt</FontSize>
+                    <FontStyle>Italic</FontStyle>
+                    <FontSize>18pt</FontSize>
                   </Style>
                 </TextRun>
               </TextRuns>
@@ -628,10 +629,6 @@
           <DataField>IsSpare</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
         </Field>
-        <Field Name="Name">
-          <DataField>Name</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
         <Field Name="NumSets">
           <DataField>NumSets</DataField>
           <rd:TypeName>System.Int32</rd:TypeName>
@@ -694,6 +691,15 @@
       <Nullable>true</Nullable>
       <AllowBlank>true</AllowBlank>
       <Prompt>MemberName3</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="name">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>My Setlist</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>Name</Prompt>
     </ReportParameter>
   </ReportParameters>
   <Language>en-US</Language>

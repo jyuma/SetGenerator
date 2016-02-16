@@ -6,7 +6,7 @@
 @colourWhite: #fff;
 @colourGreen: #3e963e;
 @colourGreen2: #6aa16a;
-@colourYellow: #c2c829;
+@colourYellow: #ad8f00;
 @colourBlue: #375a8d;
 @colourPrimary: #457bc5;
 @colourDanger: #b94a48;
@@ -19,7 +19,7 @@
 @tableHeaderColor:  #575454;
 
 .pagination {
-    margin: 10px 5px 0 10px;
+    margin: 10px 5px 0 5px;
 }
 
 .pagination > li > a,
@@ -53,8 +53,15 @@
   z-index: 3;
   color: @colourWhite;
   cursor: default;
-  background-image: radial-gradient(circle, Mix(@colourGreen, Lighten(@colourGrey, 20), 60%), Mix(@colourGreen, Lighten(@colourGrey, 20), 80%));
-  border: 1px solid Lighten(@colourGreen, 15);
+  border: 1px solid Lighten(@colourBlue, 25);
+}
+
+.pagination > .active.sets > a {
+    background-image: radial-gradient(circle, @colourGreen, Lighten(@colourGreen, 10));
+}
+
+.pagination > .active.spares > a {
+    background-image: radial-gradient(circle, @colourWarning, Lighten(@colourWarning, 10));
 }
 
 table {
@@ -169,18 +176,18 @@ ul.dropdown-menu {
 
 .set-songs-record-count {
     float: left;
-    padding: 15px 0 0 5px;
+    padding: 12px 0 0 5px;
 }
 
 .set-songs-search {
     float: left;
-    padding-left: 10px;
+    padding: 5px 0 0 10px;
 }
 
 .set-songs-col-picker {
     float: right;
     margin: 0;
-    padding: 10px 5px 0 0;
+    padding: 5px 5px 0 0;
 }
 
 .band-dropdown

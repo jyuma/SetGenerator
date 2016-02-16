@@ -482,7 +482,7 @@
     <EmbeddedResource Include="Reports\Sets_Members1.rdlc">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Reports\Sets_Members_Slugfest.rdlc">
+    <EmbeddedResource Include="Reports\Sets_Members_Condensed.rdlc">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\Sets_Members3.rdlc">

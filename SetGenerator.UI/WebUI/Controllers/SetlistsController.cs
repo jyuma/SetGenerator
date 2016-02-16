@@ -73,12 +73,12 @@ namespace SetGenerator.WebUI.Controllers
             var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["ReportConnectionString"].ConnectionString);
             ds.Connection = connection;
 
+            var paramName = _setlistRepository.Get(setlistId).Name;
             var paramMember1 = (member1.Length > 0 ? member1 : null);
             var paramMember2 = (member2.Length > 0 ? member2 : null);
             var paramMember3 = (member3.Length > 0 ? member3 : null);
-            
 
-            var reportPath = GetReportPath(includeKey, includeSinger, paramMember1, paramMember2, paramMember3);
+            var reportPath = GetReportPath(includeKey, includeSinger, paramName, paramMember1, paramMember2, paramMember3);
 
             rv.LocalReport.ReportPath = Server.MapPath(reportPath);
             rv.ProcessingMode = ProcessingMode.Local;
@@ -87,10 +87,11 @@ namespace SetGenerator.WebUI.Controllers
 
             rv.LocalReport.DataSources.Add(rds);
 
-            var reportParam1 = new ReportParameter("member1", paramMember1);
-            var reportParam2 = new ReportParameter("member2", paramMember2);
-            var reportParam3 = new ReportParameter("member3", paramMember3);
-            rv.LocalReport.SetParameters(new []{ reportParam1, reportParam2, reportParam3 });
+            var reportParam1 = new ReportParameter("name", paramName);
+            var reportParam2 = new ReportParameter("member1", paramMember1);
+            var reportParam3 = new ReportParameter("member2", paramMember2);
+            var reportParam4 = new ReportParameter("member3", paramMember3);
+            rv.LocalReport.SetParameters(new[] { reportParam1, reportParam2, reportParam3, reportParam4 });
 
             rv.LocalReport.Refresh();
 
@@ -101,13 +102,12 @@ namespace SetGenerator.WebUI.Controllers
             Warning[] warnings;
             var streamBytes = rv.LocalReport.Render("PDF", null, out mimeType, out encoding, out filenameExtension, out streamids, out warnings);
 
-            var setlist = _setlistRepository.Get(setlistId);
-            var filename = setlist.Name + ".pdf";
+            var filename = paramName + ".pdf";
 
             return File(streamBytes, mimeType, filename);
         }
 
-        private string GetReportPath(bool includeKey, bool includeSinger, string member1, string member2, string member3)
+        private static string GetReportPath(bool includeKey, bool includeSinger, string name, string member1, string member2, string member3)
         {
             string reportPath;
 
@@ -121,11 +121,10 @@ namespace SetGenerator.WebUI.Controllers
 
             var includeInstrumentation = (member1 != null || member2 != null || member3 != null);
 
-            // special one-off report for Slugfest
-            if (Convert.ToInt32(Session["BandId"]) == 1) 
+            if (name.ToUpper() == "MASTER")
             {
                 if (includeInstrumentation && !includeSinger && !includeKey)
-                    return "~/Reports/Sets_Members_Slugfest.rdlc";
+                    return "~/Reports/Sets_Members_Condensed.rdlc";
             }
 
             if (!includeInstrumentation)
@@ -236,23 +235,42 @@ namespace SetGenerator.WebUI.Controllers
         {
             Setlist setlist = null;
 
+            var vm = new SetlistEditViewModel
+            {
+                SetlistId = id
+            };
+
+            var totalSetsList = new Collection<int> {1, 2, 3};
+            var totalSongsPerSetlist = new Collection<int> {8, 9, 10, 11, 12, 13, 14, 15};
+
+            // Edit
             if (id > 0)
             {
                 setlist = _setlistRepository.Get(id);
+                vm.Name = setlist.Name;
+
+                // Contains songs
+                if (setlist.SetSongs.Any()) 
+                {
+                    vm.TotalSetsList = new SelectList(totalSetsList, setlist.SetSongs.Max(x => x.SetNumber));
+                    vm.TotalSongsPerSetlist = new SelectList(totalSongsPerSetlist,
+                        setlist.SetSongs.Count(x => x.SetNumber == 1));
+                }
+                // Contains no songs
+                else  
+                {
+                    vm.TotalSetsList = new SelectList(new Collection<int> { 1, 2, 3 });
+                    vm.TotalSongsPerSetlist = new SelectList(totalSongsPerSetlist);
+                }
             }
-            var vm = new SetlistEditViewModel
+
+            // Add
+            else
             {
-                SetlistId = id,
-                Name = (setlist != null) ? setlist.Name : string.Empty,
-                TotalSetsList = new SelectList(new Collection<int> { 1, 2, 3 },
-                    (setlist != null)
-                    ? setlist.SetSongs.Max(x => x.SetNumber) 
-                    : 3),
-                TotalSongsPerSetlist = new SelectList(new Collection<int> { 8, 9, 10, 11, 12, 13, 14, 15 }, 
-                    (setlist != null)
-                    ? setlist.SetSongs.Count(x => x.SetNumber == 1)
-                    : 10)
-            };
+                vm.Name = string.Empty;
+                vm.TotalSetsList = new SelectList(totalSetsList);
+                vm.TotalSongsPerSetlist = new SelectList(totalSongsPerSetlist);
+            }
 
             return vm;
         }

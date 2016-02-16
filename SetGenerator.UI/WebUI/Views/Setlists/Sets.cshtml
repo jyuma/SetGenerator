@@ -31,13 +31,13 @@
     </div>
     <div class="panel-body">
         <div class="pull-left">
-            <ul class="pagination pagination-lg">
+            <ul class="pagination">
                 <!-- ko foreach: setNumberList -->
-                <li data-bind="css: setnumber === $parent.selectedSetNumber() ? 'active' : null">
+                <li data-bind="css: setnumber === $parent.selectedSetNumber() ? 'active sets' : null">
                     <a href="#" data-bind="attr: { id: 'set_' + setnumber }, text: 'Set ' + setnumber, click: $parent.showSet"></a>
                 </li>
                 <!-- /ko -->
-                <li data-bind="css: selectedSetNumber() === 0 ? 'active' : null">
+                <li data-bind="css: selectedSetNumber() === 0 ? 'active spares' : null">
                     <a href="#" data-bind="text: 'Spares', click: showSet"></a>
                 </li>
             </ul>

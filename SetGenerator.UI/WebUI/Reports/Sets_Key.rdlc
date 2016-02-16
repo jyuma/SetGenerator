@@ -375,10 +375,24 @@
       </rd:DataSetInfo>
     </DataSet>
   </DataSets>
-  <ReportParameters>
-    <ReportParameter Name="member1">
+    <ReportParameters>
+    <ReportParameter Name="name">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>My Setlist</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>Name</Prompt>
+    </ReportParameter>
+        <ReportParameter Name="member1">
       <DataType>String</DataType>
       <Nullable>true</Nullable>
+      <DefaultValue>
+        <Values>
+          <Value>Jerry</Value>
+        </Values>
+      </DefaultValue>
       <AllowBlank>true</AllowBlank>
       <Prompt>MemberName1</Prompt>
     </ReportParameter>

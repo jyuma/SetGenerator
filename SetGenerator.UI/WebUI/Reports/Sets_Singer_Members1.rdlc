@@ -301,7 +301,7 @@
             <Paragraph>
               <TextRuns>
                 <TextRun>
-                  <Value>=First(Fields!Name.Value, "Sets")</Value>
+                  <Value>=Parameters!name.Value</Value>
                   <Style>
                     <FontStyle>Italic</FontStyle>
                     <FontSize>20pt</FontSize>
@@ -448,9 +448,23 @@
     </DataSet>
   </DataSets>
   <ReportParameters>
+    <ReportParameter Name="name">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>My Setlist</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>Name</Prompt>
+    </ReportParameter>
     <ReportParameter Name="member1">
       <DataType>String</DataType>
       <Nullable>true</Nullable>
+      <DefaultValue>
+        <Values>
+          <Value>Jerry</Value>
+        </Values>
+      </DefaultValue>
       <AllowBlank>true</AllowBlank>
       <Prompt>MemberName1</Prompt>
     </ReportParameter>

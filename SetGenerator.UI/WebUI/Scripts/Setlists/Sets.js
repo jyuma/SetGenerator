@@ -139,21 +139,14 @@
                 self.sort = function (header) {
                     if (self.selectedSetNumber() !== 0) return;
 
-                    var afterSave = typeof header.afterSave != "undefined" ? header.afterSave : false;
-                    var sortKey;
+                    var sortKey = header.sortKey;
 
-                    if (!afterSave) {
-                        sortKey = header.sortKey;
-
-                        if (sortKey !== _currentSortKey) {
-                            _sortDescending = false;
-                        } else {
-                            _sortDescending = !_sortDescending;
-                        }
-                        _currentSortKey = sortKey;
+                    if (sortKey !== _currentSortKey) {
+                        _sortDescending = false;
                     } else {
-                        sortKey = _currentSortKey;
+                        _sortDescending = !_sortDescending;
                     }
+                    _currentSortKey = sortKey;
 
                     $(self.columns()).each(function (index, value) {
                         if (value.sortKey === sortKey) {
