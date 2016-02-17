@@ -2,19 +2,19 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-sm-5">
+        <div class="col-sm-12">
             <div class="label label-default">Name</div>
             <input type="text" id="txtName" class="form-control" value="@Model.Name" maxlength="100" />
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-2">
+        <div class="col-sm-4">
             <div class="label label-default">Sets</div>
             @(@Model.SetlistId > 0
                     ? Html.DropDownList("ddlNumSets", @Model.TotalSetsList, new {@class = "form-control", @disabled = "disabled"})
                     : Html.DropDownList("ddlNumSets", @Model.TotalSetsList, new {@class = "form-control"}))
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-4">
             <div class="label label-default">Songs / Set</div>
             @(@Model.SetlistId > 0
                     ? Html.DropDownList("ddlNumSongs", @Model.TotalSongsPerSetlist, new {@class = "form-control", @disabled = "disabled"})

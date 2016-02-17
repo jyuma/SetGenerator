@@ -9,21 +9,21 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-sm-6">
+        <div class="col-sm-12">
             <div class="label label-default">Title</div>
             <input type="text" id="txtTitle" class="form-control" value="@Model.Title" maxlength="50"/>
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-2">
+        <div class="col-sm-4">
             <div class="label label-default">Key</div>
             @Html.DropDownList("ddlKey", @Model.KeyNames, new { @class="form-control"} )
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-4">
             <div class="label label-default">#/b</div>
             @Html.DropDownList("ddlSharpFlatNatural", @Model.SharpFlatNatural, new { @class = "form-control" })
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-4">
             <div class="label label-default">Major/Minor</div>
             @Html.DropDownList("ddlMajorMinor", @Model.MajorMinor, new { @class = "form-control" })
         </div>
@@ -35,26 +35,26 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-6">
+        <div class="col-sm-12">
             <div class="label label-default">Composer</div>
             <input type="text" id="txtComposer" name="txtComposer" class="form-control" value="@Model.Composer" maxlength="100" list="dlComposers"/>
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-3">
+        <div class="col-sm-6">
             <div class="label label-default">Genre</div>
             @Html.DropDownList("ddlGenre", @Model.Genres, new { @class = "form-control" })
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-6">
             <div class="label label-default">Tempo</div>
             @Html.DropDownList("ddlTempo", @Model.Tempos, new { @class = "form-control" })
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-3">
+        <div class="col-sm-6">
             <label class="inline-checkbox-label">@Html.CheckBoxFor(m => m.NeverOpen, new { @checked = Model.NeverOpen, @id = "chkNeverOpen", @class = "checkbox-inline" })Never Open</label>
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-6">
             <label class="inline-checkbox-label">@Html.CheckBoxFor(m => m.NeverClose, new { @checked = Model.NeverClose, @id = "chkNeverClose", @class = "checkbox-inline" })Never Close</label>
         </div>
     </div>

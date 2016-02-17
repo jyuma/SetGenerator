@@ -60,7 +60,7 @@
                     <ul class="dropdown-menu" aria-labelledby="btnShowHideColumns" data-bind="foreach: columns">
                         <li data-bind="if: !alwaysVisible">
                             <div>
-                                <input type="checkbox" data-bind="checked: isVisible, attr: { id: 'chk_' + dataMember }" />
+                                <input type="checkbox" data-bind="checked: isVisible, attr: { id: 'chk_' + dataMember }, css: 'checkbox-inline'" />
                                 <label data-bind="text: title, for: 'chk_' + dataMember"></label>
                             </div>
                         </li>

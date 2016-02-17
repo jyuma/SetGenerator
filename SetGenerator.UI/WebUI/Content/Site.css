@@ -88,13 +88,15 @@ body {
   color: #e5e0e0;
 }
 ul.dropdown-menu {
-  min-width: 130px;
+  min-width: 140px;
 }
 ul.dropdown-menu li {
   padding-left: 15px;
+  padding-right: 5px;
 }
 ul.dropdown-menu li label {
   font-weight: 400;
+  margin-right: 5px;
 }
 .glyphicon-ok {
   color: #555555;
@@ -325,11 +327,12 @@ h4 {
   padding-bottom: 0;
 }
 .modal-dialog .modal-body p {
-  width: 100%;
+  /*width: 100%;*/
   margin: 0;
   padding-top: 0;
 }
 .modal-dialog .modal-body .container {
+  width: auto;
   padding: 0 20px 0 15px;
 }
 input[type=checkbox] {
