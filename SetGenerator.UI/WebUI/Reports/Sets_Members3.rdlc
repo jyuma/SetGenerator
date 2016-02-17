@@ -301,7 +301,7 @@
                     </SortExpression>
                   </SortExpressions>
                   <TablixHeader>
-                    <Size>4.90624in</Size>
+                    <Size>5.04166in</Size>
                     <CellContents>
                       <Textbox Name="Title">
                         <CanGrow>true</CanGrow>
@@ -345,7 +345,7 @@
         <DataSetName>Sets</DataSetName>
         <Left>0.05208in</Left>
         <Height>0.80209in</Height>
-        <Width>6.87499in</Width>
+        <Width>7.01041in</Width>
         <Style>
           <Border>
             <Style>None</Style>
@@ -389,7 +389,7 @@
           <rd:DefaultName>Name</rd:DefaultName>
           <Left>0.05208in</Left>
           <Height>0.36458in</Height>
-          <Width>6.1875in</Width>
+          <Width>7in</Width>
           <Style>
             <Border>
               <Style>None</Style>
@@ -523,7 +523,7 @@
     </DataSet>
   </DataSets>
   <ReportParameters>
-	<ReportParameter Name="band">
+    <ReportParameter Name="band">
       <DataType>String</DataType>
       <DefaultValue>
         <Values>
