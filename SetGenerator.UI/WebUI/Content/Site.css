@@ -40,16 +40,8 @@
 .pagination > .active.spares > a {
   background-image: radial-gradient(circle, #ed9c28, #f1b257);
 }
-table {
-  margin-top: 3px;
-}
-table thead > tr > th {
-  background-color: #efefef;
-  color: #575454;
-}
 body {
   margin: 0;
-  /*background: url('Images/background.png') repeat center;*/
 }
 /* Home main image */
 #registerLink {
@@ -196,10 +188,21 @@ ul.dropdown-menu li label {
   margin-right: 30px;
 }
 .row {
-  margin-bottom: 5px;
+  margin-bottom: 10px;
+}
+.row label {
+  padding: 0;
+  margin: 0;
 }
 .login-form {
   margin: 20px;
+}
+table {
+  margin-top: 3px;
+}
+table thead > tr > th {
+  background-color: #efefef;
+  color: #575454;
 }
 table .col-glyphicon {
   width: 10px;
@@ -310,25 +313,33 @@ h4 {
 #footer a {
   color: #3185EB;
 }
-.modal-dialog {
-  padding: 0;
-}
-.modal-dialog .modal-header {
-  background-color: #375a8d;
-}
-.modal-dialog p {
-  padding: 0;
-  width: 100%;
-}
-.modal-title .glyphicon {
+.modal-dialog .modal-title .glyphicon {
   color: #ffffff;
 }
-.modal-body {
-  padding: 5px 15px 0 15px;
-}
-.modal-header {
+.modal-dialog .modal-header {
+  padding: 15px 0 10px 15px;
+  background-color: #375a8d;
   color: #e9e4e4;
-  background-color: #457bc5;
+}
+.modal-dialog .modal-body {
+  padding-bottom: 0;
+}
+.modal-dialog .modal-body p {
+  width: 100%;
+  margin: 0;
+  padding-top: 0;
+}
+.modal-dialog .modal-body .container {
+  padding: 0 20px 0 15px;
+}
+input[type=checkbox] {
+  margin: -4px 5px 0 0;
+  padding: 0;
+  height: 34px;
+}
+.inline-checkbox-label {
+  color: #555555;
+  font-size: 12px;
 }
 /* Validation */
 .validation-container {

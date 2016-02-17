@@ -221,7 +221,7 @@ namespace SetGenerator.WebUI.Controllers
                 Singers = new SelectList(
                     new Collection<object>{ new { Value = 0, Display = "<None>" }}.ToArray()
                         .Union(bandMembers
-                        .Select(m => new { Value = m.Id, Display = m.FirstName })).ToArray()
+                        .Select(m => new { Value = m.Id, Display = m.Alias })).ToArray()
                     , "Value", "Display", (song != null) 
                         ? (song.Singer != null) 
                             ? song.Singer.Id 
@@ -241,7 +241,7 @@ namespace SetGenerator.WebUI.Controllers
                         new MemberInstrumentDetail
                         {
                             MemberId = m.Id,
-                            MemberName = m.FirstName,
+                            MemberName = m.Alias,
                             Instruments = new SelectList(
                                 new Collection<object> { new
                                 {

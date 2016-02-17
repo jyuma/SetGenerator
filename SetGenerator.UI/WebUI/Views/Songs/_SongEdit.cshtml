@@ -7,84 +7,81 @@
     }
 </datalist>
 
-<div id="song-edit-modal">
-    <div class="panel">
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="label label-default">Title</div>
-                <input type="text" id="txtTitle" class="form-control" value="@Model.Title" maxlength="50"/>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-3">
-                <div class="label label-default">Key</div>
-                @Html.DropDownList("ddlKey", @Model.KeyNames, new { @class="form-control"} )
-            </div>
-            <div class="col-sm-3">
-                <div class="label label-default">#/b</div>
-                @Html.DropDownList("ddlSharpFlatNatural", @Model.SharpFlatNatural, new { @class = "form-control" })
-            </div>
-            <div class="col-sm-6">
-                <div class="label label-default">Major/Minor</div>
-                @Html.DropDownList("ddlMajorMinor", @Model.MajorMinor, new { @class = "form-control" })
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-8">
-                <div class="label label-default">Singer</div>
-                @Html.DropDownList("ddlSinger", @Model.Singers, new { @class = "form-control" })
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="label label-default">Composer</div>
-                <input type="text" id="txtComposer" name="txtComposer" class="form-control" value="@Model.Composer" maxlength="100" list="dlComposers"/>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-5">
-                <div class="label label-default">Genre</div>
-                @Html.DropDownList("ddlGenre", @Model.Genres, new { @class = "form-control" })
-            </div>
-            <div class="col-sm-5">
-                <div class="label label-default">Tempo</div>
-                @Html.DropDownList("ddlTempo", @Model.Tempos, new { @class = "form-control" })
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-3">
-                <div class="label label-default">Never Close</div>
-                @Html.CheckBoxFor(m => m.NeverClose, new { @checked = Model.NeverClose, @id="chkNeverClose", @class="form-control"} )
-            </div>
-            <div class="col-sm-3">
-                <div class="label label-default">Never Open</div>
-                @Html.CheckBoxFor(m => m.NeverOpen, new { @checked = Model.NeverOpen, @id = "chkNeverOpen", @class = "form-control" })
-            </div>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="label label-default">Title</div>
+            <input type="text" id="txtTitle" class="form-control" value="@Model.Title" maxlength="50"/>
         </div>
     </div>
-    <div id="container">
-        <table id="tblSongMemberIstrument" class="table">
-            <thead>
-                <tr>
-                    <th><span>Member</span></th>
-                    <th><span>Instrument</span></th>
-                </tr>
-            </thead>
-            <tbody>
-            @foreach (var memberInstrument in @Model.MemberInstruments)
-            {
-                var rowId = string.Format("row_{0}", memberInstrument.MemberId);
-                var ddlMemberInstrumentId = string.Format("ddlMemberInstrument_{0}", memberInstrument.MemberId);
-                
-                <tr id=@rowId>
-                    <td>
-                        <span class="form-control">@memberInstrument.MemberName</span>
-                    </td>
-                    <td>@Html.DropDownList(@ddlMemberInstrumentId, @memberInstrument.Instruments, new { @class = "form-control" })</td>
-                </tr>
-            }
-            </tbody>
-        </table>
+    <div class="row">
+        <div class="col-sm-2">
+            <div class="label label-default">Key</div>
+            @Html.DropDownList("ddlKey", @Model.KeyNames, new { @class="form-control"} )
+        </div>
+        <div class="col-sm-2">
+            <div class="label label-default">#/b</div>
+            @Html.DropDownList("ddlSharpFlatNatural", @Model.SharpFlatNatural, new { @class = "form-control" })
+        </div>
+        <div class="col-sm-2">
+            <div class="label label-default">Major/Minor</div>
+            @Html.DropDownList("ddlMajorMinor", @Model.MajorMinor, new { @class = "form-control" })
+        </div>
     </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="label label-default">Singer</div>
+            @Html.DropDownList("ddlSinger", @Model.Singers, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="label label-default">Composer</div>
+            <input type="text" id="txtComposer" name="txtComposer" class="form-control" value="@Model.Composer" maxlength="100" list="dlComposers"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="label label-default">Genre</div>
+            @Html.DropDownList("ddlGenre", @Model.Genres, new { @class = "form-control" })
+        </div>
+        <div class="col-sm-3">
+            <div class="label label-default">Tempo</div>
+            @Html.DropDownList("ddlTempo", @Model.Tempos, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <label class="inline-checkbox-label">@Html.CheckBoxFor(m => m.NeverOpen, new { @checked = Model.NeverOpen, @id = "chkNeverOpen", @class = "checkbox-inline" })Never Open</label>
+        </div>
+        <div class="col-sm-3">
+            <label class="inline-checkbox-label">@Html.CheckBoxFor(m => m.NeverClose, new { @checked = Model.NeverClose, @id = "chkNeverClose", @class = "checkbox-inline" })Never Close</label>
+        </div>
+    </div>
+</div>
+<div id="container">
+    <table id="tblSongMemberIstrument" class="table">
+        <thead>
+        <tr>
+            <th><span>Member</span></th>
+            <th><span>Instrument</span></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var memberInstrument in @Model.MemberInstruments)
+        {
+            var rowId = string.Format("row_{0}", memberInstrument.MemberId);
+            var ddlMemberInstrumentId = string.Format("ddlMemberInstrument_{0}", memberInstrument.MemberId);
+
+            <tr id=@rowId>
+                <td>
+                    <span class="form-control">@memberInstrument.MemberName</span>
+                </td>
+                <td>@Html.DropDownList(@ddlMemberInstrumentId, @memberInstrument.Instruments, new {@class = "form-control"})</td>
+            </tr>
+        }
+        </tbody>
+    </table>
     <div class="validation-container" id="validation-container"></div>
 </div>
+    

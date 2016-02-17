@@ -8,28 +8,26 @@
     }
 </datalist>
 
-<div id="gig-edit-modal">
-    <div class="panel">
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="label label-default">Venue</div>
-                <input type="text" id="txtVenue" class="form-control" value="@Model.Venue" maxlength="100" list="dlVenues" />
-            </div>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="label label-default">Venue</div>
+            <input type="text" id="txtVenue" class="form-control" value="@Model.Venue" maxlength="100" list="dlVenues" />
         </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="label label-default">Description</div>
-                <input type="text" id="txtDescription" class="form-control" value="@Model.Description" maxlength="100"/>
-            </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="label label-default">Description</div>
+            <input type="text" id="txtDescription" class="form-control" value="@Model.Description" maxlength="100"/>
         </div>
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="label label-default">Gig Date</div>
-                <div class="input-group date" data-provide="datepicker">
-                    <input id="dtDateGig" type="text" value="@Model.DateGig.ToShortDateString()" class="form-control">
-                    <div class="input-group-addon">
-                        <span class="glyphicon glyphicon-th"></span>
-                    </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="label label-default">Gig Date</div>
+            <div class="input-group date" data-provide="datepicker">
+                <input id="dtDateGig" type="text" value="@Model.DateGig.ToShortDateString()" class="form-control">
+                <div class="input-group-addon">
+                    <span class="glyphicon glyphicon-th"></span>
                 </div>
             </div>
         </div>

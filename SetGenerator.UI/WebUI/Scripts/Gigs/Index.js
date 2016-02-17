@@ -159,7 +159,7 @@
 
                     dialog.custom.showModal({
                         title: "<span class='glyphicon glyphicon-remove'></span> Delete Gig?",
-                        message: "This will permanently delete the gig for venue '" + g.venue + "' on " + g.dategig + ".",
+                        message: "<p>This will permanently delete the gig for venue <i>" + g.venue + "</i> on " + moment(g.dategig).format("ll") + ".</p>",
                         callback: function () {
                             return self.deleteGig(row.id);
                         },

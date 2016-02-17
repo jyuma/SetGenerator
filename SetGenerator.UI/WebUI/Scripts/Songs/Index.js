@@ -299,7 +299,7 @@
 
                     dialog.custom.showModal({
                         title: "<span class='glyphicon glyphicon-remove'></span> Delete Song?",
-                        message: "This will permanently delete the song '" + s.title + "'.",
+                        message: "<p>This will permanently delete the song <i>" + s.title + "</i>.</p>",
                         callback: function () {
                             return self.deleteSong(row.id);
                         },
@@ -317,8 +317,8 @@
                         : "<span class='glyphicon glyphicon-trash'></span> Shitcan It?";
 
                     var message = self.showDisabled()
-                        ? "This will ressurrect the song <i>" + s.title + "</i> and place it back into the A List."
-                        : "This will move the song <i>" + s.title + "</i> into the Shitcan.";
+                        ? "<p>This will ressurrect the song <i>" + s.title + "</i> and place it back into the A List.</p>"
+                        : "<p>This will move the song <i>" + s.title + "</i> into the Shitcan.</p>";
                     
                     dialog.custom.showModal({
                         title: title,

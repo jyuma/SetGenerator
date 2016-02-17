@@ -63,17 +63,8 @@
     background-image: radial-gradient(circle, @colourWarning, Lighten(@colourWarning, 10));
 }
 
-table {
-    margin-top: 3px;
-    thead > tr > th {
-        background-color: @tableHeaderBackground; 
-        color: @tableHeaderColor;
-    }
-}
-
 body {
     margin: 0;
-    /*background: url('Images/background.png') repeat center;*/
 }
 
 /* Home main image */
@@ -260,7 +251,11 @@ ul.dropdown-menu {
 }
 
 .row {
-    margin-bottom: 5px;
+    margin-bottom: 10px;
+    label {
+        padding: 0;
+        margin: 0;
+    }
 }
 
 .login-form {
@@ -269,6 +264,11 @@ ul.dropdown-menu {
 
 
 table {
+    margin-top: 3px;
+    thead > tr > th {
+        background-color: @tableHeaderBackground; 
+        color: @tableHeaderColor;
+    }
     .col-glyphicon {
         width: 10px;
     }
@@ -411,26 +411,37 @@ h4 {
 }
 
 .modal-dialog {
+    .modal-title {
+        .glyphicon {
+            color: @colourWhite;
+        }
+    }
     .modal-header {
+        padding: 15px 0 10px 15px;
         background-color: @colourBlue;
+        color: @colourIvory;
     }
-    padding:0;
-    p {
-        padding: 0;
-        width: 100%;
+    .modal-body {
+        p {
+            width: 100%;
+            margin: 0;
+            padding-top: 0;
+        }
+        padding-bottom: 0;
+        .container {
+            padding: 0 20px 0 15px;
+        }
     }
 }
-.modal-title {
-    .glyphicon {
-        color: @colourWhite;
-    }
+input[type=checkbox] {
+    margin: -4px 5px 0 0;
+    padding: 0;
+    height: 34px;
 }
-.modal-body {
-    padding: 5px 15px 0 15px;
-}
-.modal-header {
-    color: @colourIvory;
-    background-color: @colourPrimary;
+
+.inline-checkbox-label {
+    color: @colourBlack;
+    font-size: 12px;
 }
 
 /* Validation */

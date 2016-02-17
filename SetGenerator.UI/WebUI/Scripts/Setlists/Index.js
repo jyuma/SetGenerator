@@ -187,11 +187,11 @@
 
                     dialog.custom.showModal({
                         title: "<span class='glyphicon glyphicon-remove'></span> Delete Setlist?",
-                        message: "This will permanently delete the Setlist '" + sl.name + "'.",
+                        message: "<p>This will permanently delete the Setlist <i>" + sl.name + "</i>.</p>",
                         callback : function () {
                             return self.deleteSetlist(row.id);
                         },
-                        width: 400
+                        width: 430
                     });
                 };
 

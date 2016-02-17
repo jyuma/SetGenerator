@@ -27,7 +27,7 @@
             html = html + "<div class=\"modal-content\">";
             html = html + "<div class=\"modal-header\">";
             html = html + "<h4 class=\"modal-title\">" + config.title + "</h4></div>";
-            html = html + "<div class=\"modal-body\"><p>" + config.message + "</p></div>";
+            html = html + "<div class=\"modal-body\"><span>" + config.message + "</span></div>";
             html = html + "<div class=\"modal-footer\">";
 
             if (config.cancelButtonOnly) {

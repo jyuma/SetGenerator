@@ -60,14 +60,13 @@ namespace SetGenerator.Data.Repositories
             var members = Session.QueryOver<Member>()
                 .Where(x => x.Band.Id == bandId)
                 .List()
-                .OrderBy(x => x.FirstName)
-                .ThenBy(x => x.LastName)
+                .OrderBy(x => x.Alias)
                 .ToArray();
 
             var al = new ArrayList();
 
             foreach (var m in members)
-                al.Add(new { Value = m.Id, Display = m.FirstName });
+                al.Add(new { Value = m.Id, Display = m.Alias });
 
             return al;
         }
@@ -85,21 +84,21 @@ namespace SetGenerator.Data.Repositories
 
         private Dictionary<int, string> GetBandSingers(int bandId)
         {
-            Member memberAlias = null;
+            Member memberTableAlias = null;
 
             return Session.QueryOver<Song>()
                 .Where(x => x.Band.Id == bandId)
-                .JoinAlias(x => x.Singer, () => memberAlias)
-                .Where(x => x.Singer.Id == memberAlias.Id)
+                .JoinAlias(x => x.Singer, () => memberTableAlias)
+                .Where(x => x.Singer.Id == memberTableAlias.Id)
                 .List()
                 .Select(x => new
                 {
                     x.Singer.Id,
-                    x.Singer.FirstName
+                    x.Singer.Alias
                 })
                 .Distinct()
-                .OrderBy(o => o.FirstName)
-                .ToDictionary(x => x.Id, y => y.FirstName);
+                .OrderBy(o => o.Alias)
+                .ToDictionary(x => x.Id, y => y.Alias);
         }
     }
 }

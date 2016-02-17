@@ -56,13 +56,12 @@ namespace SetGenerator.WebUI.Common
 
             list.AddRange(tableMembers
                 .Where(x => x.Table.Id == userTableId)
-                .OrderBy(o => o.Member.FirstName)
-                .ThenBy(o => o.Member.LastName)
+                .OrderBy(o => o.Member.Alias)
                 .Select(tc => new TableColumnDetail
             {
                 Id = tc.Id,
-                Header = tc.Member.FirstName,
-                Data = tc.Member.FirstName.ToLower(),
+                Header = tc.Member.Alias,
+                Data = tc.Member.Alias.ToLower(),
                 IsVisible = tc.IsVisible,
                 AlwaysVisible = false,
                 IsMemberColumn = true,

@@ -13,6 +13,7 @@ namespace SetGenerator.Domain.Mappings
             Map(m => m.FirstName).Column("FirstName");
             Map(m => m.LastName).Column("LastName");
             Map(m => m.Initials).Column("Initials");
+            Map(m => m.Alias).Column("Alias");
             References(m => m.DefaultInstrument).Column("DefaultInstrumentId");
             References(m => m.Band).Column("BandId");
 
