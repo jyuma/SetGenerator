@@ -83,7 +83,7 @@ namespace SetGenerator.Service
             var songCount = _songRepository.GetAList(bandId).Count();
             if (!addNew) return msgs;
             if (numSongs > songCount)
-                msgs.Add("There aren't enough songs to accomodate this selection");
+                msgs.Add("Repertoire doesn't contain enough songs");
             return msgs;
         }
 

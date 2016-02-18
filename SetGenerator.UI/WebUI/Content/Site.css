@@ -64,7 +64,7 @@ body {
   margin-top: 5px;
 }
 .navbar .navbar-brand > li > a {
-  color: #e9e4e4;
+  color: #dcd8d8;
   text-decoration: none;
   font-size: 1.2em;
 }
@@ -72,7 +72,7 @@ body {
   color: #ffffff;
 }
 .navbar-text > a {
-  color: #e9e4e4;
+  color: #dcd8d8;
   text-decoration: none;
 }
 .navbar-text > a:hover {
@@ -244,14 +244,14 @@ table td {
   padding: 8px 10px 8px 10px;
 }
 #logoutForm.navbar-right strong > a {
-  color: #e9e4e4;
+  color: #dcd8d8;
   text-decoration: none;
 }
 #logoutForm.navbar-right strong > a:hover {
   color: #ffffff;
 }
 #logoutForm.navbar-right strong span > a {
-  color: #e9e4e4;
+  color: #dcd8d8;
   text-decoration: none;
 }
 #logoutForm.navbar-right strong span > a:hover {
@@ -298,7 +298,7 @@ h4 {
   position: relative;
   height: 25px;
   padding: 0;
-  color: #e9e4e4;
+  color: #dcd8d8;
   margin-left: auto;
   margin-right: auto;
   font-family: Arial, Helvetica, sans-serif;
@@ -321,7 +321,7 @@ h4 {
 .modal-dialog .modal-header {
   padding: 15px 0 10px 15px;
   background-color: #375a8d;
-  color: #e9e4e4;
+  color: #dcd8d8;
 }
 .modal-dialog .modal-body {
   padding-bottom: 0;
@@ -333,7 +333,7 @@ h4 {
 }
 .modal-dialog .modal-body .container {
   width: auto;
-  padding: 0 20px 0 15px;
+  padding: 0 10px 0 10px;
 }
 input[type=checkbox] {
   margin: -4px 5px 0 0;
@@ -345,18 +345,11 @@ input[type=checkbox] {
   font-size: 12px;
 }
 /* Validation */
-.validation-container {
-  position: relative;
-  color: #b94a48;
+.validation-container ul {
   padding: 0;
-  margin-left: 10px;
-  border-style: none;
-  clear: both;
+  margin-left: 12px;
 }
-.validation-container li {
-  display: list-item;
-  text-decoration: none;
-  font-size: 1em;
-  padding: 0;
+.validation-container ul li {
+  color: #b94a48;
 }
 /*# sourceMappingURL=Site.css.map */

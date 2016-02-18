@@ -227,7 +227,7 @@
                             $("#validation-container").hide();
                             return self.saveSetlist(id > 0);
                         },
-                        width: 350
+                        width: 300
                     });
                 };
 

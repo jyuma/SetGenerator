@@ -261,8 +261,8 @@ namespace SetGenerator.WebUI.Controllers
                 // Contains no songs
                 else  
                 {
-                    vm.TotalSetsList = new SelectList(new Collection<int> { 1, 2, 3 });
-                    vm.TotalSongsPerSetlist = new SelectList(totalSongsPerSetlist);
+                    vm.TotalSetsList = new SelectList(new Collection<int>());
+                    vm.TotalSongsPerSetlist = new SelectList(new Collection<int>());
                 }
             }
 
@@ -270,8 +270,8 @@ namespace SetGenerator.WebUI.Controllers
             else
             {
                 vm.Name = string.Empty;
-                vm.TotalSetsList = new SelectList(totalSetsList);
-                vm.TotalSongsPerSetlist = new SelectList(totalSongsPerSetlist);
+                vm.TotalSetsList = new SelectList(totalSetsList, 3);
+                vm.TotalSongsPerSetlist = new SelectList(totalSongsPerSetlist, 10);
             }
 
             return vm;

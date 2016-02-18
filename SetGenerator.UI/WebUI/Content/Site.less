@@ -2,7 +2,7 @@
 @colourBlack: #555;
 @colourBlackDisabled: #8a8a8a;
 @colourIvoryHover:  #fff;
-@colourIvory: #e9e4e4;
+@colourIvory: #dcd8d8;
 @colourWhite: #fff;
 @colourGreen: #3e963e;
 @colourYellow: #ad8f00;
@@ -432,7 +432,7 @@ h4 {
         padding-bottom: 0;
         .container {
             width: auto;
-            padding: 0 20px 0 15px;
+            padding: 0 10px 0 10px;
         }
     }
 }
@@ -450,16 +450,11 @@ input[type=checkbox] {
 /* Validation */
 
 .validation-container {
-    position: relative;
-    color: @colourDanger;
-    padding: 0;
-    margin-left: 10px;
-    border-style: none;
-    clear: both;
-    li {
-        display: list-item;
-        text-decoration: none;
-        font-size: 1em;
+    ul {
         padding: 0;
+        margin-left: 12px;
+        li {
+            color: @colourDanger;
+        }
     }
 }
