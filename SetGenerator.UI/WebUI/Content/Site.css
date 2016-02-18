@@ -335,6 +335,19 @@ h4 {
   width: auto;
   padding: 0 10px 0 10px;
 }
+.modal-dialog .modal-body .panel {
+  margin-bottom: 10px;
+}
+.modal-dialog .modal-body .panel .row {
+  padding: 0;
+  margin: 0;
+}
+.modal-dialog .modal-body .panel .panel-heading {
+  margin: 10px 0 5px 0;
+  padding: 2px 0 0 20px;
+  color: #dcd8d8;
+  background-color: #375a8d;
+}
 input[type=checkbox] {
   margin: -4px 5px 0 0;
   padding: 0;
