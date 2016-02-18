@@ -326,15 +326,15 @@
 
                 self.showPrintDialog = function () {
                     
-                    var div = $(document.createElement("div")).attr("id", "select-columns").addClass("panel");
+                    var div = $(document.createElement("div")).attr("id", "select-columns").addClass("container");
 
-                    div.append("<div class='row'><div class='col-sm-6'><span>Title</span><div class='col-sm-1 pull-right'><input type='checkbox' id='chkTitle' checked='checked' disabled='disabled' /></div></div></div>")
-                        .append("<div class='row'><div class='col-sm-6'><span>Key</span><div class='col-sm-1 pull-right'><input type='checkbox' id='chkKey' checked='checked' /></div></div></div>")
-                        .append("<div class='row'><div class='col-sm-6'><span>Singer</span><div class='col-sm-1 pull-right'><input type='checkbox' id='chkSinger' /></div></div></div>")
-                        .append("<hr/><div class='row'><div class='col-sm-12'><label>Member Instrument (3 Max)</label></div></div>");
+                    div.append("<div class='row'><div class='col-sm-5'><label class='inline-checkbox-label'>Title</label></div><div class='col-sm-2'><input type='checkbox' id='chkTitle' checked='checked' class='checkbox-inline' disabled='disabled' /></div></div>")
+                        .append("<div class='row'><div class='col-sm-5'><label class='inline-checkbox-label'>Key</label></div><div class='col-sm-2'><input type='checkbox' id='chkKey' checked='checked' class='checkbox-inline' /></div></div>")
+                        .append("<div class='row'><div class='col-sm-5'><label class='inline-checkbox-label'>Singer</label></div><div class='col-sm-2'><input type='checkbox' id='chkSinger' class='checkbox-inline'/></div></div>")
+                        .append("<hr/><div class='row'><div class='col-sm-12'><i><label>Member Instrument (3 Max)</label></i></div></div>");
                         
                     $(lists.MemberArrayList).each(function(index, value) {
-                        div.append("<div class='row'><div class='col-sm-6'><span>" + value.Display + "</span><div class='col-sm-1 pull-right'><input type='checkbox' onclick='enableMemberCheckboxes()' id='chkMember_" + value.Display + "' /></div></div></div>");
+                        div.append("<div class='row'><div class='col-sm-5'><label class='inline-checkbox-label'>" + value.Display + "</label></div><div class='col-sm-2'><input type='checkbox' class='checkbox-inline' onclick='enableMemberCheckboxes()' id='chkMember_" + value.Display + "' /></div></div>");
                     });
 
                     var html = div[0].outerHTML;

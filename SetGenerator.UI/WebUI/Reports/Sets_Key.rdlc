@@ -155,7 +155,7 @@
                     </SortExpression>
                   </SortExpressions>
                   <TablixHeader>
-                    <Size>6.39582in</Size>
+                    <Size>6.10415in</Size>
                     <CellContents>
                       <Textbox Name="Title">
                         <CanGrow>true</CanGrow>
@@ -199,7 +199,7 @@
         <DataSetName>Sets</DataSetName>
         <Left>0.05208in</Left>
         <Height>0.80209in</Height>
-        <Width>7.0104in</Width>
+        <Width>6.71873in</Width>
         <Style>
           <Border>
             <Style>None</Style>
