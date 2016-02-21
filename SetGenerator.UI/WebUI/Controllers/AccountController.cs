@@ -54,6 +54,7 @@ namespace SetGenerator.WebUI.Controllers
                 {
                     await SignInAsync(user, model.RememberMe);
                     Session["UserId"] = user.Id;
+                    Session["UserName"] = user.UserName;
                     Session["BandId"] = user.DefaultBandId;
                     Session["Bands"] = GetUserBandSelectList(user);
                     return RedirectToLocal(returnUrl);

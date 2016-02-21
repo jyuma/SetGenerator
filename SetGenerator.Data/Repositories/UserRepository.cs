@@ -8,7 +8,7 @@ namespace SetGenerator.Data.Repositories
     public interface IUserRepository : IRepositoryBase<User>
     {
         User GetByUserName(string uname);
-        IEnumerable<UserPreferenceTableColumn> GetTableColumnsByBandId(int userId, int tableId, int bandId);
+        IEnumerable<UserPreferenceTableColumn> GetTableColumnsByBandId(int userId, int tableId, int? bandId);
         IEnumerable<UserPreferenceTableMember> GetTableMembersByBandId(int userId, int tableId, int bandId);
         IEnumerable<UserBand> GetUserBands(string uname);
     }
@@ -28,15 +28,29 @@ namespace SetGenerator.Data.Repositories
             return u;
         }
 
-        public IEnumerable<UserPreferenceTableColumn> GetTableColumnsByBandId(int userId, int tableId, int bandId)
+        public IEnumerable<UserPreferenceTableColumn> GetTableColumnsByBandId(int userId, int tableId, int? bandId)
         {
-            var list = Session.QueryOver<UserPreferenceTableColumn>()
-                .Where(x => x.User.Id == userId)
-                .Where(x => x.Band.Id == bandId)
-                .JoinQueryOver(uptc => uptc.TableColumn)
-                .Where(x => x.Table.Id == tableId)
-                .List()
-                .OrderBy(o => o.TableColumn.Sequence);
+            IEnumerable<UserPreferenceTableColumn> list = null;
+
+            if (bandId != null)
+            {
+                list = Session.QueryOver<UserPreferenceTableColumn>()
+                    .Where(x => x.User.Id == userId)
+                    .Where(x => x.Band.Id == bandId)
+                    .JoinQueryOver(uptc => uptc.TableColumn)
+                    .Where(x => x.Table.Id == tableId)
+                    .List()
+                    .OrderBy(o => o.TableColumn.Sequence);
+            }
+            else
+            {
+                list = Session.QueryOver<UserPreferenceTableColumn>()
+                    .Where(x => x.User.Id == userId)
+                    .JoinQueryOver(uptc => uptc.TableColumn)
+                    .Where(x => x.Table.Id == tableId)
+                    .List()
+                    .OrderBy(o => o.TableColumn.Sequence);
+            }
 
             return list;
         }

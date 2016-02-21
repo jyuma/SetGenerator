@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SetGenerator.WebUI.ViewModels
 {
@@ -19,5 +20,13 @@ namespace SetGenerator.WebUI.ViewModels
         public int SelectedId { get; set; }
         public List<string> ErrorMessages { get; set; }
         public bool Success { get; set; }
+    }
+
+    public class GigEditViewModel
+    {
+        public DateTime DateGig { get; set; }
+        public string Venue { get; set; }
+        public string Description { get; set; }
+        public IEnumerable<string> Venues { get; set; }
     }
 }

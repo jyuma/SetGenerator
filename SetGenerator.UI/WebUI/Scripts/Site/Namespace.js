@@ -7,4 +7,5 @@
     window.songs = {};
     window.setlists = {};
     window.gigs = {};
+    window.bands = {};
 })(jQuery);

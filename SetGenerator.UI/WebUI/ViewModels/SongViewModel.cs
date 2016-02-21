@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Web.Mvc;
 
 namespace SetGenerator.WebUI.ViewModels
 {
@@ -28,33 +29,6 @@ namespace SetGenerator.WebUI.ViewModels
         public string InstrumentName { get; set; }
     }
 
-    public class TableColumnDetail
-    {
-        public int Id { get; set; }
-        public string Header { get; set; }
-        public string Data { get; set; }
-        public bool IsVisible { get; set; }
-        public bool AlwaysVisible { get; set; }
-        public bool IsMemberColumn { get; set; }
-        public int TableColumnId { get; set; }
-    }
-
-    public class BandMemberDetail
-    {
-        public int Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Initials { get; set; }
-        public IEnumerable<BandMemberInstrumentDetail> MemberInstrumentDetails { get; set; }
-    }
-
-    public class BandMemberInstrumentDetail
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Abbreviation { get; set; }
-    }
-
     public class SongKeyDetail
     {
         public int? Id { get; set; }
@@ -72,18 +46,26 @@ namespace SetGenerator.WebUI.ViewModels
         public bool Success { get; set; }
     }
 
-    public class SongGenre
+    public class MemberInstrumentDetail
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
+        public int MemberId { get; set; }
+        public string MemberName { get; set; }
+        public SelectList Instruments { get; set; }
     }
 
-    public class SongTempo
+    public class SongEditViewModel
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
+        public string Title { get; set; }
+        public string Composer { get; set; }
+        public SelectList KeyNames { get; set; }
+        public SelectList SharpFlatNatural { get; set; }
+        public SelectList MajorMinor { get; set; }
+        public SelectList Singers { get; set; }
+        public SelectList Genres { get; set; }
+        public SelectList Tempos { get; set; }
+        public bool NeverOpen { get; set; }
+        public bool NeverClose { get; set; }
+        public IEnumerable<MemberInstrumentDetail> MemberInstruments { get; set; }
+        public IEnumerable<string> Composers { get; set; }
     }
-
-    public class EntityAudit
-    { }
 }

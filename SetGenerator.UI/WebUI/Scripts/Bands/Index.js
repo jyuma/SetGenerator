@@ -1,89 +1,77 @@
 ﻿/*!
- * Setlists/Index.js
+ * Bands/Index.js
  * Author: John Charlton
  * Date: 2015-05
  */
 ; (function ($) {
 
     var HIGHLIGHT_ROW_COLOUR = "#e3e8ff";
-    var STRING_MY_SETLISTS = "My Setlists";
-    var STRING_ALL_SETLISTS = "All Setlists";
 
-    setlists.index = {
-        init: function(options) {
+    bands.index = {
+        init: function (options) {
             var _sortDescending = false;
             var _currentSortKey = "name";
 
             var config = {
-                setlistId: "0",
-                currentUser: "",
-                selectedOwnerSearch: ""
+                bandId: "0"
             };
 
             $.extend(config, options);
 
             var lists = {
-                SetlistList: [],
+                BandList: [],
+                DefaultSingerArrayList: [],
                 TableColumnList: []
             };
 
             loadConfig();
 
-            ko.applyBindings(new SetlistViewModel());
+            ko.applyBindings(new BandViewModel());
 
-            // pre-select the setlist whose sets were just being managed
-            if (parseInt(config.setlistId) > 0) { $("#row_" + config.setlistId).trigger("click"); }
+            // pre-select the band whose members were just being managed
+            if (config.bandId > 0) { $("#row_" + config.bandId).trigger("click"); }
 
             function loadConfig() {
                 $.ajax({
                     type: "GET",
-                    url: site.url + "Setlists/GetData/",
+                    url: site.url + "Bands/GetData/",
                     dataType: "json",
                     traditional: true,
                     async: false,
-                    success: function(data) {
+                    success: function (data) {
                         $.extend(lists, data);
                     }
                 });
             }
 
-            function Setlist(id, name, numsets, numsongs, owner, updateuser, updatedate) {
+            function Band(id, name, defaultsingerid, updateuser, updatedate) {
                 var self = this;
 
                 self.id = id;
                 self.name = name;
-                self.numsets = numsets;
-                self.numsongs = numsongs;
-                self.owner = owner;
+                self.defaultsinger = getValue(lists.DefaultSingerArrayList, defaultsingerid, "Display", "Value");
                 self.updateuser = updateuser;
                 self.updatedate = updatedate;
             }
 
-            function SetlistViewModel() {
-                var tblSetlist = $("#tblSetlist");
+            function BandViewModel() {
+                var tblBand = $("#tblBand");
                 var ddlColumns = $("#ddlColumns");
 
                 var self = this;
 
-                self.setlists = ko.observableArray([]);
-                self.ownerSearchList = ko.observableArray([STRING_ALL_SETLISTS, STRING_MY_SETLISTS]);
-                self.selectedSetlist = ko.observable();
+                self.bands = ko.observableArray([]);
+                self.selectedBand = ko.observable();
                 self.nameSearch = ko.observable("");
-                self.ownerSearch = ko.observable(config.selectedOwnerSearch.length > 0
-                    ? config.selectedOwnerSearch
-                    : STRING_MY_SETLISTS);
-                self.numSetsList = ko.observable([]);
-                self.selectedNumSets = ko.observable(3);
-                self.selectedNumSongs = ko.observable(10);
                 self.editFormHeader = ko.observable("");
-                self.totalSetlists = ko.observable(0);
+                self.totalBands = ko.observable(0);
 
-                createSetlistArray(lists.SetlistList);
+                createBandArray(lists.BandList);
 
-                function createSetlistArray(list) {
-                    self.setlists.removeAll();
-                    $(list).each(function(index, value) {
-                        pushSetlist(value);
+                function createBandArray(list) {
+                    self.bands.removeAll();
+                    $(list).each(function (index, value) {
+                        pushBand(value);
                     });
                 };
 
@@ -91,26 +79,21 @@
                     self.saveColumns();
                 });
 
-                self.columns = ko.computed(function() {
+                self.columns = ko.computed(function () {
                     var arr = [];
-                    $(lists.TableColumnList).each(function(index, value) {
+                    $(lists.TableColumnList).each(function (index, value) {
                         arr.push({ id: value.Id, title: value.Header, sortKey: value.Data, dataMember: value.Data, isVisible: ko.observable(value.IsVisible), alwaysVisible: value.AlwaysVisible, isMemberColumn: value.IsMemberColumn });
                     });
                     return arr;
                 });
 
-                self.ownerSearchList = ko.computed(function () {
-                    var arr = [];
-                    arr.push(STRING_ALL_SETLISTS);
-                    arr.push(STRING_MY_SETLISTS);
-                    return arr;
-                });
-
-                function pushSetlist(value) {
-                    self.setlists.push(new Setlist(value.Id, value.Name, value.NumSets, value.NumSongs, value.Owner, value.UserUpdate, value.DateUpdate));
+                function pushBand(value) {
+                    self.bands.push(new Band(value.Id, value.Name, value.DefaultSingerId, value.UserUpdate, value.DateUpdate));
                 };
 
-                self.sort = function(header) {
+                self.selectedBand(self.bands()[0]);
+
+                self.sort = function (header) {
                     var afterSave = typeof header.afterSave != "undefined" ? header.afterSave : false;
                     var sortKey;
 
@@ -129,7 +112,7 @@
 
                     $(self.columns()).each(function (index, value) {
                         if (value.sortKey === sortKey) {
-                            self.setlists.sort(function (a, b) {
+                            self.bands.sort(function (a, b) {
                                 if (_sortDescending) {
                                     return a[sortKey].toString().toLowerCase() > b[sortKey].toString().toLowerCase()
                                         ? -1 : a[sortKey].toString().toLowerCase() < b[sortKey].toString().toLowerCase()
@@ -144,74 +127,73 @@
                     });
                 };
 
-                self.filteredSetlists = ko.computed(function() {
-                    return ko.utils.arrayFilter(self.setlists(), function(sl) {
+                self.filteredBands = ko.computed(function () {
+                    return ko.utils.arrayFilter(self.bands(), function (g) {
                         return (
-                            (self.nameSearch().length === 0 || sl.name.toLowerCase().indexOf(self.nameSearch().toLowerCase()) !== -1)
-                            && (self.ownerSearch() === STRING_ALL_SETLISTS || sl.owner.toLowerCase() === config.currentUser.toLowerCase())
+                            (self.nameSearch().length === 0 || g.name.toLowerCase().indexOf(self.nameSearch().toLowerCase()) !== -1)
                         );
                     });
                 });
 
-                self.setlistsTable = ko.computed(function () {
-                    var filteredSetlists = self.filteredSetlists();
-                    self.totalSetlists(filteredSetlists.length);
+                self.bandsTable = ko.computed(function () {
+                    var filteredBands = self.filteredBands();
+                    self.totalBands(filteredBands.length);
 
-                    return filteredSetlists;
+                    return filteredBands;
                 });
 
-                self.showEditDialog = function(row) {
+                self.showEditDialog = function (row) {
                     var id = row.id;
 
                     if (id > 0) {
                         self.highlightRow(row);
                     }
 
-                    self.showSetlistEditDialog(row);
+                    self.showBandEditDialog(row);
                 };
 
-                self.deleteSelectedSetlist = function(row) {
-                    deleteSetlist(row.id);
+                self.deleteSelectedBand = function (row) {
+                    deleteBand(row.id);
                 };
 
-                self.showDeleteDialog = function(row) {
+                self.showDeleteDialog = function (row) {
                     self.highlightRow(row);
-                    self.showSetlistDeleteDialog(row);
+                    self.showBandDeleteDialog(row);
                 };
 
-                self.showSetlistDeleteDialog = function(row) {
-                    var id = (typeof row.id !== "undefined" ? row.id: 0);
+                self.showBandDeleteDialog = function (row) {
+                    var id = (typeof row.id !== "undefined" ? row.id : 0);
                     if (id <= 0) return;
-                    var sl = self.getSetlist(id);
+                    var g = self.getBand(id);
 
                     dialog.custom.showModal({
-                        title: "<span class='glyphicon glyphicon-remove'></span> Delete Setlist?",
-                        message: "<p>This will permanently delete the Setlist <i>" + sl.name + "</i>.</p>",
-                        callback : function () {
-                            return self.deleteSetlist(row.id);
+                        title: "<span class='glyphicon glyphicon-remove'></span> Delete Band?",
+                        message: "<p>This will permanently delete the band <i>" + g.name + "</i>.</p>",
+                        callback: function () {
+                            return self.deleteBand(row.id);
                         },
-                        width: 430
+                        width: 500
                     });
                 };
 
-                self.showSetlistEditDialog = function (row) {
+                self.showBandEditDialog = function (row) {
                     var id = (typeof row.id !== "undefined" ? row.id : 0);
-                    var title = "<span class='glyphicon glyphicon-{0}'></span>";
+                    var title = "<span class='glyphicon glyphicon-pencil'></span>";
                     var message;
 
                     if (id > 0) {
-                        title = title.replace("{0}", "pencil") + " Edit Setlist";
-                        var setlist = self.getSetlist(id);
-                        self.selectedSetlist(setlist);
+                        title = title + " Edit Band";
+                        var band = self.getBand(id);
+                        self.selectedBand(band);
                     } else {
-                        title = title.replace("{0}", "cog") + " Generate Setlist";
-                        self.selectedSetlist([]);
+                        title = title + " Add Band";
+                        self.selectedBand([]);
                     }
 
                     $.ajax({
                         type: "GET",
                         async: false,
-                        url: site.url + "Setlists/GetSetlistEditView/" + id,
+                        url: site.url + "Bands/GetBandEditView/" + id,
                         success: function (data) {
                             message = data;
                         }
@@ -224,112 +206,92 @@
                         callback: function () {
                             $("#validation-container").html("");
                             $("#validation-container").hide();
-                            return self.saveSetlist(id > 0);
+                            return self.saveBand();
                         },
-                        width: 300
+                        width: 400
                     });
                 };
 
-                self.getSetlist = function(setlistid) {
-                    var setlist = null;
+                self.getBand = function (bandid) {
+                    var band = null;
 
-                    ko.utils.arrayForEach(self.setlists(), function(item) {
-                        if (item.id == setlistid) {
-                            setlist = item;
+                    ko.utils.arrayForEach(self.bands(), function (item) {
+                        if (item.id === bandid) {
+                            band = item;
                         }
                     });
 
-                    return setlist;
+                    return band;
                 };
 
-                self.highlightRow = function(row) {
+                self.highlightRow = function (row) {
                     if (row == null) return;
 
-                    var rows = tblSetlist.find(" tr:gt(0)");
-                    rows.each(function() {
+                    var rows = tblBand.find("tr:gt(0)");
+                    rows.each(function () {
                         $(this).css("background-color", "#ffffff");
                     });
 
-                    var r = tblSetlist.find("#row_" + row.id);
+                    var r = tblBand.find("#row_" + row.id);
                     r.css("background-color", HIGHLIGHT_ROW_COLOUR);
-                    tblSetlist.attr("tr:hover", HIGHLIGHT_ROW_COLOUR);
+                    $("#tblBand").attr("tr:hover", HIGHLIGHT_ROW_COLOUR);
                 };
 
-                self.ownerSearch.subscribe(function() {
-                    $.ajax({
-                        type: "POST",
-                        url: site.url + "Setlists/StoreSelectedOwnerSearch/",
-                        data: { ownerSearch: self.ownerSearch() },
-                        dataType: "json",
-                        traditional: true
-                    });
-                });
-
-                self.getSetlistDetailFromDialog = function(edit) {
+                self.getBandDetailFromDialog = function () {
                     var name = $.trim($("#txtName").val());
-                    var numsets = parseInt($("#ddlNumSets").val());
-                    var numsongs = parseInt($("#ddlNumSongs").val());
-                    var id;
+                    var defaultsingerid = $.trim($("#ddlMembers").val());
 
-                    if(edit) id = self.selectedSetlist().id;
-                    else id = 0;
-
-                    return { Id: id, Name: name, NumSets: numsets, NumSongs: numsongs
+                    return {
+                        Id: self.selectedBand().id, Name: name, DefaultSingerId: defaultsingerid
                     };
                 };
 
                 self.getColumns = function () {
-                    var arr =[];
+                    var arr = [];
                     $(self.columns()).each(function (index, value) {
                         if (!value.alwaysVisible) {
                             arr.push({
                                 Id: value.id,
                                 IsVisible: value.isVisible(),
-                                IsMemberColumn: false
+                                IsMemberColumn: value.isMemberColumn
                             });
                         }
                     });
                     return arr;
                 };
 
-                self.showSets = function(row) {
+                self.showMembers = function (row) {
                     var id = row.id;
-                    window.location.href = site.url + "Setlists/" + id + "/Sets";
+                    window.location.href = site.url + "Bands/" + id + "/Members";
                 }
 
                 //---------------------------------------------- CONTROLLER (BEGIN) -------------------------------------------------------
 
-                self.saveSetlist = function(edit) {
-                    var setlistdetail = self.getSetlistDetailFromDialog(edit);
-                    var jsonData = JSON.stringify(setlistdetail);
-                    var url;
+                self.saveBand = function () {
+                    var banddetail = self.getBandDetailFromDialog();
+                    var jsonData = JSON.stringify(banddetail);
                     var result;
 
                     $("body").css("cursor", "wait");
 
-                    if (!edit)
-                        url = site.url + "Setlists/Generate/";
-                    else
-                        url = site.url + "Setlists/Save/";
-
                     $.ajax({
                         type: "POST",
                         async: false,
-                        url: url,
-                        data: { setListDetail: jsonData },
+                        url: site.url + "Bands/Save/",
+                        data: { band: jsonData },
                         dataType: "json",
                         traditional: true,
-                        failure: function() {
+                        failure: function () {
                             $("body").css("cursor", "default");
                             $("#validation-container").html("");
                         },
-                        success: function(data) {
+                        success: function (data) {
                             if (data.Success) {
-                                lists.SetlistList = data.SetlistList;
-                                createSetlistArray(lists.SetlistList);
-                                self.selectedSetlist(self.getSetlist(data.SelectedId));
+                                lists.BandList = data.BandList;
+                                createBandArray(lists.BandList);
+                                self.selectedBand(self.getBand(data.SelectedId));
                                 self.sort({ afterSave: true });
-                                self.highlightRow(self.selectedSetlist());
+                                self.highlightRow(self.selectedBand());
                                 result = true;
                             } else {
                                 if (data.ErrorMessages.length > 0) {
@@ -353,22 +315,22 @@
                     return result;
                 };
 
-                self.deleteSetlist = function(id) {
+                self.deleteBand = function (id) {
                     $("body").css("cursor", "wait");
 
                     $.ajax({
                         type: "POST",
-                        url: site.url + "Setlists/Delete/",
+                        url: site.url + "Bands/Delete/",
                         data: { id: id },
                         dataType: "json",
                         traditional: true,
-                        failure: function() {
+                        failure: function () {
                             $("body").css("cursor", "default");
                         },
-                        success: function(data) {
+                        success: function (data) {
                             if (data.Success) {
-                                lists.SetlistList = data.SetlistList;
-                                createSetlistArray(lists.SetlistList);
+                                lists.BandList = data.BandList;
+                                createBandArray(lists.BandList);
                                 self.sort({ afterSave: true });
                             }
                             $("body").css("cursor", "default");
@@ -378,16 +340,15 @@
                     return true;
                 };
 
-                self.saveColumns = function() {
+                self.saveColumns = function () {
                     var jsonData = JSON.stringify(self.getColumns());
-                    // after changes
-                    var selfColumns = self.getColumns();
-                    // before changes
-                    var tableColumns = lists.TableColumnList.filter(function(value) { return !value.AlwaysVisible; });
+                    var selfColumns = self.getColumns();        // after changes
+                    var tableColumns = lists.TableColumnList.filter(function (value) { return !value.AlwaysVisible });   // before changes
                     var isDifference = false;
 
                     $(selfColumns).each(function (index, value) {
-                        if (tableColumns[index].IsVisible !== value.IsVisible) {
+                        var isvisible = tableColumns[index].IsVisible;
+                        if (isvisible !== value.IsVisible) {
                             isDifference = true;
                         }
                     });
@@ -395,7 +356,7 @@
                     if (isDifference) {
                         $.ajax({
                             type: "POST",
-                            url: site.url + "Setlists/SaveColumns/",
+                            url: site.url + "Bands/SaveColumns/",
                             data: { columns: jsonData },
                             dataType: "json",
                             traditional: true
@@ -408,11 +369,22 @@
 
             //---------------------------------------------- VIEW MODEL (END) -----------------------------------------------------
 
-            ko.utils.stringStartsWith = function(string, startsWith) {
+            ko.utils.stringStartsWith = function (string, startsWith) {
                 string = string || "";
                 if (startsWith.length > string.length) return false;
                 return string.substring(0, startsWith.length) === startsWith;
             };
+
+            function getValue(list, id, dataMember, valueMember) {
+                var name = "";
+                $(list).each(function (index, item) {
+                    if (item[valueMember] === id) {
+                        name = item[dataMember];
+                        return name;
+                    }
+                });
+                return name;
+            }
         }
     }
 })(jQuery);

@@ -253,7 +253,6 @@
     <Compile Include="Controllers\BandsController.cs" />
     <Compile Include="Controllers\GigsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\MembersController.cs" />
     <Compile Include="Controllers\SetlistsController.cs" />
     <Compile Include="Controllers\SongsController.cs" />
     <Compile Include="Extensions\SongMemberInstrumentExtensions.cs" />
@@ -282,12 +281,10 @@
     </Compile>
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\BandViewModel.cs" />
-    <Compile Include="ViewModels\GigEditViewModel.cs" />
     <Compile Include="ViewModels\GigViewModel.cs" />
     <Compile Include="ViewModels\HomeViewModel.cs" />
-    <Compile Include="ViewModels\SetListEditViewModel.cs" />
+    <Compile Include="ViewModels\MemberViewModel.cs" />
     <Compile Include="ViewModels\SetlistViewModel.cs" />
-    <Compile Include="ViewModels\SongEditViewModel.cs" />
     <Compile Include="ViewModels\SongViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -329,6 +326,8 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\images\Thumbs.db" />
+    <Content Include="Scripts\Bands\Index.js" />
+    <Content Include="Scripts\Bands\Members.js" />
     <Content Include="Scripts\bootstrap-datepicker.js" />
     <Content Include="Scripts\bootstrap-datepicker.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -417,7 +416,6 @@
     <Content Include="Views\Bands\Index.cshtml" />
     <Content Include="Views\Gigs\Index.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Members\Index.cshtml" />
     <Content Include="Views\Setlists\Index.cshtml" />
     <Content Include="Views\Setlists\Sets.cshtml" />
     <Content Include="Views\Songs\Index.cshtml" />
@@ -431,6 +429,9 @@
     <Content Include="Scripts\jquery.validate.min.js.map">
       <DependentUpon>jquery.validate.min.js</DependentUpon>
     </Content>
+    <Content Include="Views\Bands\_BandEdit.cshtml" />
+    <Content Include="Views\Bands\_MemberEdit.cshtml" />
+    <Content Include="Views\Bands\Members.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

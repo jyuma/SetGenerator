@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Linq;
 using SetGenerator.Domain.Entities;
 using NHibernate;
 
@@ -18,8 +19,8 @@ namespace SetGenerator.Data.Repositories
 
         public ArrayList GetNameArrayList()
         {
-            var instruments = GetAll();
-            if (instruments == null) return null;
+            var instruments = GetAll().OrderBy(o => o.Name);
+
             var al = new ArrayList();
 
             foreach (var i in instruments)

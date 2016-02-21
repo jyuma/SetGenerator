@@ -8,7 +8,9 @@ namespace SetGenerator.Data.Repositories
 {
     public interface IBandRepository : IRepositoryBase<Band>
     {
+        Band GetByName(string name);
         ArrayList GetNameArrayList();
+        ArrayList GetDefaultSingerNameArrayList();
 
         // Member
         IEnumerable<Member> GetMembers(int bandId);
@@ -24,6 +26,13 @@ namespace SetGenerator.Data.Repositories
         {
         }
 
+        public Band GetByName(string name)
+        {
+            return Session.QueryOver<Band>()
+                .Where(x => x.Name == name)
+                .SingleOrDefault();
+        }
+
         public ArrayList GetNameArrayList()
         {
             var bands = GetAll();
@@ -32,6 +41,19 @@ namespace SetGenerator.Data.Repositories
 
             foreach (var b in bands)
                 al.Add(new { Value = b.Id, Display = b.Name });
+
+            return al;
+        }
+
+        public ArrayList GetDefaultSingerNameArrayList()
+        {
+            var al = new ArrayList();
+
+            var bands = Session.QueryOver<Band>()
+                .Where(x => x.DefaultSinger != null).List();
+
+            foreach (var b in bands)
+                al.Add(new { Value = b.DefaultSinger.Id, Display = b.DefaultSinger.Alias });
 
             return al;
         }

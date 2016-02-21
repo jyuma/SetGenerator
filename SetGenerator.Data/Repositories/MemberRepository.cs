@@ -8,9 +8,11 @@ namespace SetGenerator.Data.Repositories
 {
     public interface IMemberRepository : IRepositoryBase<Member>
     {
+        Member GetByBandIdAlias(int bandId, string alias);
         IEnumerable<Member> GetByBandId(int bandId);
         IEnumerable<string> GetNameList(int bandId);
         ArrayList GetNameArrayList(int bandId);
+        IEnumerable<MemberInstrument> GetInstruments(int id);
     }
 
     public class MemberRepository : RepositoryBase<Member>, IMemberRepository
@@ -18,6 +20,14 @@ namespace SetGenerator.Data.Repositories
         public MemberRepository(ISession session)
             : base(session)
         {
+        }
+
+        public Member GetByBandIdAlias(int bandId, string alias)
+        {
+            return Session.QueryOver<Member>()
+                .Where(x => x.Alias == alias)
+                .Where(x => x.Band.Id == bandId)
+                .SingleOrDefault();
         }
 
         public IEnumerable<Member> GetByBandId(int bandId)
@@ -54,5 +64,14 @@ namespace SetGenerator.Data.Repositories
 
             return al;
         }
+
+        public IEnumerable<MemberInstrument> GetInstruments(int id)
+        {
+            return Session.QueryOver<MemberInstrument>()
+                .Where(x => x.Member.Id == id)
+                .List()
+                .OrderBy(x => x.Instrument.Name);
+        }
+
     }
 }

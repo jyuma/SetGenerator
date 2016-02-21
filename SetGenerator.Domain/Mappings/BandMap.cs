@@ -11,7 +11,12 @@ namespace SetGenerator.Domain.Mappings
 
             Id(x => x.Id).Column("Id");
             Map(m => m.Name).Column("Name");
-            References(m => m.DefaultSinger).Column("DefaultSingerId");
+            Map(m => m.DateCreate).Column("DateCreate");
+            Map(m => m.DateUpdate).Column("DateUpdate");
+
+            References(m => m.DefaultSinger).Column("DefaultSingerId").Nullable();
+            References(m => m.UserCreate).Column("UserCreateId");
+            References(m => m.UserUpdate).Column("UserUpdateId");
 
             HasMany(m => m.Members).Cascade.All();
             HasMany(m => m.Songs).Cascade.All();

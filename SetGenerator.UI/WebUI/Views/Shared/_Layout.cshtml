@@ -20,7 +20,13 @@
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
                     @if (Request.IsAuthenticated)
                     {
-                        @*<li>@Html.ActionLink("Bands", "Index", "Bands")</li>*@
+                        if (Session["UserName"] != null)
+                        {
+                            if (Session["UserName"].ToString() == "admin")
+                            {
+                                <li>@Html.ActionLink("Bands", "Index", "Bands")</li>
+                            }
+                        }
                         <li>@Html.ActionLink("Songs", "Index", "Songs")</li>
                         <li>@Html.ActionLink("Setlists", "Index", "Setlists")</li>
                         <li>@Html.ActionLink("Gigs", "Index", "Gigs")</li>

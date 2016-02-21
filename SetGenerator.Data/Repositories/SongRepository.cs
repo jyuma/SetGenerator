@@ -140,20 +140,22 @@ namespace SetGenerator.Data.Repositories
         {
             return Session.QueryOver<Genre>()
                 .List()
+                .OrderBy(o => o.Name)
                 .ToArray();
         }
 
         public Genre GetGenre(int genreId)
         {
             return Session.QueryOver<Genre>()
-                .Where(k => k.Id == genreId)
+                .Where(g => g.Id == genreId)
                 .SingleOrDefault();
         }
 
         public ArrayList GetGenreArrayList()
         {
             var genres = Session.QueryOver<Genre>()
-                .List();
+                .List()
+                .OrderBy(o => o.Name);
 
             var al = new ArrayList();
 
@@ -169,20 +171,22 @@ namespace SetGenerator.Data.Repositories
         {
             return Session.QueryOver<Tempo>()
                 .List()
+                .OrderBy(o => o.Name)
                 .ToArray();
         }
 
         public Tempo GetTempo(int tempoId)
         {
             return Session.QueryOver<Tempo>()
-                .Where(k => k.Id == tempoId)
+                .Where(t => t.Id == tempoId)
                 .SingleOrDefault();
         }
 
         public ArrayList GetTempoArrayList()
         {
             var tempos = Session.QueryOver<Tempo>()
-                .List();
+                .List()
+                .OrderBy(o => o.Name);
 
             var al = new ArrayList();
 

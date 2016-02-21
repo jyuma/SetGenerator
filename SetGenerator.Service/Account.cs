@@ -18,7 +18,7 @@ namespace SetGenerator.Service
         long CreateUser(string username, string email, string password, int bandId, string ip, string browser);
         void DeleteUser(int id);
         void UpdateUserDisabled(string uname, bool disabled);
-        IEnumerable<UserPreferenceTableColumn> GetTableColumnsByBandId(int userId, int tableId, int bandId);
+        IEnumerable<UserPreferenceTableColumn> GetTableColumnsByBandId(int userId, int tableId, int? bandId);
         IEnumerable<UserPreferenceTableMember> GetTableMembersByBandId(int userId, int tableId, int bandId);
         void UpdateUserPreferenceTableColumns(string userName, IDictionary cols);
         void UpdateUserPreferenceTableMembers(string userName, IDictionary cols);
@@ -80,7 +80,7 @@ namespace SetGenerator.Service
             _userRepository.Update(u);
         }
 
-        public IEnumerable<UserPreferenceTableColumn> GetTableColumnsByBandId(int userId, int tableId, int bandId)
+        public IEnumerable<UserPreferenceTableColumn> GetTableColumnsByBandId(int userId, int tableId, int? bandId)
         {
             return _userRepository.GetTableColumnsByBandId(userId, tableId, bandId);
         }

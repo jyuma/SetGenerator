@@ -96,10 +96,10 @@ namespace SetGenerator.WebUI.Controllers
         [HttpGet]
         public PartialViewResult GetGigEditView(int id)
         {
-            return PartialView("_GigEdit", LoadSetlistEditViewModel(id));
+            return PartialView("_GigEdit", LoadGigEditViewModel(id));
         }
 
-        private GigEditViewModel LoadSetlistEditViewModel(int id)
+        private GigEditViewModel LoadGigEditViewModel(int id)
         {
             var bandId = Convert.ToInt32(Session["BandId"]);
             Gig gig = null;
@@ -158,8 +158,6 @@ namespace SetGenerator.WebUI.Controllers
         [HttpPost]
         public JsonResult Delete(int id)
         {
-            //var g = _gigRepository.Get(id);
-
             _gigRepository.Delete(id);
 
             return Json(new
