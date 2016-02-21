@@ -12,7 +12,7 @@ namespace SetGenerator.Data.Repositories
         IEnumerable<Member> GetByBandId(int bandId);
         IEnumerable<string> GetNameList(int bandId);
         ArrayList GetNameArrayList(int bandId);
-        IEnumerable<MemberInstrument> GetInstruments(int id);
+        IEnumerable<Instrument> GetInstruments(int id);
     }
 
     public class MemberRepository : RepositoryBase<Member>, IMemberRepository
@@ -65,13 +65,13 @@ namespace SetGenerator.Data.Repositories
             return al;
         }
 
-        public IEnumerable<MemberInstrument> GetInstruments(int id)
+        public IEnumerable<Instrument> GetInstruments(int id)
         {
             return Session.QueryOver<MemberInstrument>()
                 .Where(x => x.Member.Id == id)
                 .List()
-                .OrderBy(x => x.Instrument.Name);
+                .Select(x => x.Instrument)
+                .OrderBy(x => x.Name);
         }
-
     }
 }

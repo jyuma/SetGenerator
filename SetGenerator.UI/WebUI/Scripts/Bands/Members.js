@@ -212,6 +212,34 @@
                     });
                 };
 
+                self.showMemberInstrumentEditDialog = function (row) {
+                    var id = (typeof row.id !== "undefined" ? row.id : 0);
+                    var title = "<span class='glyphicon glyphicon-pencil'></span>";
+                    var message;
+
+                    title = title + " Add/Remove Instruments";
+                    var member = self.getMember(id);
+                    self.selectedMember(member);
+
+                    $.ajax({
+                        type: "GET",
+                        async: false,
+                        url: site.url + "Bands/GetMemberInstrumentEditView/" + id,
+                        success: function (data) {
+                            message = data;
+                        }
+                    });
+
+                    dialog.custom.showModal({
+                        title: title,
+                        message: message,
+                        callback: function () {
+                            return self.saveMemberInstruments();
+                        },
+                        width: 500
+                    });
+                };
+
                 self.getMember = function (memberid) {
                     var member = null;
 
@@ -245,6 +273,14 @@
 
                     return {
                         Id: self.selectedMember().id, FirstName: firstname, LastName: lastname, Alias: alias, DefaultInstrumentId: defaultinstrumentid
+                    };
+                };
+
+                self.getMemberInstrumentDetailFromDialog = function () {
+                    var selectedIds = $("#ddlAssignedInstruments").val();
+
+                    return {
+                        Id: self.selectedMember().id, SelectedIds: selectedIds
                     };
                 };
 
@@ -335,6 +371,39 @@
                     });
 
                     return true;
+                };
+
+                self.saveMemberInstruments = function () {
+                    var memberInstrumentdetail = self.getMemberInstrumentDetailFromDialog();
+                    var jsonData = JSON.stringify(memberInstrumentdetail);
+                    var result;
+
+                    $("body").css("cursor", "wait");
+
+                    $.ajax({
+                        type: "POST",
+                        async: false,
+                        url: site.url + "Bands/SaveMemberInstruments/",
+                        data: { memberInstrument: jsonData },
+                        dataType: "json",
+                        traditional: true,
+                        failure: function () {
+                            $("body").css("cursor", "default");
+                        },
+                        success: function (data) {
+                            if (data.Success) {
+                                lists.MemberList = data.MemberList;
+                                createMemberArray(lists.MemberList);
+                                self.selectedMember(self.getMember(data.SelectedId));
+                                self.sort({ afterSave: true });
+                                self.highlightRow(self.selectedMember());
+                                result = true;
+                            }
+                            $("body").css("cursor", "default");
+                        }
+                    });
+
+                    return result;
                 };
 
                 self.saveColumns = function () {

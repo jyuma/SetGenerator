@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Web.Mvc;
+using System.Xml;
 using NHibernate.Hql.Ast.ANTLR.Tree;
 using SetGenerator.Data.Repositories;
 using SetGenerator.Domain.Entities;
@@ -367,15 +368,7 @@ namespace SetGenerator.WebUI.Controllers
         {
             var bandId = Convert.ToInt32(Session["BandId"]);
             var band = _bandRepository.Get(bandId);
-            var instrument = _instrumentRepository.Get(memberDetail.DefaultInstrumentId);
-            var memberInstruments = _instrumentRepository
-                .GetAll()
-                .Where(x => memberDetail.InstrumentIds.Contains(x.Id))
-                .Select(i => new
-                    MemberInstrument
-                {
-                    Instrument = i
-                }).ToArray();
+            var defaultInstrument = _instrumentRepository.Get(memberDetail.DefaultInstrumentId);
 
             var m = new Member
             {
@@ -383,8 +376,7 @@ namespace SetGenerator.WebUI.Controllers
                 FirstName = memberDetail.FirstName,
                 LastName = memberDetail.LastName,
                 Alias = memberDetail.Alias,
-                DefaultInstrument = instrument,
-                MemberInstruments = memberInstruments
+                DefaultInstrument = defaultInstrument
             };
 
             return _memberRepository.Add(m);
@@ -393,15 +385,61 @@ namespace SetGenerator.WebUI.Controllers
         private void UpdateMember(MemberDetail memberDetail)
         {
             var member = _memberRepository.Get(memberDetail.Id);
+            var defaultInstrument = _instrumentRepository.Get(memberDetail.DefaultInstrumentId);
 
             if (member != null)
             {
                 member.FirstName = memberDetail.FirstName;
                 member.LastName = memberDetail.LastName;
                 member.Alias = memberDetail.Alias;
+                member.DefaultInstrument = defaultInstrument;
             };
 
             _memberRepository.Update(member);
+        }
+
+
+        // Member Instruments
+
+        [HttpGet]
+        public PartialViewResult GetMemberInstrumentEditView(int id)
+        {
+            return PartialView("_MemberInstrumentEdit", LoadMemberInstrumentEditViewModel(id));
+        }
+
+        private MemberInstrumentEditViewModel LoadMemberInstrumentEditViewModel(int memberId)
+        {
+            var memberInstruments = _memberRepository.GetInstruments(memberId)
+                .Select(x => new { x.Id, x.Name })
+                .ToArray();
+
+            var allInstruments = _instrumentRepository.GetAll()
+                .OrderBy(o => o.Name)
+                .Select(x => new { x.Id, x.Name });
+
+            var vm = new MemberInstrumentEditViewModel
+            {
+                SelectedInstruments =
+                    new SelectList(
+                        memberInstruments
+                        .Select(x => new
+                        {
+                            Value = x.Id,
+                            Display = x.Name
+                        }).ToArray(), "Value", "Display"),
+
+                AvailableInstruments = new SelectList(
+                        allInstruments
+                        .Where(x => !memberInstruments.Contains(x))
+                        .Select(x => new
+                        {
+                            Value = x.Id,
+                            Display = x.Name
+                        }).ToArray(), "Value", "Display")
+
+            };
+
+            return vm;
         }
     }
 }

@@ -152,8 +152,12 @@ ul.dropdown-menu li label {
 .band-dropdown #ddlUserBand option {
   font-weight: 400;
 }
-.center-align {
-  text-align: center;
+.instrument-list {
+  height: 400px;
+}
+.move-buttons {
+  margin-top: 20px;
+  padding-left: 20px;
 }
 /* Login Form */
 .username {

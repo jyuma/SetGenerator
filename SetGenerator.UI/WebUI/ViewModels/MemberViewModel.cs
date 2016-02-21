@@ -11,9 +11,6 @@ namespace SetGenerator.WebUI.ViewModels
         public string LastName { get; set; }
         public string Alias { get; set; }
         public int DefaultInstrumentId { get; set; }
-        public int[] InstrumentIds { get; set; }
-        public string UserUpdate { get; set; }
-        public string DateUpdate { get; set; }
     }
 
     public class MemberViewModel
@@ -33,9 +30,9 @@ namespace SetGenerator.WebUI.ViewModels
         public SelectList MemberInstruments { get; set; }
     }
 
-    public class InstrumentDetail
+    public class MemberInstrumentEditViewModel
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
+        public SelectList SelectedInstruments { get; set; }
+        public SelectList AvailableInstruments { get; set; }
     }
 }

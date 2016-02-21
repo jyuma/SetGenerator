@@ -432,6 +432,7 @@
     <Content Include="Views\Bands\_BandEdit.cshtml" />
     <Content Include="Views\Bands\_MemberEdit.cshtml" />
     <Content Include="Views\Bands\Members.cshtml" />
+    <Content Include="Views\Bands\_MemberInstrumentEdit.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

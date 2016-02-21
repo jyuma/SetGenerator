@@ -1,0 +1,67 @@
+﻿@model SetGenerator.WebUI.ViewModels.MemberInstrumentEditViewModel
+
+<script>
+    var lstAssignedInstruments = $("#lstSelectedInstruments");
+    var lstAvailableInstruments = $("#lstAvailableInstruments");
+    var btnAdd = $("#btnAdd");
+    var btnRemove = $("#btnRemove");
+
+    enableButtons();
+
+    function enableButtons() {
+        var selected = lstAssignedInstruments.val();
+        var available = lstAvailableInstruments.val();
+
+        if (available != null) {
+            btnAdd.removeAttr("disabled");
+        } else {
+            btnAdd.attr("disabled", "disabled");
+        }
+
+        if (selected != null) {
+            btnRemove.removeAttr("disabled");
+        } else {
+            btnRemove.attr("disabled", "disabled");
+        }
+    }
+
+    function addInstrument() {
+        var selectedAvailable = lstAvailableInstruments.find("option:selected");
+
+        selectedAvailable.each(function (index, value) {
+            lstAssignedInstruments.append($("<option>", { value: value.value, text: value.text }));
+            lstAvailableInstruments.find("option:selected").remove(index);
+        });
+
+        enableButtons();
+    }
+
+    function removeInstrument() {
+        var selectedAssigned = lstAssignedInstruments.find("option:selected");
+
+        selectedAssigned.each(function (index, value) {
+            lstAvailableInstruments.append($("<option>", { value: value.value, text: value.text }));
+            lstAssignedInstruments.find("option:selected").remove(index);
+        });
+
+        enableButtons();
+    }
+
+</script>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-5">
+            <div class="label label-default">Available Instruments</div>
+            @Html.ListBox("lstAvailableInstruments", @Model.AvailableInstruments, new { @class = "form-control", @onclick = "enableButtons()" })
+        </div>
+        <div class="col-sm-2 move-buttons">
+            <div><button id="btnAdd" class="btn btn-default btn-sm" onclick="addInstrument();"><span class="glyphicon glyphicon-arrow-right"></span></button></div>
+            <div><button id="btnRemove" class="btn btn-default btn-sm" onclick="removeInstrument();"><span class="glyphicon glyphicon-arrow-left"></span></button></div>
+        </div>
+        <div class="col-sm-5">
+            <div class="label label-default">Selected Instruments</div>
+            @Html.ListBox("lstSelectedInstruments", @Model.SelectedInstruments, new { @class = "form-control", @onclick = "enableButtons()" })
+        </div>
+    </div>
+</div>
