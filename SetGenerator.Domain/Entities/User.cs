@@ -21,7 +21,7 @@ namespace SetGenerator.Domain.Entities
         public virtual bool PhoneNumberConfirmed { get; set; }
         public virtual bool TwoFactorEnabled { get; set; }
         public virtual int AccessFailedCount { get; set; }
-        public virtual int DefaultBandId { get; set; }
+        public virtual Band DefaultBand { get; set; }
         public virtual IList<UserBand> UserBands { get; set; }
         public virtual IList<UserPreferenceTableColumn> UserPreferenceTableColumns { get; set; }
         public virtual IList<UserPreferenceTableMember> UserPreferenceTableMembers { get; set; }

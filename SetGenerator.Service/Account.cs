@@ -135,8 +135,7 @@ namespace SetGenerator.Service
                     DateRegistered = DateTime.Now,
                     UserPreferenceTableColumns = GetUserPreferenceTableColumns(),
                     UserPreferenceTableMembers = GetUserPreferenceTableMembers(bandId),
-                    IsDisabled = false,
-                    DefaultBandId = DefaultBandId
+                    IsDisabled = false
                 };
             _userRepository.Add(u);
             u = GetUserByUserName(username);

@@ -99,6 +99,9 @@ ul.dropdown-menu li label {
   font-size: smaller;
   margin-right: 5px;
 }
+.center-align {
+  text-align: center;
+}
 .glyphicon-ok {
   color: #555555;
 }
@@ -223,8 +226,11 @@ table .col-link-setlist {
 table .col-link-sets {
   width: 55px;
 }
-table .col-audit {
+table .col-small {
   width: 120px;
+}
+table .col-smaller {
+  width: 90px;
 }
 table th a:link {
   text-decoration: none;

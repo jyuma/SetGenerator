@@ -255,6 +255,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\SetlistsController.cs" />
     <Compile Include="Controllers\SongsController.cs" />
+    <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Extensions\SongMemberInstrumentExtensions.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -286,6 +287,7 @@
     <Compile Include="ViewModels\MemberViewModel.cs" />
     <Compile Include="ViewModels\SetlistViewModel.cs" />
     <Compile Include="ViewModels\SongViewModel.cs" />
+    <Compile Include="ViewModels\UserViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-datepicker.css" />
@@ -390,6 +392,7 @@
     <Content Include="Scripts\respond.matchmedia.addListener.js" />
     <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\Users\Index.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -433,6 +436,8 @@
     <Content Include="Views\Bands\_MemberEdit.cshtml" />
     <Content Include="Views\Bands\Members.cshtml" />
     <Content Include="Views\Bands\_MemberInstrumentEdit.cshtml" />
+    <Content Include="Views\Users\Index.cshtml" />
+    <Content Include="Views\Users\_UserEdit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Member\" />

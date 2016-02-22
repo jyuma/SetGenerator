@@ -11,6 +11,7 @@ namespace SetGenerator.Domain.Mappings
 
             Id(x => x.Id).Column("Id");
             Map(m => m.UserName).Column("UserName");
+            Map(m => m.Email).Column("Email");
             Map(m => m.PasswordHash).Column("PasswordHash");
             Map(m => m.DateRegistered).Column("DateRegistered");
             Map(m => m.IPAddress).Column("IPAddress");
@@ -25,7 +26,8 @@ namespace SetGenerator.Domain.Mappings
             Map(m => m.PhoneNumberConfirmed).Column("PhoneNumberConfirmed");
             Map(m => m.TwoFactorEnabled).Column("TwoFactorEnabled");
             Map(m => m.AccessFailedCount).Column("AccessFailedCount");
-            Map(m => m.DefaultBandId).Column("DefaultBandId");
+
+            References(m => m.DefaultBand).Column("DefaultBandId").Nullable();
 
             HasMany(m => m.UserBands)
                 .Cascade.All()

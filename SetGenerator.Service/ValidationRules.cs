@@ -7,6 +7,9 @@ namespace SetGenerator.Service
 {
     public interface IValidationRules
     {
+        // user
+        List<string> ValidateUser(string username, bool addNew);
+
         // band
         List<string> ValidateBand(string name, bool addNew);
 
@@ -45,6 +48,26 @@ namespace SetGenerator.Service
             _gigRepository = gigRepository;
         }
         //----------------------------------- validation rules ------------------------------------
+
+        // user
+        public List<string> ValidateUser(string username, bool addNew)
+        {
+            var msgs = new List<string>();
+            msgs = ValidateUserName(username, addNew, msgs);
+            return msgs.Count > 0 ? msgs : null;
+        }
+
+        private List<string> ValidateUserName(string username, bool addNew, List<string> msgs)
+        {
+            var band = _bandRepository.GetByName(username);
+
+            if (string.IsNullOrEmpty(username))
+                msgs.Add("UserName is required");
+            if (addNew && band != null)
+                msgs.Add("UserName already exists");
+
+            return msgs;
+        }
 
         // band
         public List<string> ValidateBand(string name, bool addNew)

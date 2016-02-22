@@ -33,6 +33,7 @@
             public const int MemberId = 4;
             public const int SetId = 5;
             public const int SetlistId = 6;
+            public const int UserId = 7;
         }
 
         // user table

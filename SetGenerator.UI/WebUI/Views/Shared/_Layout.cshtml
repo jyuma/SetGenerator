@@ -24,6 +24,10 @@
                         {
                             if (Session["UserName"].ToString() == "admin")
                             {
+                                <li>@Html.ActionLink("Users", "Index", "Users")</li>
+                            }
+                            if (Session["UserName"].ToString() == "admin")
+                            {
                                 <li>@Html.ActionLink("Bands", "Index", "Bands")</li>
                             }
                         }

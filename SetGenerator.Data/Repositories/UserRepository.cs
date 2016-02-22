@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using SetGenerator.Domain.Entities;
 using NHibernate;
@@ -11,6 +12,7 @@ namespace SetGenerator.Data.Repositories
         IList<UserPreferenceTableColumn> GetTableColumnsByBandId(int userId, int tableId, int? bandId);
         IList<UserPreferenceTableMember> GetTableMembersByBandId(int userId, int tableId, int bandId);
         IList<UserBand> GetUserBands(string uname);
+        ArrayList GetDefaultBandArrayList(int userId);
 
         // UserBand
         int AddUserBand(int userId, int bandId);
@@ -97,6 +99,36 @@ namespace SetGenerator.Data.Repositories
                 .UserBands;
 
             return list;
+        }
+
+        public ArrayList GetDefaultBandArrayList(int userId)
+        {
+            var bands = GetDefaultUserBands(userId);
+            var al = new ArrayList();
+
+            foreach (var b in bands)
+                al.Add(new { Value = b.Key, Display = b.Value });
+
+            return al;
+        }
+
+        private Dictionary<int, string> GetDefaultUserBands(int userId)
+        {
+            Member bandTableAlias = null;
+
+            return Session.QueryOver<User>()
+                .Where(x => x.DefaultBand != null)
+                .JoinAlias(x => x.DefaultBand, () => bandTableAlias)
+                .Where(x => x.DefaultBand.Id == bandTableAlias.Id)
+                .List()
+                .Select(x => new
+                {
+                    x.DefaultBand.Id,
+                    x.DefaultBand.Name
+                })
+                .Distinct()
+                .OrderBy(o => o.Name)
+                .ToDictionary(x => x.Id, y => y.Name);
         }
 
         // UserBand

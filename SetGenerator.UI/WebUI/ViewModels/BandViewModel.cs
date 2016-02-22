@@ -14,14 +14,11 @@ namespace SetGenerator.WebUI.ViewModels
     }
 
     public class BandViewModel
-    {
-        public IEnumerable<BandDetail> BandList { get; set; }
-
+    {        
         public int SelectedId { get; set; }
         public List<string> ErrorMessages { get; set; }
         public bool Success { get; set; }
     }
-
 
     public class BandEditViewModel
     {

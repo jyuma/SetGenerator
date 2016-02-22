@@ -103,13 +103,13 @@
                         <span data-bind="visible: isVisible, css: { 'glyphicon glyphicon-ok': $parent.neverClose() }"></span>
                     </td>
                     <!-- /ko -->
-                    <!-- ko if: dataMember === 'neveropen'  && isVisible -->
+                    <!-- ko if: dataMember === 'neveropen' && isVisible -->
                     <td data-bind="css: { 'center-align': $parent.neverOpen() }">
                         <span data-bind="visible: isVisible, css: { 'glyphicon glyphicon-ok': $parent.neverOpen() }"></span>
                     </td>
                     <!-- /ko -->
                     <!-- ko if: dataMember !== 'neverclose' && dataMember !== 'neveropen' -->
-                    <td data-bind="text: dataMember.indexOf('updatedate') >= 0 ? moment($parent[dataMember]).format('ll') : $parent[dataMember], visible: isVisible, css: { 'col-audit': dataMember.indexOf('updateuser') >= 0 || dataMember.indexOf('updatedate') >= 0 }"></td>
+                    <td data-bind="text: dataMember.indexOf('updatedate') >= 0 ? moment($parent[dataMember]).format('ll') : $parent[dataMember], visible: isVisible, css: { 'col-small': dataMember.indexOf('updateuser') >= 0 || dataMember.indexOf('updatedate') >= 0 }"></td>
                     <!-- /ko -->
                     <!-- /ko -->
                     <!-- ko foreach: memberInstruments -->

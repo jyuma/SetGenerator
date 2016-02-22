@@ -1,0 +1,25 @@
+﻿@model SetGenerator.WebUI.ViewModels.UserEditViewModel
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="label label-default">Username</div>
+            <input type="text" id="txtUserName" class="form-control" value="@Model.UserName" maxlength="100" list="dlVenues"/>
+        </div>
+        <div class="col-sm-12">
+            <div class="label label-default">Email</div>
+            <input type="text" id="txtEmail" class="form-control" value="@Model.Email" maxlength="100" list="dlVenues" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            @if (@Model.UserBands.Any())
+            {
+                <div class="label label-default">Default Band</div>
+                @Html.DropDownList("ddlUserBands", @Model.UserBands, new { @class = "form-control" })
+            }
+        </div>
+    </div>
+    <div class="validation-container" id="validation-container"></div>
+</div>

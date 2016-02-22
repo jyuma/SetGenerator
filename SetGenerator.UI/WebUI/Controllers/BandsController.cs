@@ -239,7 +239,7 @@ namespace SetGenerator.WebUI.Controllers
 
             if (isDeleted)
             {
-                Session["BandId"] = user.DefaultBandId;
+                Session["BandId"] = user.DefaultBand.Id;
             }
             else if (isAdded)
             {

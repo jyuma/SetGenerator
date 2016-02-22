@@ -8,4 +8,5 @@
     window.setlists = {};
     window.gigs = {};
     window.bands = {};
+    window.users = {};
 })(jQuery);
