@@ -18,9 +18,20 @@ namespace SetGenerator.Domain.Mappings
             References(m => m.UserCreate).Column("UserCreateId");
             References(m => m.UserUpdate).Column("UserUpdateId");
 
-            HasMany(m => m.Members).Cascade.All();
-            HasMany(m => m.Songs).Cascade.All();
-            HasMany(m => m.Gigs).Cascade.All();
+            HasMany(m => m.Members)
+                .Cascade.All()
+                .Inverse()
+                .Cascade.DeleteOrphan();
+
+            HasMany(m => m.Songs)
+                .Cascade.All()
+                .Inverse()
+                .Cascade.DeleteOrphan();
+
+            HasMany(m => m.Gigs)
+                .Cascade.All()
+                .Inverse()
+                .Cascade.DeleteOrphan();
         }
     }
 }

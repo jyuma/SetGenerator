@@ -22,8 +22,8 @@ namespace SetGenerator.Domain.Entities
         public virtual bool TwoFactorEnabled { get; set; }
         public virtual int AccessFailedCount { get; set; }
         public virtual int DefaultBandId { get; set; }
-        public virtual IEnumerable<UserBand> UserBands { get; set; }
-        public virtual IEnumerable<UserPreferenceTableColumn> UserPreferenceTableColumns { get; set; }
-        public virtual IEnumerable<UserPreferenceTableMember> UserPreferenceTableMembers { get; set; }
+        public virtual IList<UserBand> UserBands { get; set; }
+        public virtual IList<UserPreferenceTableColumn> UserPreferenceTableColumns { get; set; }
+        public virtual IList<UserPreferenceTableMember> UserPreferenceTableMembers { get; set; }
     }
 }

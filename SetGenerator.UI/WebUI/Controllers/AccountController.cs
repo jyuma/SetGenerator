@@ -2,7 +2,6 @@
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
 using SetGenerator.WebUI.Models;
-using System;
 using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
@@ -87,61 +86,6 @@ namespace SetGenerator.WebUI.Controllers
         {
             return View();
         }
-
-        //
-        // POST: /Account/Register
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var user = new MyUser() { UserName = model.UserName, Email = model.Email, DateRegistered = DateTime.Now };
-                
-                var result = await UserManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    await SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Home");
-                }
-                else
-                {
-                    AddErrors(result);
-                }
-            }
-
-            // If we got this far, something failed, redisplay form
-            return View(model);
-        }
-
-        //public ActionResult MyRegister(RegisterViewModel model)
-        //{
-        //    //var result = _account.ValidateRegister(model.UserName, model.EmailAddress, model.Password,
-        //    //                                               model.ConfirmPassword);
-            
-        //    if (result == null)
-        //    {
-        //        var ipaddress = System.Web.HttpContext.Current.Request.UserHostAddress;
-        //        var browserinfo = System.Web.HttpContext.Current.Request.Browser.Browser + " Version " +
-        //                          System.Web.HttpContext.Current.Request.Browser.Version;
-
-        //        // Create the user
-        //        var newid = _account.CreateUser(model.UserName, model.EmailAddress, model.Password, ipaddress, browserinfo);
-
-        //        Session["UserId"] = newid;
-        //        //_account.AddUserRole(model.UserName, Constants.RoleIdCustomer);
-        //        //var emailBody = CreateEmailBody(model.UserName, null, model.EmailAddress, null, model.Password, Constants.EmailContextRegister);
-        //        //var emailError = SendEmail(emailBody);
-        //        //FormsAuthentication.SetAuthCookie(model.UserName, true);
-
-        //        return Json(new { success = true, EmailError = emailError });
-        //    }
-
-        //    // If we got this far, something failed, return a list of problems
-        //    var msgs = result.ToArray();
-        //    return Json(new { success = false, messages = msgs });
-        //}
 
         //
         // POST: /Account/Disassociate
@@ -372,6 +316,7 @@ namespace SetGenerator.WebUI.Controllers
         }
 
         #region Helpers
+
         // Used for XSRF protection when adding external logins
         private const string XsrfKey = "XsrfId";
 
@@ -455,6 +400,7 @@ namespace SetGenerator.WebUI.Controllers
                 context.HttpContext.GetOwinContext().Authentication.Challenge(properties, LoginProvider);
             }
         }
+
         #endregion
     }
 }

@@ -48,9 +48,11 @@ namespace SetGenerator.WebUI.ViewModels
 
     public class MemberInstrumentDetail
     {
+        public int BandId { get; set; }
         public int MemberId { get; set; }
         public string MemberName { get; set; }
         public SelectList Instruments { get; set; }
+        public int[] InstrumentIds { get; set; }
     }
 
     public class SongEditViewModel

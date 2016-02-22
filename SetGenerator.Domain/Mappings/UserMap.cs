@@ -27,9 +27,20 @@ namespace SetGenerator.Domain.Mappings
             Map(m => m.AccessFailedCount).Column("AccessFailedCount");
             Map(m => m.DefaultBandId).Column("DefaultBandId");
 
-            HasMany(m => m.UserBands).Cascade.All(); ;
-            HasMany(m => m.UserPreferenceTableColumns).Cascade.All(); ;
-            HasMany(m => m.UserPreferenceTableMembers).Cascade.All();
+            HasMany(m => m.UserBands)
+                .Cascade.All()
+                .Inverse()
+                .Cascade.DeleteOrphan();
+
+            HasMany(m => m.UserPreferenceTableColumns)
+                .Cascade.All()
+                .Inverse()
+                .Cascade.DeleteOrphan();
+
+            HasMany(m => m.UserPreferenceTableMembers)
+                .Cascade.All()
+                .Inverse()
+                .Cascade.DeleteOrphan();
         }
     }
 }

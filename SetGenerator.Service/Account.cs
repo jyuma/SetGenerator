@@ -18,8 +18,8 @@ namespace SetGenerator.Service
         long CreateUser(string username, string email, string password, int bandId, string ip, string browser);
         void DeleteUser(int id);
         void UpdateUserDisabled(string uname, bool disabled);
-        IEnumerable<UserPreferenceTableColumn> GetTableColumnsByBandId(int userId, int tableId, int? bandId);
-        IEnumerable<UserPreferenceTableMember> GetTableMembersByBandId(int userId, int tableId, int bandId);
+        IList<UserPreferenceTableColumn> GetTableColumnsByBandId(int userId, int tableId, int? bandId);
+        IList<UserPreferenceTableMember> GetTableMembersByBandId(int userId, int tableId, int bandId);
         void UpdateUserPreferenceTableColumns(string userName, IDictionary cols);
         void UpdateUserPreferenceTableMembers(string userName, IDictionary cols);
         User GetUserByUserName(string username);
@@ -28,7 +28,7 @@ namespace SetGenerator.Service
         List<string> ValidateProfile(string username, string email);
         List<string> ValidateRegister(string username, string email, string password, string confirmPassword);
         List<string> ValidateChangePassword(string password, string confirmPassword);
-        IEnumerable<UserBand> GetUserBands(string uname);
+        IList<UserBand> GetUserBands(string uname);
     }
 
     public class Account : IAccount
@@ -80,12 +80,12 @@ namespace SetGenerator.Service
             _userRepository.Update(u);
         }
 
-        public IEnumerable<UserPreferenceTableColumn> GetTableColumnsByBandId(int userId, int tableId, int? bandId)
+        public IList<UserPreferenceTableColumn> GetTableColumnsByBandId(int userId, int tableId, int? bandId)
         {
             return _userRepository.GetTableColumnsByBandId(userId, tableId, bandId);
         }
 
-        public IEnumerable<UserPreferenceTableMember> GetTableMembersByBandId(int userId, int tableId, int bandId)
+        public IList<UserPreferenceTableMember> GetTableMembersByBandId(int userId, int tableId, int bandId)
         {
             return _userRepository.GetTableMembersByBandId(userId, tableId, bandId);
         }
@@ -144,12 +144,12 @@ namespace SetGenerator.Service
             return -1;
         }
 
-        public IEnumerable<UserBand> GetUserBands(string uname = null)
+        public IList<UserBand> GetUserBands(string uname = null)
         {
             return _userRepository.GetUserBands(uname);
         }
 
-        private IEnumerable<UserPreferenceTableColumn> GetUserPreferenceTableColumns()
+        private IList<UserPreferenceTableColumn> GetUserPreferenceTableColumns()
         {
             var columns = _tableColumnRepository.GetAll();
 
@@ -160,7 +160,7 @@ namespace SetGenerator.Service
                                            }).ToList();
         }
 
-        private IEnumerable<UserPreferenceTableMember> GetUserPreferenceTableMembers(int bandId)
+        private IList<UserPreferenceTableMember> GetUserPreferenceTableMembers(int bandId)
         {
             var members = _memberRepository.GetAll()
                 .Where(x => x.Band.Id == bandId)

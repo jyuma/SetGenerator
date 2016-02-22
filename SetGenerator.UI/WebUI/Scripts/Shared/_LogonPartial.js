@@ -9,10 +9,7 @@
         init: function (options) {
             var config = {
                 controller: "",
-                actionName: "",
-                userId: 0,
-                currentBandId: "",
-                userBands: ""
+                actionName: ""
             }
 
             $.extend(config, options);

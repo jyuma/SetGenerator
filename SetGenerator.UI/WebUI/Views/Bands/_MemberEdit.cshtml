@@ -16,12 +16,15 @@
     <div class="row">
         <div class="col-sm-6">
             <div class="label label-default">Alias</div>
-            <input type="text" id="txtAlias" class="form-control" value="@Model.Alias" maxlength="20" />
+            <input type="text" id="txtAlias" class="form-control" value="@Model.Alias" maxlength="20"/>
         </div>
-        <div class="col-sm-6">
-            <div class="label label-default">Default Instrument</div>
-            @Html.DropDownList("ddlMemberInstruments", @Model.MemberInstruments, new {@class = "form-control"})
-        </div>
+        @if (@Model.MemberInstruments.Any())
+        {
+            <div class="col-sm-6">
+                <div class="label label-default">Default Instrument</div>
+                @Html.DropDownList("ddlMemberInstruments", @Model.MemberInstruments, new {@class = "form-control"})
+            </div>
+        }
     </div>
     <div class="validation-container" id="validation-container"></div>
 </div>

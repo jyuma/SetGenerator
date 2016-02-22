@@ -1,6 +1,5 @@
 ﻿@using System.Collections
 @using System.Web.Mvc.Html
-@using FluentNHibernate.Conventions
 @using Microsoft.AspNet.Identity
 
 <script type="text/javascript">
@@ -8,10 +7,7 @@
         shared._logonpartial.init(
         {
             controller: "@ViewContext.RouteData.Values["controller"].ToString()",
-            actionName: "@ViewContext.RouteData.Values["action"].ToString()",
-            userId: "@Session["UserId"]",
-            currentBandId: "@Session["BandId"]",
-            userBands: "@Session["Bands"]"
+            actionName: "@ViewContext.RouteData.Values["action"].ToString()"
         });
     });
 </script>

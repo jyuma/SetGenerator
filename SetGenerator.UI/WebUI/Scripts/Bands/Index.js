@@ -242,7 +242,7 @@
                     var defaultsingerid = $.trim($("#ddlMembers").val());
 
                     return {
-                        Id: self.selectedBand().id, Name: name, DefaultSingerId: defaultsingerid
+                        Id: self.selectedBand().id, Name: name, DefaultSingerId: (defaultsingerid.length > 0) ? defaultsingerid : 0
                     };
                 };
 

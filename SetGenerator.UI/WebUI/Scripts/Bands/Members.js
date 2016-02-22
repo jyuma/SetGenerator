@@ -268,19 +268,24 @@
                 self.getMemberDetailFromDialog = function () {
                     var firstname = $.trim($("#txtFirstName").val());
                     var lastname = $.trim($("#txtLastName").val());
-                    var alias = $("#txtAlias").val();
-                    var defaultinstrumentid = $("#ddlMemberInstruments").val();
+                    var alias = $.trim($("#txtAlias").val());
+                    var defaultinstrumentid = $.trim($("#ddlMemberInstruments").val());
 
                     return {
-                        Id: self.selectedMember().id, FirstName: firstname, LastName: lastname, Alias: alias, DefaultInstrumentId: defaultinstrumentid
+                        Id: self.selectedMember().id, BandId: config.bandId, FirstName: firstname, LastName: lastname, Alias: alias, DefaultInstrumentId: defaultinstrumentid.length > 0 ? defaultinstrumentid: 0
                     };
                 };
 
                 self.getMemberInstrumentDetailFromDialog = function () {
-                    var selectedIds = $("#ddlAssignedInstruments").val();
+                    var opts = $("#lstSelectedInstruments").find("option");
+                    var ids = [];
+
+                    opts.each(function (index, value) {
+                        ids.push(value.value);
+                    });
 
                     return {
-                        Id: self.selectedMember().id, SelectedIds: selectedIds
+                        BandId: config.bandId, MemberId: self.selectedMember().id, InstrumentIds: ids
                     };
                 };
 
@@ -384,7 +389,7 @@
                         type: "POST",
                         async: false,
                         url: site.url + "Bands/SaveMemberInstruments/",
-                        data: { memberInstrument: jsonData },
+                        data: { memberInstrumentdetail: jsonData },
                         dataType: "json",
                         traditional: true,
                         failure: function () {

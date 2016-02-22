@@ -6,7 +6,6 @@ namespace SetGenerator.WebUI.ViewModels
     public class BandDetail
     {
         public int Id { get; set; }
-        public string DateCreated { get; set; }
         public string Name { get; set; }
         public int DefaultSingerId { get; set; }
         public string UserUpdate { get; set; }

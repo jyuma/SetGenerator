@@ -5,9 +5,6 @@
         T Id { get; set; }
     }
 
-    public abstract class BaseEntity
-    {
-
-    }
+    public abstract class BaseEntity { }
  
 }

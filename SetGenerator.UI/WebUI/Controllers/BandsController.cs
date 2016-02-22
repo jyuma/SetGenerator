@@ -6,8 +6,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Web.Mvc;
-using System.Xml;
-using NHibernate.Hql.Ast.ANTLR.Tree;
 using SetGenerator.Data.Repositories;
 using SetGenerator.Domain.Entities;
 using SetGenerator.WebUI.Common;
@@ -17,6 +15,7 @@ namespace SetGenerator.WebUI.Controllers
     [RoutePrefix("Bands")]
     public class BandsController : Controller
     {
+        private readonly IUserRepository _userRepository;
         private readonly IBandRepository _bandRepository;
         private readonly IMemberRepository _memberRepository;
         private readonly IInstrumentRepository _instrumentRepository;
@@ -24,12 +23,14 @@ namespace SetGenerator.WebUI.Controllers
         private readonly User _currentUser;
         private readonly CommonSong _common;
 
-        public BandsController(IBandRepository bandRepository,
+        public BandsController( IUserRepository userRepository,
+                                IBandRepository bandRepository,
                                 IMemberRepository memberRepository,
                                 IInstrumentRepository instrumentRepository,
                                 IValidationRules validationRules,
                                 IAccount account)
         {
+            _userRepository = userRepository;
             _bandRepository = bandRepository;
             _memberRepository = memberRepository;
             _instrumentRepository = instrumentRepository;
@@ -134,26 +135,27 @@ namespace SetGenerator.WebUI.Controllers
         [HttpPost]
         public JsonResult Save(string band)
         {
-            var g = JsonConvert.DeserializeObject<BandDetail>(band);
+            var b = JsonConvert.DeserializeObject<BandDetail>(band);
             List<string> msgs;
-            var bandId = g.Id;
+            var bandId = b.Id;
 
             if (bandId > 0)
             {
-                msgs = ValidateBand(g.Name, false);
+                msgs = ValidateBand(b.Name, false);
                 if (msgs == null)
-                    UpdateBand(g);
+                    UpdateBand(b);
             }
             else
             {
-                msgs = ValidateBand(g.Name, true);
+                msgs = ValidateBand(b.Name, true);
                 if (msgs == null)
-                    bandId = AddBand(g);
+                    bandId = AddBand(b);
             }
 
             return Json(new
             {
                 BandList = GetBandList(),
+                DefaultSingerArrayList = _bandRepository.GetDefaultSingerNameArrayList(),
                 SelectedId = bandId,
                 Success = (null == msgs),
                 ErrorMessages = msgs
@@ -169,6 +171,9 @@ namespace SetGenerator.WebUI.Controllers
         [HttpPost]
         public JsonResult Delete(int id)
         {
+            _userRepository.DeleteUserPreferenceTableColumns(_currentUser.Id, id);
+            _userRepository.DeleteUserPreferenceTableMembers(_currentUser.Id, id);
+            _userRepository.DeleteUserBand(_currentUser.Id, id);
             _bandRepository.Delete(id);
 
             return Json(new
@@ -196,7 +201,13 @@ namespace SetGenerator.WebUI.Controllers
                 DateUpdate = DateTime.Now
             };
 
-            return _bandRepository.Add(b);
+            var id = _bandRepository.Add(b);
+            if (id <= 0) return id;
+
+            _userRepository.AddUserBand(_currentUser.Id, id);
+            _userRepository.AddUserPreferenceTableColumns(_currentUser.Id, id);
+
+            return id;
         }
 
         private void UpdateBand(BandDetail bandDetail)
@@ -246,7 +257,7 @@ namespace SetGenerator.WebUI.Controllers
                 FirstName = member.FirstName,
                 LastName = member.LastName,
                 Alias = member.Alias,
-                DefaultInstrumentId = member.DefaultInstrument.Id 
+                DefaultInstrumentId = (member.DefaultInstrument != null) ? member.DefaultInstrument.Id : 0,
             }).OrderBy(x => x.FirstName)
                 .ThenBy(x => x.LastName).ToArray();
 
@@ -312,8 +323,10 @@ namespace SetGenerator.WebUI.Controllers
         public JsonResult SaveMember(string member)
         {
             var m = JsonConvert.DeserializeObject<MemberDetail>(member);
-            List<string> msgs = null;
             var memberId = m.Id;
+
+            List<string> msgs;
+            
 
             if (memberId > 0)
             {
@@ -331,6 +344,7 @@ namespace SetGenerator.WebUI.Controllers
             return Json(new
             {
                 MemberList = GetMemberList(m.BandId),
+                InstrumentArrayList = _instrumentRepository.GetNameArrayList(),
                 SelectedId = memberId,
                 Success = (null == msgs),
                 ErrorMessages = msgs
@@ -366,8 +380,7 @@ namespace SetGenerator.WebUI.Controllers
 
         private int AddMember(MemberDetail memberDetail)
         {
-            var bandId = Convert.ToInt32(Session["BandId"]);
-            var band = _bandRepository.Get(bandId);
+            var band = _bandRepository.Get(memberDetail.BandId);
             var defaultInstrument = _instrumentRepository.Get(memberDetail.DefaultInstrumentId);
 
             var m = new Member
@@ -379,7 +392,11 @@ namespace SetGenerator.WebUI.Controllers
                 DefaultInstrument = defaultInstrument
             };
 
-            return _memberRepository.Add(m);
+            var id = _memberRepository.Add(m);
+
+            _userRepository.AddUserPreferenceTableMember(_currentUser.Id, id);
+
+            return id;
         }
 
         private void UpdateMember(MemberDetail memberDetail)
@@ -440,6 +457,23 @@ namespace SetGenerator.WebUI.Controllers
             };
 
             return vm;
+        }
+
+        [HttpPost]
+        public JsonResult SaveMemberInstruments(string memberInstrumentDetail)
+        {
+            var detail = JsonConvert.DeserializeObject<MemberInstrumentDetail>(memberInstrumentDetail);
+
+            _memberRepository.AddRemoveMemberInstruments(detail.MemberId, detail.InstrumentIds);
+
+            return Json(new
+            {
+                MemberList = GetMemberList(detail.BandId),
+                InstrumentArrayList = _instrumentRepository.GetNameArrayList(),
+                SelectedId = detail.MemberId,
+                Success = true,
+                ErrorMessages = string.Empty
+            }, JsonRequestBehavior.AllowGet);
         }
     }
 }

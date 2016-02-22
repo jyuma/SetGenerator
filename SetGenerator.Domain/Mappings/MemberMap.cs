@@ -13,10 +13,14 @@ namespace SetGenerator.Domain.Mappings
             Map(m => m.FirstName).Column("FirstName");
             Map(m => m.LastName).Column("LastName");
             Map(m => m.Alias).Column("Alias");
-            References(m => m.DefaultInstrument).Column("DefaultInstrumentId");
+
+            References(m => m.DefaultInstrument).Column("DefaultInstrumentId").Nullable();
             References(m => m.Band).Column("BandId");
 
-            HasMany(x => x.MemberInstruments).Cascade.All(); ;
+            HasMany(x => x.MemberInstruments)
+                .Cascade.All()
+                .Inverse()
+                .Cascade.DeleteOrphan();
         }
     }
 }
