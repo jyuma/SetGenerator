@@ -2,6 +2,7 @@
 using SetGenerator.Service;
 using SetGenerator.WebUI.ViewModels;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -57,6 +58,7 @@ namespace SetGenerator.WebUI.Controllers
             {
                 BandList = GetBandList(),
                 DefaultSingerArrayList = _bandRepository.GetDefaultSingerNameArrayList(),
+                DefaultGenreArrayList = _bandRepository.GetDefaultGenreArrayList(),
                 TableColumnList = _common.GetTableColumnList(_currentUser.Id, Constants.UserTable.BandId)
             };
 
@@ -72,6 +74,7 @@ namespace SetGenerator.WebUI.Controllers
                 Id = band.Id,
                 Name = band.Name,
                 DefaultSingerId = (band.DefaultSinger != null) ? band.DefaultSinger.Id : 0,
+                DefaultGenreId = (band.DefaultGenre != null) ? band.DefaultGenre.Id : 0,
                 UserUpdate = band.UserUpdate.UserName,
                 DateUpdate = band.DateUpdate.ToShortDateString()
             }).OrderBy(x => x.Name).ToArray();
@@ -113,21 +116,34 @@ namespace SetGenerator.WebUI.Controllers
             var vm = new BandEditViewModel
             {
                 Name = (band != null) ? band.Name : string.Empty,
-                Members =
-                    new SelectList((band != null)
-                    ? new Collection<object> { new { Value = "0", Display = "<None>" } }.ToArray()
-                    .Union(
-                        band.Members
-                        .Select(x => new
-                        {
-                            Value = x.Id,
-                            Display = x.Alias
-                        })).ToArray()
-                     : new Collection<object>().ToArray(), "Value", "Display",
-                        (band != null) 
-                            ? (band.DefaultSinger != null) ? band.DefaultSinger.Id : 0
-                            : 0)
-            };
+                Members = new SelectList((band != null)
+                            ? new Collection<object> { new { Value = "0", Display = "<None>" } }.ToArray()
+                            .Union(
+                                band.Members
+                                .Select(x => new
+                                {
+                                    Value = x.Id,
+                                    Display = x.Alias
+                                })).ToArray()
+                             : new Collection<object>().ToArray(), "Value", "Display",
+                                (band != null) 
+                                    ? (band.DefaultSinger != null) ? band.DefaultSinger.Id : 0
+                                    : 0),
+
+                Genres = new SelectList((band != null)
+                            ? new Collection<object> { new { Value = "0", Display = "<None>" } }.ToArray()
+                            .Union(
+                                _bandRepository.GetAllGenres()
+                                .Select(x => new
+                                {
+                                    Value = x.Id,
+                                    Display = x.Name
+                                })).ToArray()
+                             : new Collection<object>().ToArray(), "Value", "Display",
+                                (band != null)
+                                    ? (band.DefaultGenre != null) ? band.DefaultGenre.Id : 0
+                                    : 0)
+                            };
 
             return vm;
         }
@@ -144,12 +160,16 @@ namespace SetGenerator.WebUI.Controllers
                 msgs = ValidateBand(b.Name, false);
                 if (msgs == null)
                     UpdateBand(b);
+
+                ReloadUserBands(bandId, false);
             }
             else
             {
                 msgs = ValidateBand(b.Name, true);
                 if (msgs == null)
                     bandId = AddBand(b);
+
+                ReloadUserBands(bandId, true);
             }
 
             return Json(new
@@ -175,6 +195,8 @@ namespace SetGenerator.WebUI.Controllers
             _userRepository.DeleteUserPreferenceTableMembers(_currentUser.Id, id);
             _userRepository.DeleteUserBand(_currentUser.Id, id);
             _bandRepository.Delete(id);
+
+            ReloadUserBands(id, false, true);
 
             return Json(new
             {
@@ -210,13 +232,56 @@ namespace SetGenerator.WebUI.Controllers
             return id;
         }
 
+        private void ReloadUserBands( int bandId, bool isAdded, bool isDeleted = false)
+        {
+            var user = _currentUser;
+            Session["Bands"] = GetUserBandSelectList();
+
+            if (isDeleted)
+            {
+                Session["BandId"] = user.DefaultBandId;
+            }
+            else if (isAdded)
+            {
+                Session["BandId"] = bandId;
+            }
+        }
+
+        private ICollection GetUserBandSelectList()
+        {
+            var bands = _currentUser.UserBands;
+
+            var result = bands
+                .Select(x => new
+                {
+                    Id = x.Band.Id,
+                    Name = x.Band.Name
+                }).ToArray();
+
+            return result;
+        }
+
         private void UpdateBand(BandDetail bandDetail)
         {
             var band = _bandRepository.Get(bandDetail.Id);
 
+            Member defaultSinger = null;
+            if (bandDetail.DefaultSingerId > 0)
+            {
+                defaultSinger = _memberRepository.Get(bandDetail.DefaultSingerId);
+            }
+
+            Genre defaultGenre = null;
+            if (bandDetail.DefaultGenreId > 0)
+            {
+                defaultGenre = _bandRepository.GetGenre(bandDetail.DefaultGenreId);
+            }
+
             if (band != null)
             {
                 band.Name = bandDetail.Name;
+                band.DefaultSinger = defaultSinger;
+                band.DefaultGenre = defaultGenre;
                 band.UserUpdate = _currentUser;
                 band.DateUpdate = DateTime.Now;
             };

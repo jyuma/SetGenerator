@@ -9,11 +9,18 @@
     </div>
 
     <div class="row">
-        <div class="col-sm-12">
+        <div class="col-sm-6">
             @if (@Model.Members.Any())
             {
                 <div class="label label-default">Default Singer</div>
-                @Html.DropDownList("ddlMemberInstruments", @Model.Members, new { @class = "form-control" })
+                @Html.DropDownList("ddlMembers", @Model.Members, new {@class = "form-control"})
+            }
+        </div>
+        <div class="col-sm-6">
+            @if (@Model.Members.Any())
+            {
+                <div class="label label-default">Default Genre</div>
+                @Html.DropDownList("ddlGenres", @Model.Genres, new { @class = "form-control" })
             }
         </div>
     </div>

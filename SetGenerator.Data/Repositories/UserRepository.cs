@@ -143,10 +143,11 @@ namespace SetGenerator.Data.Repositories
 
         public int AddUserPreferenceTableColumns(int userId, int bandId)
         {
+            const int bandTableId = 1;
             var id = 0;
             var user = Session.QueryOver<User>().Where(x => x.Id == userId).SingleOrDefault();
             var band = Session.QueryOver<Band>().Where(x => x.Id == bandId).SingleOrDefault();
-            var tableColumns = Session.QueryOver<TableColumn>().List();
+            var tableColumns = Session.QueryOver<TableColumn>().Where(x => x.Table.Id != bandTableId).List();
 
             var userPreferenceTableColumns = tableColumns.Select(x => new
                 UserPreferenceTableColumn

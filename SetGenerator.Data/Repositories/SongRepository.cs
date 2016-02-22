@@ -20,11 +20,6 @@ namespace SetGenerator.Data.Repositories
         IEnumerable<string> GetKeyNameList();
         ArrayList GetKeyNameArrayList();
 
-        // Genre
-        IEnumerable<Genre> GetAllGenres();
-        Genre GetGenre(int genreId);
-        ArrayList GetGenreArrayList();
-
         // Tempo
         IEnumerable<Tempo> GetAllTempos();
         Tempo GetTempo(int tempoId);
@@ -130,37 +125,6 @@ namespace SetGenerator.Data.Repositories
 
             foreach (var k in keyNames)
                 al.Add(new { Value = k.Id, Display = k.Name });
-
-            return al;
-        }
-
-        // Genre
-
-        public IEnumerable<Genre> GetAllGenres()
-        {
-            return Session.QueryOver<Genre>()
-                .List()
-                .OrderBy(o => o.Name)
-                .ToArray();
-        }
-
-        public Genre GetGenre(int genreId)
-        {
-            return Session.QueryOver<Genre>()
-                .Where(g => g.Id == genreId)
-                .SingleOrDefault();
-        }
-
-        public ArrayList GetGenreArrayList()
-        {
-            var genres = Session.QueryOver<Genre>()
-                .List()
-                .OrderBy(o => o.Name);
-
-            var al = new ArrayList();
-
-            foreach (var g in genres)
-                al.Add(new { Value = g.Id, Display = g.Name });
 
             return al;
         }

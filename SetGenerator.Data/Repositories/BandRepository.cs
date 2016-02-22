@@ -11,12 +11,18 @@ namespace SetGenerator.Data.Repositories
         Band GetByName(string name);
         ArrayList GetNameArrayList();
         ArrayList GetDefaultSingerNameArrayList();
+        ArrayList GetDefaultGenreArrayList();
 
         // Member
         IEnumerable<Member> GetMembers(int bandId);
         IEnumerable<string> GetSingerNameList(int bandId);
         ArrayList GetMemberNameArrayList(int bandId);
         ArrayList GetSingerNameArrayList(int bandId);
+
+        // Genre
+        IEnumerable<Genre> GetAllGenres();
+        Genre GetGenre(int genreId);
+        ArrayList GetGenreArrayList();
     }
 
     public class BandRepository : RepositoryBase<Band>, IBandRepository
@@ -54,6 +60,19 @@ namespace SetGenerator.Data.Repositories
 
             foreach (var b in bands)
                 al.Add(new { Value = b.DefaultSinger.Id, Display = b.DefaultSinger.Alias });
+
+            return al;
+        }
+
+        public ArrayList GetDefaultGenreArrayList()
+        {
+            var al = new ArrayList();
+
+            var bands = Session.QueryOver<Band>()
+                .Where(x => x.DefaultGenre != null).List();
+
+            foreach (var b in bands)
+                al.Add(new { Value = b.DefaultGenre.Id, Display = b.DefaultGenre.Name });
 
             return al;
         }
@@ -121,6 +140,38 @@ namespace SetGenerator.Data.Repositories
                 .Distinct()
                 .OrderBy(o => o.Alias)
                 .ToDictionary(x => x.Id, y => y.Alias);
+        }
+
+
+        // Genre
+
+        public IEnumerable<Genre> GetAllGenres()
+        {
+            return Session.QueryOver<Genre>()
+                .List()
+                .OrderBy(o => o.Name)
+                .ToArray();
+        }
+
+        public Genre GetGenre(int genreId)
+        {
+            return Session.QueryOver<Genre>()
+                .Where(g => g.Id == genreId)
+                .SingleOrDefault();
+        }
+
+        public ArrayList GetGenreArrayList()
+        {
+            var genres = Session.QueryOver<Genre>()
+                .List()
+                .OrderBy(o => o.Name);
+
+            var al = new ArrayList();
+
+            foreach (var g in genres)
+                al.Add(new { Value = g.Id, Display = g.Name });
+
+            return al;
         }
     }
 }

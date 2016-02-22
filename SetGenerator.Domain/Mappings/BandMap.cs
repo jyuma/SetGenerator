@@ -15,6 +15,7 @@ namespace SetGenerator.Domain.Mappings
             Map(m => m.DateUpdate).Column("DateUpdate");
 
             References(m => m.DefaultSinger).Column("DefaultSingerId").Nullable();
+            References(m => m.DefaultGenre).Column("DefaultGenreId").Nullable();
             References(m => m.UserCreate).Column("UserCreateId");
             References(m => m.UserUpdate).Column("UserUpdateId");
 

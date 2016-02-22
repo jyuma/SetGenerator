@@ -307,7 +307,7 @@ namespace SetGenerator.WebUI.Controllers
                 SetSongList = GetSetSongList(setlist),
                 SpareList = GetSpareList(setlist),
                 MemberArrayList = _bandRepository.GetMemberNameArrayList(bandId),
-                GenreArrayList = _songRepository.GetGenreArrayList(),
+                GenreArrayList = _bandRepository.GetGenreArrayList(),
                 TempoArrayList = _songRepository.GetTempoArrayList(),
                 SetNumberList = setlist.SetSongs.Select(x => x.SetNumber).Distinct().ToArray(),
                 TableColumnList = _common.GetTableColumnList(_currentUser.Id, Constants.UserTable.SetId, bandId)

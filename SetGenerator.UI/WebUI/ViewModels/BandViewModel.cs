@@ -8,6 +8,7 @@ namespace SetGenerator.WebUI.ViewModels
         public int Id { get; set; }
         public string Name { get; set; }
         public int DefaultSingerId { get; set; }
+        public int DefaultGenreId { get; set; }
         public string UserUpdate { get; set; }
         public string DateUpdate { get; set; }
     }
@@ -26,5 +27,6 @@ namespace SetGenerator.WebUI.ViewModels
     {
         public string Name { get; set; }
         public SelectList Members { get; set; }
+        public SelectList Genres { get; set; }
     }
 }

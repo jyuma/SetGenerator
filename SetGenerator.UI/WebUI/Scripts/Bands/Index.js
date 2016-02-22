@@ -21,6 +21,7 @@
             var lists = {
                 BandList: [],
                 DefaultSingerArrayList: [],
+                DefaultGenreArrayList: [],
                 TableColumnList: []
             };
 
@@ -44,12 +45,13 @@
                 });
             }
 
-            function Band(id, name, defaultsingerid, updateuser, updatedate) {
+            function Band(id, name, defaultsingerid, defaultgenreid, updateuser, updatedate) {
                 var self = this;
 
                 self.id = id;
                 self.name = name;
                 self.defaultsinger = getValue(lists.DefaultSingerArrayList, defaultsingerid, "Display", "Value");
+                self.defaultgenre = getValue(lists.DefaultGenreArrayList, defaultgenreid, "Display", "Value");
                 self.updateuser = updateuser;
                 self.updatedate = updatedate;
             }
@@ -88,7 +90,7 @@
                 });
 
                 function pushBand(value) {
-                    self.bands.push(new Band(value.Id, value.Name, value.DefaultSingerId, value.UserUpdate, value.DateUpdate));
+                    self.bands.push(new Band(value.Id, value.Name, value.DefaultSingerId, value.DefaultGenreId, value.UserUpdate, value.DateUpdate));
                 };
 
                 self.selectedBand(self.bands()[0]);
@@ -240,9 +242,13 @@
                 self.getBandDetailFromDialog = function () {
                     var name = $.trim($("#txtName").val());
                     var defaultsingerid = $.trim($("#ddlMembers").val());
+                    var defaultgenreid = $.trim($("#ddlGenres").val());
 
                     return {
-                        Id: self.selectedBand().id, Name: name, DefaultSingerId: (defaultsingerid.length > 0) ? defaultsingerid : 0
+                        Id: self.selectedBand().id,
+                        Name: name,
+                        DefaultSingerId: (defaultsingerid.length > 0) ? defaultsingerid : 0,
+                        DefaultGenreId: (defaultgenreid.length > 0) ? defaultgenreid : 0
                     };
                 };
 
@@ -293,6 +299,8 @@
                                 self.sort({ afterSave: true });
                                 self.highlightRow(self.selectedBand());
                                 result = true;
+                                window.location.href = site.url + "Bands";
+                                
                             } else {
                                 if (data.ErrorMessages.length > 0) {
                                     $("#validation-container").show();
@@ -334,6 +342,7 @@
                                 self.sort({ afterSave: true });
                             }
                             $("body").css("cursor", "default");
+                            window.location.href = site.url + "Bands";
                         }
                     });
 
