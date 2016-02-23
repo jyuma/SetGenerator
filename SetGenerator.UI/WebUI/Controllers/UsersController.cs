@@ -1,8 +1,6 @@
 ﻿using Newtonsoft.Json;
 using SetGenerator.Service;
 using SetGenerator.WebUI.ViewModels;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -51,7 +49,7 @@ namespace SetGenerator.WebUI.Controllers
             var vm = new
             {
                 UserList = GetUserList(),
-                DefaultBandArrayList = _userRepository.GetDefaultBandArrayList(_currentUser.Id),
+                DefaultBandArrayList = _userRepository.GetDefaultBandArrayList(),
                 TableColumnList = _common.GetTableColumnList(_currentUser.Id, Constants.UserTable.UserId)
             };
 
@@ -154,7 +152,7 @@ namespace SetGenerator.WebUI.Controllers
             return Json(new
             {
                 UserList = GetUserList(),
-                DefaultSingerArrayList = _userRepository.GetDefaultBandArrayList(_currentUser.Id),
+                DefaultSingerArrayList = _userRepository.GetDefaultBandArrayList(),
                 SelectedId = userId,
                 Success = (null == msgs),
                 ErrorMessages = msgs
@@ -220,12 +218,70 @@ namespace SetGenerator.WebUI.Controllers
             if (user != null)
             {
                 user.UserName = userDetail.UserName;
-                user.Email = userDetail.UserName;
+                user.Email = userDetail.Email;
                 user.IsDisabled = userDetail.IsDisabled;
                 user.DefaultBand = defaultBand;
             };
 
             _userRepository.Update(user);
+        }
+
+        [HttpGet]
+        public PartialViewResult GetUserBandEditView(int id)
+        {
+            return PartialView("_UserBandEdit", LoadUserBandEditViewModel(id));
+        }
+
+        private UserBandEditViewModel LoadUserBandEditViewModel(int userId)
+        {
+            var userBands = _userRepository.GetUserBands(userId)
+                .Select(x => new { x.Band.Id, x.Band.Name })
+                .ToArray();
+
+            var allBands = _bandRepository.GetAll()
+                .OrderBy(o => o.Name)
+                .Select(x => new { x.Id, x.Name });
+
+            var vm = new UserBandEditViewModel
+            {
+                AssignedBands =
+                    new SelectList(
+                        userBands
+                        .Select(x => new
+                        {
+                            Value = x.Id,
+                            Display = x.Name
+                        }).ToArray(), "Value", "Display"),
+
+                AvailableBands = new SelectList(
+                        allBands
+                        .Where(x => !userBands.Contains(x))
+                        .Select(x => new
+                        {
+                            Value = x.Id,
+                            Display = x.Name
+                        }).ToArray(), "Value", "Display")
+
+            };
+
+            return vm;
+        }
+
+        [HttpPost]
+        public JsonResult SaveUserBands(string userBandDetail)
+        {
+            var detail = JsonConvert.DeserializeObject<UserBandDetail>(userBandDetail);
+            //var user = _userRepository.Get(detail.UserId);
+            _userRepository.AddRemoveUserBands(detail.UserId, detail.BandIds);
+
+            return Json(new
+            {
+                UserList = GetUserList(),
+                DefaultBandArrayList = _userRepository.GetDefaultBandArrayList(),
+                SelectedId = detail.UserId,
+                Success = true,
+                ErrorMessages = string.Empty
+            }, JsonRequestBehavior.AllowGet);
         }
     }
 }

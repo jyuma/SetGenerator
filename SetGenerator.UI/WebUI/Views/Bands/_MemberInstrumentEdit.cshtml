@@ -1,7 +1,7 @@
 ﻿@model SetGenerator.WebUI.ViewModels.MemberInstrumentEditViewModel
 
 <script>
-    var lstAssignedInstruments = $("#lstSelectedInstruments");
+    var lstAssignedInstruments = $("#lstAssignedInstruments");
     var lstAvailableInstruments = $("#lstAvailableInstruments");
     var btnAdd = $("#btnAdd");
     var btnRemove = $("#btnRemove");
@@ -60,8 +60,8 @@
             <div><button id="btnRemove" class="btn btn-default btn-sm" onclick="removeInstrument();"><span class="glyphicon glyphicon-arrow-left"></span></button></div>
         </div>
         <div class="col-sm-5">
-            <div class="label label-default">Selected Instruments</div>
-            @Html.ListBox("lstSelectedInstruments", @Model.SelectedInstruments, new { @class = "form-control", @onclick = "enableButtons()" })
+            <div class="label label-default">Assigned Instruments</div>
+            @Html.ListBox("lstAssignedInstruments", @Model.AssignedInstruments, new { @class = "form-control", @onclick = "enableButtons()" })
         </div>
     </div>
 </div>

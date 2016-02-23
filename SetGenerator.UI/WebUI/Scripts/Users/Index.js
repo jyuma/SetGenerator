@@ -216,6 +216,34 @@
                     });
                 };
 
+                self.showUserBandEditDialog = function (row) {
+                    var id = (typeof row.id !== "undefined" ? row.id : 0);
+                    var title = "<span class='glyphicon glyphicon-pencil'></span>";
+                    var message;
+
+                    title = title + " Add/Remove Bands";
+                    var user = self.getUser(id);
+                    self.selectedUser(user);
+
+                    $.ajax({
+                        type: "GET",
+                        async: false,
+                        url: site.url + "Users/GetUserBandEditView/" + id,
+                        success: function (data) {
+                            message = data;
+                        }
+                    });
+
+                    dialog.custom.showModal({
+                        title: title,
+                        message: message,
+                        callback: function () {
+                            return self.saveUserBands();
+                        },
+                        width: 500
+                    });
+                };
+
                 self.getUser = function (userid) {
                     var user = null;
 
@@ -253,6 +281,19 @@
                         Email: email,
                         IsDisabled: isdisabled,
                         DefaultBandId: (defaultbandid.length > 0) ? defaultbandid : 0
+                    };
+                };
+
+                self.getUserBandDetailFromDialog = function () {
+                    var opts = $("#lstAssignedBands").find("option");
+                    var ids = [];
+
+                    opts.each(function (index, value) {
+                        ids.push(value.value);
+                    });
+
+                    return {
+                        UserId: self.selectedUser().id, BandIds: ids
                     };
                 };
 
@@ -314,6 +355,40 @@
                                     $("#validation-container").append(html);
                                 }
                                 result = false;
+                            }
+                            $("body").css("cursor", "default");
+                        }
+                    });
+
+                    return result;
+                };
+
+                self.saveUserBands = function () {
+                    var userBandDetail = self.getUserBandDetailFromDialog();
+                    var jsonData = JSON.stringify(userBandDetail);
+                    var result;
+
+                    $("body").css("cursor", "wait");
+
+                    $.ajax({
+                        type: "POST",
+                        async: false,
+                        url: site.url + "Users/SaveUserBands/",
+                        data: { userBandDetail: jsonData },
+                        dataType: "json",
+                        traditional: true,
+                        failure: function () {
+                            $("body").css("cursor", "default");
+                        },
+                        success: function (data) {
+                            if (data.Success) {
+                                lists.UserList = data.UserList;
+                                lists.DefaultBandArrayList = data.DefaultBandArrayList;
+                                createUserArray(lists.UserList);
+                                self.selectedUser(self.getUser(data.SelectedId));
+                                self.sort({ afterSave: true });
+                                self.highlightRow(self.selectedUser());
+                                result = true;
                             }
                             $("body").css("cursor", "default");
                         }

@@ -277,7 +277,7 @@
                 };
 
                 self.getMemberInstrumentDetailFromDialog = function () {
-                    var opts = $("#lstSelectedInstruments").find("option");
+                    var opts = $("#lstAssignedInstruments").find("option");
                     var ids = [];
 
                     opts.each(function (index, value) {
@@ -379,8 +379,8 @@
                 };
 
                 self.saveMemberInstruments = function () {
-                    var memberInstrumentdetail = self.getMemberInstrumentDetailFromDialog();
-                    var jsonData = JSON.stringify(memberInstrumentdetail);
+                    var memberInstrumentDetail = self.getMemberInstrumentDetailFromDialog();
+                    var jsonData = JSON.stringify(memberInstrumentDetail);
                     var result;
 
                     $("body").css("cursor", "wait");
@@ -389,7 +389,7 @@
                         type: "POST",
                         async: false,
                         url: site.url + "Bands/SaveMemberInstruments/",
-                        data: { memberInstrumentdetail: jsonData },
+                        data: { memberInstrumentDetail: jsonData },
                         dataType: "json",
                         traditional: true,
                         failure: function () {

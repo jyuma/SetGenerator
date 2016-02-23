@@ -1,8 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using SetGenerator.Domain.Entities;
 using NHibernate;
 
@@ -79,20 +77,45 @@ namespace SetGenerator.Data.Repositories
 
         public int AddRemoveMemberInstruments(int memberId, int[] instrumentIds)
         {
+            int id = 0;
             var member = Session.QueryOver<Member>().Where(x => x.Id == memberId).SingleOrDefault();
             var existingIds = member.MemberInstruments.Select(x => x.Instrument.Id).ToArray();
 
             var addIds = instrumentIds
                 .Select(x => x)
-                .Where(x => !existingIds.Contains(x));
+                .Where(x => !existingIds.Contains(x))
+                .ToArray();
 
-            var id = AddMemberInstruments(member, addIds);
-
+            if (addIds.Any())
+                id = AddMemberInstruments(member, addIds);
+            
             var removeIds = existingIds
                 .Select(x => x)
-                .Where(x => !instrumentIds.Contains(x));
+                .Where(x => !instrumentIds.Contains(x))
+                .ToArray();
 
+            if (!removeIds.Any()) return id;
+            
             RemoveMemberInstruments(member, removeIds);
+
+            var songMemberInstruments = Session.QueryOver<SongMemberInstrument>()
+                .Where(x => x.Member.Id == memberId)
+                .List()
+                .Where(x => removeIds.Contains(x.Instrument.Id));
+
+            foreach (var songMemberInstrument in songMemberInstruments)
+            {
+                var smi = songMemberInstrument;
+                var song = Session.QueryOver<Song>().Where(x => x.Id == smi.Song.Id).SingleOrDefault();
+                song.SongMemberInstruments.Remove(smi);
+
+                using (var transaction = Session.BeginTransaction())
+                {
+                    Session.Delete(songMemberInstrument);
+                    transaction.Commit();
+                }
+            }
+            
 
             return id;
         }

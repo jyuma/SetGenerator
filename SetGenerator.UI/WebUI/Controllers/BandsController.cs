@@ -21,7 +21,6 @@ namespace SetGenerator.WebUI.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IBandRepository _bandRepository;
         private readonly ISongRepository _songRepository;
-        private readonly ISetSongRepository _setSongRepository;
         private readonly IMemberRepository _memberRepository;
         private readonly IInstrumentRepository _instrumentRepository;
         private readonly IValidationRules _validationRules;
@@ -31,7 +30,6 @@ namespace SetGenerator.WebUI.Controllers
         public BandsController( IUserRepository userRepository,
                                 IBandRepository bandRepository,
                                 ISongRepository songRepository,
-                                ISetSongRepository setSongRepository,
                                 IMemberRepository memberRepository,
                                 IInstrumentRepository instrumentRepository,
                                 IValidationRules validationRules,
@@ -40,7 +38,6 @@ namespace SetGenerator.WebUI.Controllers
             _userRepository = userRepository;
             _bandRepository = bandRepository;
             _songRepository = songRepository;
-            _setSongRepository = setSongRepository;
             _memberRepository = memberRepository;
             _instrumentRepository = instrumentRepository;
             _validationRules = validationRules;
@@ -258,8 +255,7 @@ namespace SetGenerator.WebUI.Controllers
             var user = _currentUser;
             var userBands = GetUserBandSelectList();
 
-            Session["Bands"] = null;
-            Session["BandId"] = null;
+            Session["Bands"] = null;            
 
             if (userBands.Any())
             {
@@ -423,7 +419,6 @@ namespace SetGenerator.WebUI.Controllers
 
             List<string> msgs;
             
-
             if (memberId > 0)
             {
                 msgs = ValidateMember(m.FirstName, m.LastName, m.Alias, false);
@@ -532,7 +527,7 @@ namespace SetGenerator.WebUI.Controllers
 
             var vm = new MemberInstrumentEditViewModel
             {
-                SelectedInstruments =
+                AssignedInstruments =
                     new SelectList(
                         memberInstruments
                         .Select(x => new

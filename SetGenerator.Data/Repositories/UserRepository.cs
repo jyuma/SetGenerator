@@ -11,8 +11,9 @@ namespace SetGenerator.Data.Repositories
         User GetByUserName(string uname);
         IList<UserPreferenceTableColumn> GetTableColumnsByBandId(int userId, int tableId, int? bandId);
         IList<UserPreferenceTableMember> GetTableMembersByBandId(int userId, int tableId, int bandId);
-        IList<UserBand> GetUserBands(string uname);
-        ArrayList GetDefaultBandArrayList(int userId);
+        IList<UserBand> GetUserBands(int  userId);
+        ArrayList GetDefaultBandArrayList();
+        int AddRemoveUserBands(int userId, int[] bandIds);
 
         // UserBand
         int AddUserBand(int userId, int bandId);
@@ -87,23 +88,20 @@ namespace SetGenerator.Data.Repositories
             return list;
         }
 
-        public IList<UserBand> GetUserBands(string uname)
+        public IList<UserBand> GetUserBands(int userId)
         {
-            if (uname.Length == 0) return null;
-
-            var user = GetByUserName(uname);
-
             var list = Session.QueryOver<User>()
-                .Where(x => x.Id == user.Id)
-                .SingleOrDefault()
-                .UserBands;
+                .Where(x => x.Id == userId)
+                .SingleOrDefault().UserBands
+                .OrderBy(o => o.Band.Name)
+                .ToArray();
 
             return list;
         }
 
-        public ArrayList GetDefaultBandArrayList(int userId)
+        public ArrayList GetDefaultBandArrayList()
         {
-            var bands = GetDefaultUserBands(userId);
+            var bands = GetDefaultUserBands();
             var al = new ArrayList();
 
             foreach (var b in bands)
@@ -112,23 +110,105 @@ namespace SetGenerator.Data.Repositories
             return al;
         }
 
-        private Dictionary<int, string> GetDefaultUserBands(int userId)
+        private Dictionary<int, string> GetDefaultUserBands()
         {
-            Member bandTableAlias = null;
-
-            return Session.QueryOver<User>()
-                .Where(x => x.DefaultBand != null)
-                .JoinAlias(x => x.DefaultBand, () => bandTableAlias)
-                .Where(x => x.DefaultBand.Id == bandTableAlias.Id)
+            var userBands = Session.QueryOver<User>()
                 .List()
+                .Select(x => x.DefaultBand)
+                .Where(x => x != null)
+                .OrderBy(o => o.Name)
+                .Distinct();
+
+            return userBands
                 .Select(x => new
                 {
-                    x.DefaultBand.Id,
-                    x.DefaultBand.Name
+                    x.Id,
+                    x.Name
                 })
-                .Distinct()
                 .OrderBy(o => o.Name)
                 .ToDictionary(x => x.Id, y => y.Name);
+        }
+
+        public int AddRemoveUserBands(int userId, int[] bandIds)
+        {
+            int id = 0;
+            var user = Session.QueryOver<User>().Where(x => x.Id == userId).SingleOrDefault();
+            var existingIds = user.UserBands.Select(x => x.Band.Id).ToArray();
+
+            var addIds = bandIds
+                .Select(x => x)
+                .Where(x => !existingIds.Contains(x))
+                .ToArray();
+
+            if (addIds.Any())
+                id = AddUserBands(user, addIds);
+
+            var removeIds = existingIds
+                .Select(x => x)
+                .Where(x => !bandIds.Contains(x))
+                .ToArray();
+
+            if (!removeIds.Any()) return id;
+
+            RemoveUserBands(user, removeIds);
+
+            if (user.DefaultBand != null)
+            {
+                if (removeIds.Contains(user.DefaultBand.Id))
+                {
+                    user.DefaultBand = null;
+                    Session.Update(user);
+                }
+            }
+
+            return id;
+        }
+
+        private int AddUserBands(User user, IEnumerable<int> bandIds)
+        {
+            var result = 0;
+
+            foreach (var id in bandIds)
+            {
+                var idLocal = id;
+                var band = Session.QueryOver<Band>()
+                    .Where(x => x.Id == idLocal)
+                    .SingleOrDefault();
+
+                var userBand = new UserBand
+                {
+                    User = user,
+                    Band = band
+                };
+                
+                using (var transaction = Session.BeginTransaction())
+                {
+                    result = (int) Session.Save(userBand);
+                    transaction.Commit();
+                }
+
+                AddUserPreferenceTableColumns(user.Id, idLocal);
+                AddUserPreferenceTableMembers(user.Id, idLocal);
+            }
+
+            return result;
+        }
+
+        private void RemoveUserBands(User user, IEnumerable<int> bandIds)
+        {
+            foreach (var userBand in bandIds
+                .Select(removeIdLocal => user.UserBands
+                .SingleOrDefault(x => x.Band.Id == removeIdLocal)))
+            {
+                user.UserBands.Remove(userBand);
+                using (var transaction = Session.BeginTransaction())
+                {
+                    Session.Delete(userBand);
+                    transaction.Commit();
+                }
+                DeleteUserPreferenceTableColumns(user.Id, userBand.Band.Id);
+                DeleteUserPreferenceTableMembers(user.Id, userBand.Band.Id);
+            }
         }
 
         // UserBand
@@ -176,10 +256,15 @@ namespace SetGenerator.Data.Repositories
         public int AddUserPreferenceTableColumns(int userId, int bandId)
         {
             const int bandTableId = 1;
+            const int userTableId = 7;
             var id = 0;
+
             var user = Session.QueryOver<User>().Where(x => x.Id == userId).SingleOrDefault();
             var band = Session.QueryOver<Band>().Where(x => x.Id == bandId).SingleOrDefault();
-            var tableColumns = Session.QueryOver<TableColumn>().Where(x => x.Table.Id != bandTableId).List();
+            var tableColumns = Session.QueryOver<TableColumn>()
+                .Where(x => x.Table.Id != bandTableId)
+                .Where(x => x.Table.Id != userTableId)
+                .List();
 
             var userPreferenceTableColumns = tableColumns.Select(x => new
                 UserPreferenceTableColumn
@@ -266,6 +351,23 @@ namespace SetGenerator.Data.Repositories
             }
 
             return id;
+        }
+
+        private int AddUserPreferenceTableMembers(int userId, int bandId)
+        {
+            var result = -1;
+            
+            IList<int> memberIds = Session.QueryOver<Band>().Where(x => x.Id == bandId)
+                .SingleOrDefault()
+                .Members.Select(x => x.Id)
+                .ToArray();
+
+            foreach (var memberId in memberIds)
+            {
+                result = AddUserPreferenceTableMember(userId, memberId);
+            }
+
+            return result;
         }
 
         public void DeleteUserPreferenceTableMember(int userId, int memberId)

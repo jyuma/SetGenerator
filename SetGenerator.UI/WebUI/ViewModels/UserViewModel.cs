@@ -30,4 +30,16 @@ namespace SetGenerator.WebUI.ViewModels
         public bool Disabled { get; set; }
         public SelectList UserBands { get; set; }
     }
+
+    public class UserBandEditViewModel
+    {
+        public SelectList AssignedBands { get; set; }
+        public SelectList AvailableBands { get; set; }
+    }
+
+    public class UserBandDetail
+    {
+        public int UserId { get; set; }
+        public int[] BandIds { get; set; }
+    }
 }

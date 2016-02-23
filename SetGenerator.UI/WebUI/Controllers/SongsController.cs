@@ -266,7 +266,7 @@ namespace SetGenerator.WebUI.Controllers
                                     ? song.SongMemberInstruments.Any(x => x.Member.Id == m.Id) 
                                         ? song.SongMemberInstruments.Single(x => x.Member.Id == m.Id).Instrument.Id
                                         : 0
-                                    : m.DefaultInstrument.Id)
+                                    : (m.DefaultInstrument != null) ? m.DefaultInstrument.Id : 0)
                         })
                 };
 

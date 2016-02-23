@@ -32,7 +32,7 @@ namespace SetGenerator.WebUI.ViewModels
 
     public class MemberInstrumentEditViewModel
     {
-        public SelectList SelectedInstruments { get; set; }
+        public SelectList AssignedInstruments { get; set; }
         public SelectList AvailableInstruments { get; set; }
     }
 }

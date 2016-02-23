@@ -11,6 +11,7 @@
 @colourDanger: #b94a48;
 @colourWarning: #ED9C28;
 @colourSuccess: #47A447;
+@colourInfo: #5bc0de;
 @colourBanner: #e5e0e0;
 @colourGrey: #8b8a8a;
 @colourDragClass: #b5e2b5;
@@ -151,11 +152,15 @@ ul.dropdown-menu {
     color: @colourPrimary;
 }
 
+.glyphicon-user, .glyphicon-music, .glyphicon-briefcase {
+    color: @colourInfo;
+}
+
 .glyphicon-remove-sign, .glyphicon-remove {
     color: @colourDanger;
 }
 
-.glyphicon-transfer {
+.glyphicon-transfer, .glyphicon-list {
     color: @colourSuccess;
 }
 
@@ -283,12 +288,6 @@ table {
     }
     .col-date-gig {
         width: 100px;
-    }
-    .col-link-setlist {
-        width: 60px;
-    }
-    .col-link-sets {
-        width: 55px;
     }
     .col-small {
         width: 120px;

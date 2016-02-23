@@ -1,0 +1,67 @@
+﻿@model SetGenerator.WebUI.ViewModels.UserBandEditViewModel
+
+<script>
+    var lstAssignedBands = $("#lstAssignedBands");
+    var lstAvailableBands = $("#lstAvailableBands");
+    var btnAdd = $("#btnAdd");
+    var btnRemove = $("#btnRemove");
+
+    enableButtons();
+
+    function enableButtons() {
+        var selected = lstAssignedBands.val();
+        var available = lstAvailableBands.val();
+
+        if (available != null) {
+            btnAdd.removeAttr("disabled");
+        } else {
+            btnAdd.attr("disabled", "disabled");
+        }
+
+        if (selected != null) {
+            btnRemove.removeAttr("disabled");
+        } else {
+            btnRemove.attr("disabled", "disabled");
+        }
+    }
+
+    function addBand() {
+        var selectedAvailable = lstAvailableBands.find("option:selected");
+
+        selectedAvailable.each(function (index, value) {
+            lstAssignedBands.append($("<option>", { value: value.value, text: value.text }));
+            lstAvailableBands.find("option:selected").remove(index);
+        });
+
+        enableButtons();
+    }
+
+    function removeBand() {
+        var selectedAssigned = lstAssignedBands.find("option:selected");
+
+        selectedAssigned.each(function (index, value) {
+            lstAvailableBands.append($("<option>", { value: value.value, text: value.text }));
+            lstAssignedBands.find("option:selected").remove(index);
+        });
+
+        enableButtons();
+    }
+
+</script>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-5">
+            <div class="label label-default">Available Bands</div>
+            @Html.ListBox("lstAvailableBands", @Model.AvailableBands, new { @class = "form-control", @onclick = "enableButtons()" })
+        </div>
+        <div class="col-sm-2 move-buttons">
+            <div><button id="btnAdd" class="btn btn-default btn-sm" onclick="addBand();"><span class="glyphicon glyphicon-arrow-right"></span></button></div>
+            <div><button id="btnRemove" class="btn btn-default btn-sm" onclick="removeBand();"><span class="glyphicon glyphicon-arrow-left"></span></button></div>
+        </div>
+        <div class="col-sm-5">
+            <div class="label label-default">Selected Bands</div>
+            @Html.ListBox("lstAssignedBands", @Model.AssignedBands, new { @class = "form-control", @onclick = "enableButtons()" })
+        </div>
+    </div>
+</div>

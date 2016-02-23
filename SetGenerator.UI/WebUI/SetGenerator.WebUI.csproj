@@ -439,10 +439,9 @@
     <Content Include="Views\Bands\_MemberInstrumentEdit.cshtml" />
     <Content Include="Views\Users\Index.cshtml" />
     <Content Include="Views\Users\_UserEdit.cshtml" />
+    <Content Include="Views\Users\_UserBandEdit.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\Member\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="packages.config">
       <SubType>Designer</SubType>

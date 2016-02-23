@@ -112,11 +112,17 @@ ul.dropdown-menu li label {
 .glyphicon-pencil {
   color: #457bc5;
 }
+.glyphicon-user,
+.glyphicon-music,
+.glyphicon-briefcase {
+  color: #5bc0de;
+}
 .glyphicon-remove-sign,
 .glyphicon-remove {
   color: #b94a48;
 }
-.glyphicon-transfer {
+.glyphicon-transfer,
+.glyphicon-list {
   color: #47a447;
 }
 .glyphicon-trash {
@@ -219,12 +225,6 @@ table .col-glyphicon {
 }
 table .col-date-gig {
   width: 100px;
-}
-table .col-link-setlist {
-  width: 60px;
-}
-table .col-link-sets {
-  width: 55px;
 }
 table .col-small {
   width: 120px;

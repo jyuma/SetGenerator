@@ -67,7 +67,7 @@ namespace SetGenerator.WebUI.Controllers
 
         private ICollection GetUserBandSelectList(MyUser user)
         {
-            var bands = _account.GetUserBands(user.UserName);
+            var bands = _account.GetUserBands((int)user.Id);
 
             var result = bands
                 .Select(x => new 

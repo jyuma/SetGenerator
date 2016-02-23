@@ -28,7 +28,7 @@ namespace SetGenerator.Service
         List<string> ValidateProfile(string username, string email);
         List<string> ValidateRegister(string username, string email, string password, string confirmPassword);
         List<string> ValidateChangePassword(string password, string confirmPassword);
-        IList<UserBand> GetUserBands(string uname);
+        IList<UserBand> GetUserBands(int userId);
     }
 
     public class Account : IAccount
@@ -143,9 +143,9 @@ namespace SetGenerator.Service
             return -1;
         }
 
-        public IList<UserBand> GetUserBands(string uname = null)
+        public IList<UserBand> GetUserBands(int userId)
         {
-            return _userRepository.GetUserBands(uname);
+            return _userRepository.GetUserBands(userId);
         }
 
         private IList<UserPreferenceTableColumn> GetUserPreferenceTableColumns()
