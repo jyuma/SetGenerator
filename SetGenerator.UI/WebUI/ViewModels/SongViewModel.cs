@@ -18,6 +18,7 @@ namespace SetGenerator.WebUI.ViewModels
         public int TempoId { get; set; }
         public string UserUpdate { get; set; }
         public string DateUpdate { get; set; }
+        public bool IsSetSong { get; set; }
         public IEnumerable<SongMemberInstrumentDetail> SongMemberInstrumentDetails { get; set; }
     }
 

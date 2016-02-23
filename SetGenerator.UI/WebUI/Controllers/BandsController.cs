@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Web.Mvc;
+using NHibernate.Util;
+using ServiceStack.Text;
 using SetGenerator.Data.Repositories;
 using SetGenerator.Domain.Entities;
 using SetGenerator.WebUI.Common;
@@ -18,6 +20,8 @@ namespace SetGenerator.WebUI.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly IBandRepository _bandRepository;
+        private readonly ISongRepository _songRepository;
+        private readonly ISetSongRepository _setSongRepository;
         private readonly IMemberRepository _memberRepository;
         private readonly IInstrumentRepository _instrumentRepository;
         private readonly IValidationRules _validationRules;
@@ -26,6 +30,8 @@ namespace SetGenerator.WebUI.Controllers
 
         public BandsController( IUserRepository userRepository,
                                 IBandRepository bandRepository,
+                                ISongRepository songRepository,
+                                ISetSongRepository setSongRepository,
                                 IMemberRepository memberRepository,
                                 IInstrumentRepository instrumentRepository,
                                 IValidationRules validationRules,
@@ -33,6 +39,8 @@ namespace SetGenerator.WebUI.Controllers
         {
             _userRepository = userRepository;
             _bandRepository = bandRepository;
+            _songRepository = songRepository;
+            _setSongRepository = setSongRepository;
             _memberRepository = memberRepository;
             _instrumentRepository = instrumentRepository;
             _validationRules = validationRules;
@@ -191,9 +199,22 @@ namespace SetGenerator.WebUI.Controllers
         [HttpPost]
         public JsonResult Delete(int id)
         {
+            _songRepository.DeleteBandSetlistSongs(id);
+            _songRepository.DeleteBandSongs(id);
             _userRepository.DeleteUserPreferenceTableColumns(_currentUser.Id, id);
             _userRepository.DeleteUserPreferenceTableMembers(_currentUser.Id, id);
             _userRepository.DeleteUserBand(_currentUser.Id, id);
+
+            if (_currentUser.DefaultBand != null)
+            {
+                if (_currentUser.DefaultBand.Id == id)
+                {
+                    var user = _userRepository.Get(_currentUser.Id);
+                    user.DefaultBand = null;
+                    _userRepository.Update(user);
+                }
+            }
+
             _bandRepository.Delete(id);
 
             ReloadUserBands(id, false, true);
@@ -235,11 +256,22 @@ namespace SetGenerator.WebUI.Controllers
         private void ReloadUserBands( int bandId, bool isAdded, bool isDeleted = false)
         {
             var user = _currentUser;
-            Session["Bands"] = GetUserBandSelectList();
+            var userBands = GetUserBandSelectList();
+
+            Session["Bands"] = null;
+            Session["BandId"] = null;
+
+            if (userBands.Any())
+            {
+                Session["Bands"] = userBands;
+            }
 
             if (isDeleted)
             {
-                Session["BandId"] = user.DefaultBand.Id;
+                if (user.DefaultBand != null)
+                {
+                    Session["BandId"] = user.DefaultBand.Id;
+                }
             }
             else if (isAdded)
             {
@@ -288,7 +320,6 @@ namespace SetGenerator.WebUI.Controllers
 
             _bandRepository.Update(band);
         }
-
 
         // Members
         [Route("{id}/Members/")]

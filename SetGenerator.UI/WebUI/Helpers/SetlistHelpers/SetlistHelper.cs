@@ -49,26 +49,25 @@ namespace SetGenerator.WebUI.Helpers.SetlistHelpers
                         break;
                     }
 
-                    case Constants.Band.TheBeadles:
-                    {
-                        setSongs = Slugfest.Generate(numSets, numSetSongs, songs);
-                        break;
-                    }
-
                     case Constants.Band.StetsonBrothers:
                     {
                         setSongs = StetsonBrothers.Generate(numSets, numSetSongs, songs);
                         break;
                     }
+                    
+                    default:
+                    {
+                        setSongs = Default.Generate(numSets, numSetSongs, songs);
+                        break;
+                    }
                 }
 
-                if (setSongs != null)
+                if (setSongs == null) return setlist;
+
+                foreach (var setSong in setSongs)
                 {
-                    foreach (var setSong in setSongs)
-                    {
-                        setSong.Setlist = setlist;
-                        setlist.SetSongs.Add(setSong);
-                    }
+                    setSong.Setlist = setlist;
+                    setlist.SetSongs.Add(setSong);
                 }
             }
 

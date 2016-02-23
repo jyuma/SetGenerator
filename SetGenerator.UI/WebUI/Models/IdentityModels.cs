@@ -11,7 +11,7 @@ namespace SetGenerator.WebUI.Models
         public DateTime DateRegistered { get; set; }
         public string IPAddress { get; set; }
         public string BrowserInfo { get; set; }
-        public int DefaultBandId { get; set; }
+        public int? DefaultBandId { get; set; }
     }
 
     public class MyUserRole : IdentityUserRole<long> { }

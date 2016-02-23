@@ -46,7 +46,9 @@ namespace SetGenerator.WebUI.Helpers.SetlistHelpers.Algorithms
 
             Container.NumSets = numSets;
             Container.NumSongsPerSet = numSongsPerSet;
-            Container.DefaultSingerId = _masterSongList.First().Band.DefaultSinger.Id;
+            Container.DefaultSingerId = _masterSongList.First().Band.DefaultSinger != null
+                                ? _masterSongList.First().Band.DefaultSinger.Id
+                                : 0;
             Container.IsNewSet = false;
             Container.LastSong = null;
             Container.LastKeyId = 0;

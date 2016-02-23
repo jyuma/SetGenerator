@@ -7,7 +7,7 @@ using SetGenerator.Service;
 
 namespace SetGenerator.WebUI.Helpers.SetlistHelpers.Algorithms
 {
-    public static class StetsonBrothers
+    public static class Default
     {
         private static IEnumerable<Song> _masterSongList;
         private static ICollection<SetSong> _setSongs;
@@ -38,12 +38,11 @@ namespace SetGenerator.WebUI.Helpers.SetlistHelpers.Algorithms
         public static IEnumerable<SetSong> Generate(int numSets, int numSongsPerSet, IEnumerable<Song> songs)
         {
             _masterSongList = songs.ToArray();
-            
             Container.NumSets = numSets;
             Container.NumSongsPerSet = numSongsPerSet;
             Container.DefaultSingerId = _masterSongList.First().Band.DefaultSinger != null
-                                ? _masterSongList.First().Band.DefaultSinger.Id
-                                : 0;
+                                            ? _masterSongList.First().Band.DefaultSinger.Id
+                                            : 0;
             Container.IsNewSet = false;
             Container.KeyCount = 1;
             Container.LastKeyId = 0;
@@ -172,7 +171,7 @@ namespace SetGenerator.WebUI.Helpers.SetlistHelpers.Algorithms
             return ApplyRules();
         }
 
-        private static Song  GetMiddle()
+        private static Song GetMiddle()
         {
             return ApplyRules();
         }
@@ -194,7 +193,7 @@ namespace SetGenerator.WebUI.Helpers.SetlistHelpers.Algorithms
                 numAttempts++;
                 var idx = rnd.Next(0, maxIds);
 
-                song = eligibleSongs[eligibleIds[idx]]; 
+                song = eligibleSongs[eligibleIds[idx]];
 
                 // apply rules in order of preference
                 if ((Container.LastKeyId != song.Key.Id)
@@ -261,7 +260,7 @@ namespace SetGenerator.WebUI.Helpers.SetlistHelpers.Algorithms
                     break;
                 }
             }
-            return song; 
+            return song;
         }
     }
 }

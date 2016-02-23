@@ -22,18 +22,21 @@ namespace SetGenerator.WebUI.Controllers
 
         private readonly IBandRepository _bandRepository;
         private readonly ISongRepository _songRepository;
+        private readonly ISetlistRepository _setlistRepository;
         private readonly IInstrumentRepository _instrumentRepository;
         private readonly IValidationRules _validationRules;
         private readonly CommonSong _common;
 
         public SongsController( IBandRepository bandRepository, 
-                                ISongRepository songRepository, 
+                                ISongRepository songRepository,
+                                ISetlistRepository setlistRepository, 
                                 IInstrumentRepository instrumentRepository,
                                 IValidationRules validationRules, 
                                 IAccount account)
         {
             _bandRepository = bandRepository;
             _songRepository = songRepository;
+            _setlistRepository = setlistRepository;
             _instrumentRepository = instrumentRepository;
             _validationRules = validationRules;
             var currentUserName = GetCurrentSessionUser();
@@ -127,8 +130,14 @@ namespace SetGenerator.WebUI.Controllers
             var songs = _songRepository.GetByBandId(bandId)
                 .ToArray();
 
-            var list = songs.Select(
-                x => new SongDetail
+            var setlists = _setlistRepository.GetByBandId(bandId);
+            var setSongs = setlists.SelectMany(x => x.SetSongs);
+
+            var list = songs
+                .GroupJoin(setSongs, song => song.Id, setsong => setsong.Song.Id,
+                (x, ss) => 
+                
+                new SongDetail
                 {
                     Id = x.Id,
                     Title = x.Title,
@@ -150,6 +159,7 @@ namespace SetGenerator.WebUI.Controllers
                     Disabled = x.IsDisabled,
                     NeverClose = x.NeverClose,
                     NeverOpen = x.NeverOpen,
+                    IsSetSong = ss.Any(),
                     SongMemberInstrumentDetails = x.SongMemberInstruments.Select(y => 
                     new SongMemberInstrumentDetail
                     {
@@ -200,7 +210,7 @@ namespace SetGenerator.WebUI.Controllers
 
                 KeyNames = new SelectList(
                     _songRepository.GetKeyNameArrayList(), 
-                    "Value", "Display", (song != null) ? song.Key.Id : 0),
+                    "Value", "Display", (song != null) ? song.Key.KeyName.Id : 0),
 
                 MajorMinor = new SelectList(new Collection<object>
                 {

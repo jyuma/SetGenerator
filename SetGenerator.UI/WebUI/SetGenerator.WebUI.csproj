@@ -260,6 +260,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\SetlistHelpers\Algorithms\Default.cs" />
     <Compile Include="Helpers\SetlistHelpers\Algorithms\Slugfest.cs" />
     <Compile Include="Helpers\SetlistHelpers\Algorithms\StetsonBrothers.cs" />
     <Compile Include="Models\AccountViewModels.cs" />

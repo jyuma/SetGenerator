@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using SetGenerator.Domain.Entities;
 using NHibernate;
@@ -13,6 +14,9 @@ namespace SetGenerator.Data.Repositories
         IEnumerable<Song> GetByBandId(int bandId);
         IEnumerable<string> GetComposerList(int bandId);
         IEnumerable<SongMemberInstrument> GetMemberInstrumentList(int id);
+
+        void DeleteBandSongs(int bandId);
+        void DeleteBandSetlistSongs(int bandId);
 
         // Key
         Key GetKey(int keyId);
@@ -84,6 +88,64 @@ namespace SetGenerator.Data.Repositories
                 .ToList();
 
             return list;
+        }
+
+        public void DeleteBandSongs(int bandId)
+        {
+            var songs = Session.QueryOver<Song>()
+                .Where(x => x.Band.Id == bandId)
+                .List();
+
+            foreach (var song in songs)
+            {
+                using (var transaction = Session.BeginTransaction())
+                {
+                    Session.Delete(song);
+                    transaction.Commit();
+                }
+            }
+        }
+
+        public void DeleteBandSetlistSongs(int bandId)
+        {
+            DeleteBandSetSongs(bandId);
+            DeleteBandSetlists(bandId);
+        }
+
+        private void DeleteBandSetlists(int bandId)
+        {
+            var setlists = Session.QueryOver<Setlist>()
+                .Where(x => x.Band.Id == bandId)
+                .List();
+
+            foreach (var setlist in setlists)
+            {
+                using (var transaction = Session.BeginTransaction())
+                {
+                    Session.Delete(setlist);
+                    transaction.Commit();
+                }
+            }
+        }
+
+        private void DeleteBandSetSongs(int bandId)
+        {
+            Member songTableAlias = null;
+
+            var setSongs = Session.QueryOver<SetSong>()
+                .JoinAlias(x => x.Song, () => songTableAlias)
+                .Where(x => x.Song.Id == songTableAlias.Id)
+                .Where(x => songTableAlias.Band.Id == bandId)
+                .List();
+
+            foreach (var setSong in setSongs)
+            {
+                using (var transaction = Session.BeginTransaction())
+                {
+                    Session.Delete(setSong);
+                    transaction.Commit();
+                }
+            }
         }
 
         // Key

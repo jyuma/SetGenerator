@@ -59,7 +59,7 @@
                 self.name = detail.Name + self.sharpflatnatdesc + (detail.MajorMinor === 1 ? "m" : "");
             }
 
-            function Song(id, title, keydetail, singerid, genreid, tempoid, composer, neverclose, neveropen, disabled, updateuser, updatedate, instrumentmemberdetails) {
+            function Song(id, title, keydetail, singerid, genreid, tempoid, composer, neverclose, neveropen, disabled, updateuser, updatedate, issetsong, instrumentmemberdetails) {
                 var self = this;
 
                 self.id = id;
@@ -81,6 +81,7 @@
                 self.key = self.keydetail.name;
                 self.updateuser = updateuser;
                 self.updatedate = updatedate;
+                self.issetsong = issetsong;
 
                 self.memberInstruments = [];
 
@@ -180,7 +181,7 @@
                 });
 
                 function pushSong(value) {
-                    self.songs.push(new Song(value.Id, value.Title, value.KeyDetail, value.SingerId, value.GenreId, value.TempoId, value.Composer, value.NeverClose, value.NeverOpen, value.Disabled, value.UserUpdate, value.DateUpdate, value.SongMemberInstrumentDetails));
+                    self.songs.push(new Song(value.Id, value.Title, value.KeyDetail, value.SingerId, value.GenreId, value.TempoId, value.Composer, value.NeverClose, value.NeverOpen, value.Disabled, value.UserUpdate, value.DateUpdate, value.IsSetSong, value.SongMemberInstrumentDetails));
                 };
 
                 self.sort = function (header) {
