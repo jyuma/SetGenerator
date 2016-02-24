@@ -206,7 +206,7 @@
                     dialog.custom.showModal({
                         title: title,
                         message: message,
-                        focusElement: "txtName",
+                        focusElement: "txtUserName",
                         callback: function () {
                             $("#validation-container").html("");
                             $("#validation-container").hide();
@@ -272,12 +272,14 @@
                 self.getUserDetailFromDialog = function () {
                     var username = $.trim($("#txtUserName").val());
                     var email = $.trim($("#txtEmail").val());
+                    var password = $.trim($("#txtPassword").val());
                     var isdisabled = $("#chkDisabled").is(":checked");
                     var defaultbandid = $.trim($("#ddlUserBands").val());
 
                     return {
                         Id: self.selectedUser().id,
                         UserName: username,
+                        Password: password,
                         Email: email,
                         IsDisabled: isdisabled,
                         DefaultBandId: (defaultbandid.length > 0) ? defaultbandid : 0

@@ -18,11 +18,14 @@
     {
         @Html.AntiForgeryToken()
 
-        if (@Session["Bands"] != null)
-         {
-            <span class="band-dropdown">
-                @Html.DropDownList("ddlUserBand", new SelectList((IEnumerable)@Session["Bands"], "Id", "Name", @Session["BandId"]), @Session["BandId"])
+        if (Session["Bands"] != null)
+        {
+            if (((ICollection) Session["Bands"]).Count > 0)
+            {
+                <span class="band-dropdown">
+                @Html.DropDownList("ddlUserBand", new SelectList((IEnumerable) @Session["Bands"], "Id", "Name", @Session["BandId"]), @Session["BandId"])
             </span>
+            }
         }
         <text><strong>
                 @if (User.Identity.GetUserName() == "admin")
@@ -42,6 +45,5 @@
 }
 else
 {
-    @*@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new {id = "registerLink"})*@
     @Html.ActionLink("Sign In", "Login", "Account")
 }

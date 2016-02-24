@@ -3,7 +3,6 @@ using System.Collections;
 using SetGenerator.Data.Repositories;
 using SetGenerator.Domain.Entities;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography;
@@ -15,7 +14,7 @@ namespace SetGenerator.Service
     public interface IAccount
     {
         User Login(string userName, string password);
-        long CreateUser(string username, string email, string password, int bandId, string ip, string browser);
+        long CreateUser(string username, string email, string password, string ip, string browser);
         void DeleteUser(int id);
         void UpdateUserDisabled(string uname, bool disabled);
         IList<UserPreferenceTableColumn> GetTableColumnsByBandId(int userId, int tableId, int? bandId);
@@ -33,17 +32,14 @@ namespace SetGenerator.Service
 
     public class Account : IAccount
     {
-        private const int DefaultBandId = 1;  // Default to 1 for now
         private readonly IUserRepository _userRepository;
         private readonly ITableColumnRepository _tableColumnRepository;
-        private readonly IMemberRepository _memberRepository;
         private bool _invalid;
 
-        public Account(IUserRepository userRepository, ITableColumnRepository tableColumnRepository, IMemberRepository memberRepository)
+        public Account(IUserRepository userRepository, ITableColumnRepository tableColumnRepository)
         {
             _userRepository = userRepository;
             _tableColumnRepository = tableColumnRepository;
-            _memberRepository = memberRepository;
         }
 
         public User Login(string username, string password)
@@ -123,7 +119,7 @@ namespace SetGenerator.Service
             _userRepository.Update(u);
         }
 
-        public long CreateUser(string username, string email, string password, int bandId, string ip, string browser)
+        public long CreateUser(string username, string email, string password, string ip, string browser)
         {
             var u = new User
                 {
@@ -133,14 +129,13 @@ namespace SetGenerator.Service
                     IPAddress = ip,
                     BrowserInfo = browser,
                     DateRegistered = DateTime.Now,
-                    UserPreferenceTableColumns = GetUserPreferenceTableColumns(),
-                    UserPreferenceTableMembers = GetUserPreferenceTableMembers(bandId),
                     IsDisabled = false
                 };
-            _userRepository.Add(u);
-            u = GetUserByUserName(username);
-            if (u != null) return u.Id;
-            return -1;
+
+            var userPreferenceTableColumns = GetStartupUserPreferenceTableColumns(u);
+            u.UserPreferenceTableColumns = userPreferenceTableColumns;
+
+            return _userRepository.Add(u);
         }
 
         public IList<UserBand> GetUserBands(int userId)
@@ -148,35 +143,17 @@ namespace SetGenerator.Service
             return _userRepository.GetUserBands(userId);
         }
 
-        private IList<UserPreferenceTableColumn> GetUserPreferenceTableColumns()
+        private IList<UserPreferenceTableColumn> GetStartupUserPreferenceTableColumns(User u)
         {
-            var columns = _tableColumnRepository.GetAll();
+            var columns = _tableColumnRepository.GetAll()
+                .Where(x => x.Table.Id == Constants.UserTable.BandId);
 
             return columns.Select(c => new UserPreferenceTableColumn
                                            {
+                                               User = u,
                                                TableColumn = c, 
                                                IsVisible = true
                                            }).ToList();
-        }
-
-        private IList<UserPreferenceTableMember> GetUserPreferenceTableMembers(int bandId)
-        {
-            var members = _memberRepository.GetAll()
-                .Where(x => x.Band.Id == bandId)
-                .ToList();
-
-            var list = members.Select(m => new UserPreferenceTableMember
-                                               {
-                                                   Table = _tableColumnRepository.GetTable(Constants.UserTable.SongId), 
-                                                   Member = m, IsVisible = true
-                                               }).ToList();
-
-            list.AddRange(members.Select(m => new UserPreferenceTableMember
-                                                  {
-                                                      Table = _tableColumnRepository.GetTable(Constants.UserTable.SetId), 
-                                                      Member = m, IsVisible = true
-                                                  }));
-            return list;
         }
 
         public User GetUserByUserName(string username)
@@ -256,7 +233,7 @@ namespace SetGenerator.Service
 
         public void DeleteUser(int id)
         {
-            _userRepository.Delete(id);
+            _userRepository.DeleteUser(id);
         }
 
         //public bool IsAdminAccessDenied(string ipAddress)

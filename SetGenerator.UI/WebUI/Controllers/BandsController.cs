@@ -72,7 +72,9 @@ namespace SetGenerator.WebUI.Controllers
 
         private IEnumerable<BandDetail> GetBandList()
         {
-            var bandList = _bandRepository.GetAll();
+            var bandList = _userRepository
+                .GetUserBands(_currentUser.Id)
+                .Select(x => x.Band);
 
             var result = bandList.Select(band => new BandDetail
             {

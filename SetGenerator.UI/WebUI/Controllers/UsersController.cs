@@ -1,30 +1,37 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Newtonsoft.Json;
 using SetGenerator.Service;
 using SetGenerator.WebUI.ViewModels;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net;
 using System.Web.Mvc;
 using SetGenerator.Data.Repositories;
 using SetGenerator.Domain.Entities;
 using SetGenerator.WebUI.Common;
+using SetGenerator.WebUI.Models;
 
 namespace SetGenerator.WebUI.Controllers
 {
     [RoutePrefix("Users")]
     public class UsersController : Controller
     {
+        private readonly IAccount _account;
         private readonly IBandRepository _bandRepository;
         private readonly IUserRepository _userRepository;
         private readonly IValidationRules _validationRules;
         private readonly User _currentUser;
         private readonly CommonSong _common;
 
-        public UsersController( IBandRepository bandRepository,
+        public UsersController( IAccount account,
+                                IBandRepository bandRepository,
                                 IUserRepository userRepository,
-                                IValidationRules validationRules,
-                                IAccount account)
+                                IValidationRules validationRules)
         {
+            _account = account;
             _bandRepository = bandRepository;
             _userRepository = userRepository;
             _validationRules = validationRules;
@@ -34,6 +41,14 @@ namespace SetGenerator.WebUI.Controllers
                 _currentUser = account.GetUserByUserName(currentUserName);
             _common = new CommonSong(account, currentUserName);
         }
+
+
+        public UsersController(UserManager<MyUser, long> userManager)
+        {
+            UserManager = userManager;
+        }
+
+        public UserManager<MyUser, long> UserManager { get; private set; }
 
         [Authorize]
         public ActionResult Index(int? id)
@@ -50,7 +65,7 @@ namespace SetGenerator.WebUI.Controllers
             {
                 UserList = GetUserList(),
                 DefaultBandArrayList = _userRepository.GetDefaultBandArrayList(),
-                TableColumnList = _common.GetTableColumnList(_currentUser.Id, Constants.UserTable.UserId)
+                TableColumnList = _common.GetTableColumnList(_currentUser.Id, Service.Constants.UserTable.UserId)
             };
 
             return Json(vm, JsonRequestBehavior.AllowGet);
@@ -132,21 +147,22 @@ namespace SetGenerator.WebUI.Controllers
         [HttpPost]
         public JsonResult Save(string user)
         {
-            var b = JsonConvert.DeserializeObject<UserDetail>(user);
+            var u = JsonConvert.DeserializeObject<UserEditViewModel>(user);
             List<string> msgs;
-            var userId = b.Id;
+            var userId = 0;
 
-            if (userId > 0)
+            if (u.Id > 0)
             {
-                msgs = ValidateUser(b.UserName, false);
+                userId = u.Id;
+                msgs = ValidateUser(u.UserName, u.Password, u.Email, false);
                 if (msgs == null)
-                    UpdateUser(b);
+                    UpdateUser(u);
             }
             else
             {
-                msgs = ValidateUser(b.UserName, true);
+                msgs = ValidateUser(u.UserName, u.Password, u.Email, true);
                 if (msgs == null)
-                    userId = AddUser(b);
+                    userId = AddUser(u);
             }
 
             return Json(new
@@ -160,18 +176,15 @@ namespace SetGenerator.WebUI.Controllers
         }
 
         [HttpGet]
-        public List<string> ValidateUser(string username, bool addNew)
+        public List<string> ValidateUser(string username, string password, string email, bool addNew)
         {
-            return _validationRules.ValidateBand(username, addNew);
+            return _validationRules.ValidateUser(username, password, email, addNew);
         }
 
         [HttpPost]
         public JsonResult Delete(int id)
         {
-            _userRepository.DeleteUserPreferenceTableColumns(_currentUser.Id, id);
-            _userRepository.DeleteUserPreferenceTableMembers(_currentUser.Id, id);
-            _userRepository.DeleteUserBand(_currentUser.Id, id);
-            _userRepository.Delete(id);
+            _account.DeleteUser(id);
 
             return Json(new
             {
@@ -183,36 +196,43 @@ namespace SetGenerator.WebUI.Controllers
         [HttpPost]
         public JsonResult SaveColumns(string columns)
         {
-            _common.SaveColumns(columns, Constants.UserTable.UserId);
+            _common.SaveColumns(columns, Service.Constants.UserTable.UserId);
             return Json(JsonRequestBehavior.AllowGet);
         }
 
-        private int AddUser(UserDetail userDetail)
-        {            
-            var u = new User
+        private int AddUser(UserEditViewModel userDetail)
+        {
+            var user = new MyUser()
             {
                 UserName = userDetail.UserName,
-                Email = userDetail.UserName,
-                IsDisabled = userDetail.IsDisabled,
+                IPAddress = Request.ServerVariables["REMOTE_ADDR"],
+                BrowserInfo = Request.Browser.Type,
+                Email = userDetail.Email,
+                DateRegistered = DateTime.Now
             };
 
-            var id = _userRepository.Add(u);
-            //if (id <= 0) return id;
+            using (var userManager = new UserManager<MyUser, long>(
+                new UserStore<MyUser, MyRole, long, MyLogin, MyUserRole, MyClaim>(new ApplicationDbContext())))
+            {
+                var result = userManager.Create(user, userDetail.Password);
+                if (result == IdentityResult.Success)
+                {
+                    user = userManager.FindByName(userDetail.UserName);
+                    _userRepository.AssignStartupUserPreferenceTableColumns((int)user.Id);
+                }
+            }
 
-            //_userRepository.Add(_currentUser);
-            //_userRepository.AddUserPreferenceTableColumns(_currentUser.Id, id);
-
-            return id;
+            return (int)user.Id;
         }
 
-        private void UpdateUser(UserDetail userDetail)
+        private void UpdateUser(UserEditViewModel userDetail)
         {
             var user = _userRepository.Get(userDetail.Id);
 
             Band defaultBand = null;
-            if (userDetail.DefaultBandId > 0)
+            if ((int)userDetail.UserBands.SelectedValue > 0)
             {
-                defaultBand = _bandRepository.Get(userDetail.DefaultBandId);
+                defaultBand = _bandRepository.Get((int)userDetail.UserBands.SelectedValue);
             }
 
             if (user != null)
@@ -271,7 +291,7 @@ namespace SetGenerator.WebUI.Controllers
         public JsonResult SaveUserBands(string userBandDetail)
         {
             var detail = JsonConvert.DeserializeObject<UserBandDetail>(userBandDetail);
-            //var user = _userRepository.Get(detail.UserId);
+
             _userRepository.AddRemoveUserBands(detail.UserId, detail.BandIds);
 
             return Json(new

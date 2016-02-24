@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using SetGenerator.Data.Repositories;
 
 namespace SetGenerator.Service
@@ -8,7 +9,7 @@ namespace SetGenerator.Service
     public interface IValidationRules
     {
         // user
-        List<string> ValidateUser(string username, bool addNew);
+        List<string> ValidateUser(string username, string password, string email, bool addNew);
 
         // band
         List<string> ValidateBand(string name, bool addNew);
@@ -50,10 +51,13 @@ namespace SetGenerator.Service
         //----------------------------------- validation rules ------------------------------------
 
         // user
-        public List<string> ValidateUser(string username, bool addNew)
+        public List<string> ValidateUser(string username, string password, string email, bool addNew)
         {
             var msgs = new List<string>();
             msgs = ValidateUserName(username, addNew, msgs);
+            msgs = ValidatePassword(username, msgs);
+            msgs = ValidateEmail(email, msgs);
+
             return msgs.Count > 0 ? msgs : null;
         }
 
@@ -65,6 +69,30 @@ namespace SetGenerator.Service
                 msgs.Add("UserName is required");
             if (addNew && band != null)
                 msgs.Add("UserName already exists");
+
+            return msgs;
+        }
+
+        private static List<string> ValidatePassword(string password, List<string> msgs)
+        {
+            if (string.IsNullOrEmpty(password))
+                msgs.Add("Password is required");
+
+            return msgs;
+        }
+
+        private static List<string> ValidateEmail(string email, List<string> msgs)
+        {
+            const string validEmailPattern = @"^(?!\.)(""([^""\r\\]|\\[""\r\\])*""|"
+                                             + @"([-a-z0-9!#$%&'*+/=?^_`{|}~]|(?<!\.)\.)*)(?<!\.)"
+                                             + @"@[a-z0-9][\w\.-]*[a-z0-9]\.[a-z][a-z\.]*[a-z]$";
+
+            var validEmailRegex = new Regex(validEmailPattern, RegexOptions.IgnoreCase);
+
+            var isMatch = validEmailRegex.IsMatch(email);
+
+            if (!isMatch)
+                msgs.Add("Invalild email address");
 
             return msgs;
         }

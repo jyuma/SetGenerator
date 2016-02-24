@@ -14,6 +14,8 @@ namespace SetGenerator.Data.Repositories
         IList<UserBand> GetUserBands(int  userId);
         ArrayList GetDefaultBandArrayList();
         int AddRemoveUserBands(int userId, int[] bandIds);
+        void DeleteUser(int userId);
+        void AssignStartupUserPreferenceTableColumns(int userId);
 
         // UserBand
         int AddUserBand(int userId, int bandId);
@@ -108,6 +110,107 @@ namespace SetGenerator.Data.Repositories
                 al.Add(new { Value = b.Key, Display = b.Value });
 
             return al;
+        }
+
+        public void DeleteUser(int userId)
+        {
+            DeleteAllUserPreferences(userId);
+
+            var userAmin = Session.QueryOver<User>()
+                .Where(x => x.UserName == "admin").SingleOrDefault();
+
+            // update entity audit bands
+            var bands = Session.QueryOver<Band>()
+                .Where(x => x.UserUpdate.Id == userId || x.UserCreate.Id == userId)
+                .List();
+
+            foreach (var band in bands)
+            {
+                if (band.UserUpdate.Id == userId)
+                    band.UserUpdate = userAmin;
+
+                if (band.UserCreate.Id == userId)
+                    band.UserCreate = userAmin;
+
+                using (var transaction = Session.BeginTransaction())
+                {
+                    Session.Update(band);
+                    transaction.Commit();
+                }
+            }
+
+            // update entity audit gigs
+            var gigs = Session.QueryOver<Gig>()
+                .Where(x => x.UserUpdate.Id == userId || x.UserCreate.Id == userId)
+                .List();
+
+            foreach (var gig in gigs)
+            {
+                if (gig.UserUpdate.Id == userId)
+                    gig.UserUpdate = userAmin;
+
+                if (gig.UserCreate.Id == userId)
+                    gig.UserCreate = userAmin;
+
+                using (var transaction = Session.BeginTransaction())
+                {
+                    Session.Update(gig);
+                    transaction.Commit();
+                }
+            }
+
+            // update entity audit songs
+            var songs = Session.QueryOver<Song>()
+                .Where(x => x.UserUpdate.Id == userId || x.UserCreate.Id == userId)
+                .List();
+
+            foreach (var song in songs)
+            {
+                if (song.UserUpdate.Id == userId)
+                    song.UserUpdate = userAmin;
+
+                if (song.UserCreate.Id == userId)
+                    song.UserCreate = userAmin;
+
+                using (var transaction = Session.BeginTransaction())
+                {
+                    Session.Update(song);
+                    transaction.Commit();
+                }
+            }
+
+            // update entity audit setlists
+            var setlists = Session.QueryOver<Setlist>()
+                .Where(x => x.UserUpdate.Id == userId || x.UserCreate.Id == userId)
+                .List();
+
+            foreach (var setlist in setlists)
+            {
+                if (setlist.UserUpdate.Id == userId)
+                    setlist.UserUpdate = userAmin;
+
+                if (setlist.UserCreate.Id == userId)
+                    setlist.UserCreate = userAmin;
+
+                using (var transaction = Session.BeginTransaction())
+                {
+                    Session.Update(setlist);
+                    transaction.Commit();
+                }
+            }
+
+            Delete(userId);
+        }
+
+        private void DeleteAllUserPreferences(int userId)
+        {
+            var userBands = GetUserBands(userId);
+
+            foreach (var userBand in userBands)
+            {
+                DeleteUserPreferenceTableColumns(userId, userBand.Band.Id);
+                DeleteUserPreferenceTableColumns(userId, userBand.Band.Id);
+            }
         }
 
         private Dictionary<int, string> GetDefaultUserBands()
@@ -303,6 +406,32 @@ namespace SetGenerator.Data.Repositories
                 using (var transaction = Session.BeginTransaction())
                 {
                     Session.Delete(column);
+                    transaction.Commit();
+                }
+            }
+        }
+
+        public void AssignStartupUserPreferenceTableColumns(int userId)
+        {
+            const int userTableBand = 1;
+            var user = Session.QueryOver<User>().Where(x => x.Id == userId).SingleOrDefault();
+
+            var columns = Session.QueryOver<TableColumn>()
+                .List()
+                .Where(x => x.Table.Id == userTableBand);
+
+            var userPrefTableColumns = columns.Select(c => new UserPreferenceTableColumn
+            {
+                User = user,
+                TableColumn = c,
+                IsVisible = true
+            }).ToList();
+
+            foreach (var tableColumn in userPrefTableColumns)
+            {
+                using (var transaction = Session.BeginTransaction())
+                {
+                    Session.Save(tableColumn);
                     transaction.Commit();
                 }
             }

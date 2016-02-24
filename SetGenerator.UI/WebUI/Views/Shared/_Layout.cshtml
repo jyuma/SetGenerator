@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using System.Collections
+<!DOCTYPE html>
 
 <html>
 <head>
@@ -26,14 +27,18 @@
                             {
                                 <li>@Html.ActionLink("Users", "Index", "Users")</li>
                             }
-                            if (Session["UserName"].ToString() == "admin")
+                        }
+                        <li>@Html.ActionLink("Bands", "Index", "Bands")</li>
+
+                        if (Session["Bands"] != null)
+                        {
+                            if (((ICollection) Session["Bands"]).Count > 0)
                             {
-                                <li>@Html.ActionLink("Bands", "Index", "Bands")</li>
+                                <li>@Html.ActionLink("Songs", "Index", "Songs")</li>
+                                <li>@Html.ActionLink("Setlists", "Index", "Setlists")</li>
+                                <li>@Html.ActionLink("Gigs", "Index", "Gigs")</li>
                             }
                         }
-                        <li>@Html.ActionLink("Songs", "Index", "Songs")</li>
-                        <li>@Html.ActionLink("Setlists", "Index", "Setlists")</li>
-                        <li>@Html.ActionLink("Gigs", "Index", "Gigs")</li>
                     }
                 </ul>
                 <div class="navbar-text navbar-right">@Html.Partial("_LogonPartial")</div>
