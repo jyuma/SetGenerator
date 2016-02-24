@@ -30,6 +30,7 @@ namespace SetGenerator.WebUI.ViewModels
         public string Email { get; set; }
         public string Password { get; set; }
         public bool IsDisabled { get; set; }
+        public int DefaultBandId { get; set; }
         public SelectList UserBands { get; set; }
     }
 

@@ -202,13 +202,13 @@
                     dialog.custom.showModal({
                         title: title,
                         message: message,
-                        focusElement: "txtFirstName",
+                        focusElement: "txtAlias",
                         callback: function () {
                             $("#validation-container").html("");
                             $("#validation-container").hide();
                             return self.saveMember();
                         },
-                        width: 400
+                        width: 250
                     });
                 };
 

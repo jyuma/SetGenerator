@@ -4,19 +4,22 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="label label-default">Username</div>
-            <input type="text" id="txtUserName" class="form-control" value="@Model.UserName" maxlength="100" list="dlVenues" />
+            <input type="text" id="txtUserName" class="form-control" value="@Model.UserName" maxlength="20"/>
         </div>
     </div>
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="label label-default">Password</div>
-            <input type="text" id="txtPassword" class="form-control" value="@Model.Password" maxlength="100" list="dlVenues" />
+    @if (@Model.Id == 0)
+    {
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="label label-default">Password</div>
+                <input type="text" id="txtPassword" class="form-control" value="@Model.Password" maxlength="20"/>
+            </div>
         </div>
-    </div>
+    }
     <div class="row">
         <div class="col-sm-12">
             <div class="label label-default">Email</div>
-            <input type="text" id="txtEmail" class="form-control" value="@Model.Email" maxlength="100" list="dlVenues" />
+            <input type="text" id="txtEmail" class="form-control" value="@Model.Email" maxlength="50" />
         </div>
     </div>
     <div class="row">

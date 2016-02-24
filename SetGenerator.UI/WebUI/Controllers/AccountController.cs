@@ -3,7 +3,6 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
 using SetGenerator.WebUI.Models;
-using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -55,8 +54,19 @@ namespace SetGenerator.WebUI.Controllers
                     await SignInAsync(user, model.RememberMe);
                     Session["UserId"] = user.Id;
                     Session["UserName"] = user.UserName;
-                    Session["BandId"] = user.DefaultBandId;
-                    Session["Bands"] = GetUserBandSelectList(user);
+
+                    var userBands = _account.GetUserBands((int)user.Id);
+                    Session["Bands"] = userBands.Select(x => new { x.Band.Id, x.Band.Name }).ToArray();
+
+                    if (user.DefaultBandId != null)
+                    {
+                        Session["BandId"] = user.DefaultBandId;
+                    }
+                    else if (userBands.Any())
+                    {
+                        Session["BandId"] = userBands.First().Band.Id;
+                    }
+
                     return RedirectToLocal(returnUrl);
                 }
                 ModelState.AddModelError("", "Invalid username or password.");
@@ -64,20 +74,6 @@ namespace SetGenerator.WebUI.Controllers
 
             // If we got this far, something failed, redisplay form
             return View(model);
-        }
-
-        private ICollection GetUserBandSelectList(MyUser user)
-        {
-            var bands = _account.GetUserBands((int)user.Id);
-
-            var result = bands
-                .Select(x => new 
-                    {
-                       Id = x.Band.Id, 
-                       Name = x.Band.Name
-                    }).ToArray();
-
-            return result;
         }
 
         //

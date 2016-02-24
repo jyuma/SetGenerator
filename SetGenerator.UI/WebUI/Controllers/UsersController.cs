@@ -7,7 +7,6 @@ using SetGenerator.WebUI.ViewModels;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Net;
 using System.Web.Mvc;
 using SetGenerator.Data.Repositories;
 using SetGenerator.Domain.Entities;
@@ -124,6 +123,7 @@ namespace SetGenerator.WebUI.Controllers
             }
             var vm = new UserEditViewModel
             {
+                Id = (user != null) ? user.Id : 0,
                 UserName = (user != null) ? user.UserName : string.Empty,
                 Email = (user != null) ? user.Email : string.Empty,
                 UserBands = new SelectList((user != null)
@@ -230,9 +230,9 @@ namespace SetGenerator.WebUI.Controllers
             var user = _userRepository.Get(userDetail.Id);
 
             Band defaultBand = null;
-            if ((int)userDetail.UserBands.SelectedValue > 0)
+            if (userDetail.DefaultBandId > 0)
             {
-                defaultBand = _bandRepository.Get((int)userDetail.UserBands.SelectedValue);
+                defaultBand = _bandRepository.Get(userDetail.DefaultBandId);
             }
 
             if (user != null)

@@ -2,27 +2,29 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-sm-6">
-            <div class="label label-default">First Name</div>
-            <input type="text" id="txtFirstName" class="form-control" value="@Model.FirstName" maxlength="20"/>
-        </div>
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="label label-default">Last Name</div>
-                <input type="text" id="txtLastName" class="form-control" value="@Model.LastName" maxlength="20"/>
-            </div>
+        <div class="col-sm-12">
+            <div class="label label-default">Alias</div>
+            <input type="text" id="txtAlias" class="form-control" value="@Model.Alias" maxlength="20" />
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-6">
-            <div class="label label-default">Alias</div>
-            <input type="text" id="txtAlias" class="form-control" value="@Model.Alias" maxlength="20"/>
+        <div class="col-sm-12">
+            <div class="label label-default">First Name</div>
+            <input type="text" id="txtFirstName" class="form-control" value="@Model.FirstName" maxlength="20" />
         </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="label label-default">Last Name</div>
+            <input type="text" id="txtLastName" class="form-control" value="@Model.LastName" maxlength="20" />
+        </div>
+    </div>
+    <div class="row">
         @if (@Model.MemberInstruments.Any())
         {
-            <div class="col-sm-6">
+            <div class="col-sm-12">
                 <div class="label label-default">Default Instrument</div>
-                @Html.DropDownList("ddlMemberInstruments", @Model.MemberInstruments, new {@class = "form-control"})
+                @Html.DropDownList("ddlMemberInstruments", @Model.MemberInstruments, new { @class = "form-control" })
             </div>
         }
     </div>
