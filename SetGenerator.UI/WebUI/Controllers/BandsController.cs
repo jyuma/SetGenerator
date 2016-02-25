@@ -72,9 +72,18 @@ namespace SetGenerator.WebUI.Controllers
 
         private IEnumerable<BandDetail> GetBandList()
         {
-            var bandList = _userRepository
-                .GetUserBands(_currentUser.Id)
-                .Select(x => x.Band);
+            IEnumerable<Band> bandList;
+
+            if (Session["UserName"].ToString().ToLower() != "admin")
+            {
+                bandList = _userRepository
+                    .GetUserBands(_currentUser.Id)
+                    .Select(x => x.Band);
+            }
+            else
+            {
+                bandList = _bandRepository.GetAll();
+            }
 
             var result = bandList.Select(band => new BandDetail
             {
@@ -378,6 +387,7 @@ namespace SetGenerator.WebUI.Controllers
             }
             var vm = new MemberEditViewModel
             {
+                Id = (member != null) ? member.Id : 0,
                 FirstName = (member != null) ? member.FirstName : string.Empty,
                 LastName = (member != null) ? member.LastName : string.Empty,
                 Alias = (member != null) ? member.Alias : string.Empty,
@@ -386,12 +396,22 @@ namespace SetGenerator.WebUI.Controllers
                     ? new Collection<object>{ new { Value = "0", Display = "<None>" }}.ToArray()
                     .Union(
                         member.MemberInstruments
+                        .OrderBy(o => o.Instrument.Name)
                         .Select(x => new
                         {
                             Value = x.Instrument.Id,
                             Display = x.Instrument.Name
                         })).ToArray()
-                     : new Collection<object>().ToArray(), "Value", "Display",
+                     : new Collection<object> { new { Value = "0", Display = "<None>" } }.ToArray()
+                     .Union(
+                     _instrumentRepository.GetAll()
+                        .OrderBy(o => o.Name)
+                        .Select(x => new
+                        {
+                            Value = x.Id,
+                            Display = x.Name
+                        })).ToArray(),
+                     "Value", "Display",
                         (member != null) 
                             ? (member.DefaultInstrument != null) ? member.DefaultInstrument.Id : 0
                             : 0)
@@ -472,6 +492,18 @@ namespace SetGenerator.WebUI.Controllers
                 Alias = memberDetail.Alias,
                 DefaultInstrument = defaultInstrument
             };
+
+            if (defaultInstrument != null)
+            {
+                m.MemberInstruments = new Collection<MemberInstrument>
+                {
+                    new MemberInstrument
+                    {
+                        Member = m,
+                        Instrument = defaultInstrument
+                    }
+                };
+            }
 
             var id = _memberRepository.Add(m);
 

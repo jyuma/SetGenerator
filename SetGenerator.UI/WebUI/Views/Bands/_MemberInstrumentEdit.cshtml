@@ -56,8 +56,8 @@
             @Html.ListBox("lstAvailableInstruments", @Model.AvailableInstruments, new { @class = "form-control", @onclick = "enableButtons()" })
         </div>
         <div class="col-sm-2 move-buttons">
-            <div><button id="btnAdd" class="btn btn-default btn-sm" onclick="addInstrument();"><span class="glyphicon glyphicon-arrow-right"></span></button></div>
-            <div><button id="btnRemove" class="btn btn-default btn-sm" onclick="removeInstrument();"><span class="glyphicon glyphicon-arrow-left"></span></button></div>
+            <div><button id="btnAdd" class="btn btn-default" onclick="addInstrument();"><span class="glyphicon glyphicon-arrow-right"></span></button></div>
+            <div><button id="btnRemove" class="btn btn-default" onclick="removeInstrument();"><span class="glyphicon glyphicon-arrow-left"></span></button></div>
         </div>
         <div class="col-sm-5">
             <div class="label label-default">Assigned Instruments</div>

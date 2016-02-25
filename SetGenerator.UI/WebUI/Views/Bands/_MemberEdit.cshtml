@@ -9,24 +9,28 @@
     </div>
     <div class="row">
         <div class="col-sm-12">
-            <div class="label label-default">First Name</div>
-            <input type="text" id="txtFirstName" class="form-control" value="@Model.FirstName" maxlength="20" />
+            <div class="label label-default">First Name <i>(optional)</i></div>
+            <input type="text" id="txtFirstName" class="form-control" value="@Model.FirstName" maxlength="20"/>
         </div>
     </div>
     <div class="row">
         <div class="col-sm-12">
-            <div class="label label-default">Last Name</div>
-            <input type="text" id="txtLastName" class="form-control" value="@Model.LastName" maxlength="20" />
+            <div class="label label-default">Last Name <i>(optional)</i></div>
+            <input type="text" id="txtLastName" class="form-control" value="@Model.LastName" maxlength="20"/>
         </div>
     </div>
-    <div class="row">
-        @if (@Model.MemberInstruments.Any())
+@if (@Model.MemberInstruments.Any())
         {
-            <div class="col-sm-12">
-                <div class="label label-default">Default Instrument</div>
-                @Html.DropDownList("ddlMemberInstruments", @Model.MemberInstruments, new { @class = "form-control" })
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="label label-default">Default Instrument</div>
+                    @Html.DropDownList("ddlMemberInstruments", @Model.MemberInstruments, new {@class = "form-control"})
+                    @if (@Model.Id == 0)
+                    {
+                        <span class="edit-form-hint"><i>Other instruments can be assigned later.</i></span>
+                    }
+                </div>
             </div>
         }
-    </div>
     <div class="validation-container" id="validation-container"></div>
 </div>

@@ -121,16 +121,14 @@ namespace SetGenerator.Service
         public List<string> ValidateMember(int bandId, string firstName, string lastName, string alias, bool addNew)
         {
             var msgs = new List<string>();
-            msgs = ValidateNameAndAlias(bandId, firstName, alias, addNew, msgs);
+            msgs = ValidateAlias(bandId, alias, addNew, msgs);
             return msgs.Count > 0 ? msgs : null;
         }
 
-        private List<string> ValidateNameAndAlias(int bandId, string firstName, string alias, bool addNew, List<string> msgs)
+        private List<string> ValidateAlias(int bandId, string alias, bool addNew, List<string> msgs)
         {
             var member = _memberRepository.GetByBandIdAlias(bandId, alias);
 
-            if (string.IsNullOrEmpty(firstName))
-                msgs.Add("First Name is required");
             if (string.IsNullOrEmpty(alias))
                 msgs.Add("Alias is required");
             if (addNew && member != null)
@@ -161,7 +159,6 @@ namespace SetGenerator.Service
             return msgs;
         }
 
-
         // setlist
         public List<string> ValidateSetlist(int bandId, string name, int numSongs, bool addNew)
         {
@@ -191,7 +188,6 @@ namespace SetGenerator.Service
                 msgs.Add("Repertoire doesn't contain enough songs");
             return msgs;
         }
-
 
         // gig
         public List<string> ValidateGig(int bandId, string venue, DateTime dateGig, bool addNew)

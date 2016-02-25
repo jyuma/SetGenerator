@@ -208,7 +208,7 @@
                             $("#validation-container").hide();
                             return self.saveMember();
                         },
-                        width: 250
+                        width: 260
                     });
                 };
 
