@@ -26,13 +26,18 @@
                             if (Session["UserName"].ToString() == "admin")
                             {
                                 <li>@Html.ActionLink("Users", "Index", "Users")</li>
+                                <li>@Html.ActionLink("Bands", "Index", "Bands")</li>
+                            }
+                            else
+                            {
+                                <li>@Html.ActionLink("My Bands", "Index", "Bands")</li>
                             }
                         }
-                        <li>@Html.ActionLink("Bands", "Index", "Bands")</li>
+
 
                         if (Session["Bands"] != null)
                         {
-                            if (((ICollection) Session["Bands"]).Count > 0)
+                            if (((ICollection)Session["Bands"]).Count > 0)
                             {
                                 <li>@Html.ActionLink("Songs", "Index", "Songs")</li>
                                 <li>@Html.ActionLink("Setlists", "Index", "Setlists")</li>
