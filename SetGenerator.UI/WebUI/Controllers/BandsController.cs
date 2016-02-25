@@ -252,43 +252,31 @@ namespace SetGenerator.WebUI.Controllers
             return id;
         }
 
-        private void ReloadUserBands( int bandId, bool isAdded, bool isDeleted = false)
+        private void ReloadUserBands(int bandId, bool isAdded, bool isDeleted = false)
         {
-            var user = _currentUser;
-            var userBands = GetUserBandSelectList();
+            var userBands = _currentUser.UserBands;
 
             Session["Bands"] = null;            
 
             if (userBands.Any())
             {
-                Session["Bands"] = userBands;
+                Session["Bands"] = userBands.Select(x => new
+                {
+                    x.Band.Id, x.Band.Name
+                }).ToArray();
             }
 
             if (isDeleted)
             {
-                if (user.DefaultBand != null)
+                if ((int) Session["BandId"] == bandId)
                 {
-                    Session["BandId"] = user.DefaultBand.Id;
+                    Session["BandId"] = userBands.First().Band.Id;
                 }
             }
             else if (isAdded)
             {
                 Session["BandId"] = bandId;
             }
-        }
-
-        private ICollection GetUserBandSelectList()
-        {
-            var bands = _currentUser.UserBands;
-
-            var result = bands
-                .Select(x => new
-                {
-                    Id = x.Band.Id,
-                    Name = x.Band.Name
-                }).ToArray();
-
-            return result;
         }
 
         private void UpdateBand(BandDetail bandDetail)
