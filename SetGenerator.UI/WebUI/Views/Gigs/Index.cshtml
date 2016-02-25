@@ -62,7 +62,6 @@
                 <tr>
                     <th class="col-glyphicon"></th>
                     <th class="col-glyphicon"></th>
-                    <th class="col-glyphicon"></th>
                     <!-- ko foreach: columns -->
                     <th data-bind="visible: isVisible, click: $parent.sort, attr: { id: 'gig-col-' + dataMember } "><a href="#" data-bind="text: title"></a></th>
                     <!-- /ko -->
@@ -73,7 +72,6 @@
                 <tr data-bind="click: $parent.highlightRow, attr: {id: 'row_' +  id}">
                     <td><a data-bind="attr: { href: '#' }, click: $parent.showDeleteDialog, css: 'glyphicon glyphicon-remove'"></a></td>
                     <td><a data-bind="attr: { href: '#' }, click: $parent.showEditDialog, css: 'glyphicon glyphicon-pencil'"></a></td>
-                    <td><a data-bind="attr: { href: '#' }, css: 'glyphicon glyphicon-list'"></a></td>
                     <!-- ko foreach: $parent.columns -->
                     <td data-bind="text: (dataMember.indexOf('updatedate') >= 0 || dataMember.indexOf('dategig') >= 0) ? moment($parent[dataMember]).format('ll') : $parent[dataMember], visible: isVisible, css: { 'col-small': dataMember.indexOf('updateuser') >= 0 || dataMember.indexOf('updatedate') >= 0 }"></td>
                     <!-- /ko -->

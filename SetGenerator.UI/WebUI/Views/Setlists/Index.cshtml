@@ -74,7 +74,12 @@
 
             <tbody data-bind="foreach: setlistsTable">
             <tr data-bind="click: $parent.highlightRow, attr: {id: 'row_' +  id}">
-                <td><a data-bind="attr: { href: '#'}, click: $parent.showDeleteDialog, css: 'glyphicon glyphicon-remove'"></a></td>
+                <!-- ko if: !isgigassigned -->
+                <td><a href="#" data-bind="click: $parent.showDeleteDialog, css: 'glyphicon glyphicon-remove'"></a></td>
+                <!-- /ko -->
+                <!-- ko if: isgigassigned -->
+                <td><span data-bind="css: 'glyphicon glyphicon-flag'"></span></td>
+                <!-- /ko -->
                 <td><a data-bind="attr: { href: '#'}, click: $parent.showEditDialog, css: 'glyphicon glyphicon-pencil'"></a></td>
                 <td><a data-bind="attr: { href: 'Setlists/' + id + '/Sets/' }, click: $parent.showSets, css: 'glyphicon glyphicon-list'"></a></td>
                 <!-- ko foreach: $parent.columns -->

@@ -14,6 +14,7 @@
 
             var lists = {
                 GigList: [],
+                SetlistArrayList: [],
                 TableColumnList: []
             };
 
@@ -34,13 +35,14 @@
                 });
             }
 
-            function Gig(id, venue, description, dategig, updateuser, updatedate) {
+            function Gig(id, venue, description, dategig, setlistid, updateuser, updatedate) {
                 var self = this;
 
                 self.id = id;
                 self.venue = venue;
                 self.description = description;
                 self.dategig = dategig;
+                self.setlist = getValue(lists.SetlistArrayList, setlistid, "Display", "Value");
                 self.updateuser = updateuser;
                 self.updatedate = updatedate;
             }
@@ -79,7 +81,7 @@
                 });
 
                 function pushGig(value) {
-                    self.gigs.push(new Gig(value.Id, value.Venue, value.Description, value.DateGig, value.UserUpdate, value.DateUpdate));
+                    self.gigs.push(new Gig(value.Id, value.Venue, value.Description, value.DateGig, value.SetlistId, value.UserUpdate, value.DateUpdate));
                 };
 
                 self.selectedGig(self.gigs()[0]);
@@ -232,9 +234,10 @@
                     var venue = $.trim($("#txtVenue").val());
                     var description = $.trim($("#txtDescription").val());
                     var dategig = $("#dtDateGig").val();
+                    var setlistId = $("#ddlSetlists").val();
 
                     return {
-                        Id: self.selectedGig().id, Venue: venue, Description: description, DateGig: dategig
+                        Id: self.selectedGig().id, Venue: venue, Description: description, DateGig: dategig, SetlistId: setlistId
                     };
                 };
 
@@ -361,6 +364,18 @@
                 if (startsWith.length > string.length) return false;
                 return string.substring(0, startsWith.length) === startsWith;
             };
+
+
+            function getValue(list, id, dataMember, valueMember) {
+                var name = "";
+                $(list).each(function (index, item) {
+                    if (item[valueMember] === id) {
+                        name = item[dataMember];
+                        return name;
+                    }
+                });
+                return name;
+            }
         }
     }
 })(jQuery);

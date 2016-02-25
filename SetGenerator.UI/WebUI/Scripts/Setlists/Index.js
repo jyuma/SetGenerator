@@ -47,7 +47,7 @@
                 });
             }
 
-            function Setlist(id, name, numsets, numsongs, owner, updateuser, updatedate) {
+            function Setlist(id, name, numsets, numsongs, owner, updateuser, updatedate, isgigassigned) {
                 var self = this;
 
                 self.id = id;
@@ -57,6 +57,7 @@
                 self.owner = owner;
                 self.updateuser = updateuser;
                 self.updatedate = updatedate;
+                self.isgigassigned = isgigassigned;
             }
 
             function SetlistViewModel() {
@@ -107,7 +108,7 @@
                 });
 
                 function pushSetlist(value) {
-                    self.setlists.push(new Setlist(value.Id, value.Name, value.NumSets, value.NumSongs, value.Owner, value.UserUpdate, value.DateUpdate));
+                    self.setlists.push(new Setlist(value.Id, value.Name, value.NumSets, value.NumSongs, value.Owner, value.UserUpdate, value.DateUpdate, value.IsGigAssigned));
                 };
 
                 self.sort = function(header) {

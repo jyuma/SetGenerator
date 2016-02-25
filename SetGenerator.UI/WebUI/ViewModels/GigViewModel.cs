@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Web.Mvc;
 
 namespace SetGenerator.WebUI.ViewModels
 {
@@ -10,6 +11,7 @@ namespace SetGenerator.WebUI.ViewModels
         public string DateGig { get; set; }
         public string Venue { get; set; }
         public string Description { get; set; }
+        public int SetlistId { get; set; }
         public string UserUpdate { get; set; }
         public string DateUpdate { get; set; }
     }
@@ -28,5 +30,6 @@ namespace SetGenerator.WebUI.ViewModels
         public string Venue { get; set; }
         public string Description { get; set; }
         public IEnumerable<string> Venues { get; set; }
+        public SelectList Setlists { get; set; }
     }
 }

@@ -25,6 +25,7 @@ namespace SetGenerator.WebUI.Controllers
         private readonly ISetlistRepository _setlistRepository;
         private readonly ISetSongRepository _setSongRepository;
         private readonly ISongRepository _songRepository;
+        private readonly IGigRepository _gigRepository;
         private readonly IValidationRules _validationRules;
 
         private readonly User _currentUser;
@@ -33,7 +34,8 @@ namespace SetGenerator.WebUI.Controllers
         public SetlistsController(  IBandRepository bandRepository, 
                                     ISetlistRepository setlistRepository,
                                     ISetSongRepository setSongRepository,
-                                    ISongRepository songRepository, 
+                                    ISongRepository songRepository,
+                                    IGigRepository gigRepository, 
                                     IAccount account, 
                                     IValidationRules validationRules)
         {
@@ -44,6 +46,7 @@ namespace SetGenerator.WebUI.Controllers
             _setlistRepository = setlistRepository;
             _setSongRepository = setSongRepository;
             _songRepository = songRepository;
+            _gigRepository = gigRepository;
             _validationRules = validationRules;
             _common = new CommonSong(account, currentUserName);
         }
@@ -210,19 +213,23 @@ namespace SetGenerator.WebUI.Controllers
         private IEnumerable<SetlistDetail> GetSetlistList()
         {
             var bandId = Convert.ToInt32(Session["BandId"]);
-            var setlistList = _setlistRepository.GetByBandId(bandId);
+            var setlists = _setlistRepository.GetByBandId(bandId);
+            var gigs = _gigRepository.GetByBandId(bandId).Where(x => x.Setlist != null);
 
-            var result = setlistList.Select(setlist => new SetlistDetail
+            var list = setlists
+                 .GroupJoin(gigs, setlist => setlist.Id, gig => gig.Setlist.Id,
+                (x, g) => new SetlistDetail
             {
-                Id = setlist.Id,
-                Name = setlist.Name,
-                Owner = setlist.UserCreate.UserName,
-                UserUpdate = setlist.UserUpdate.UserName,
-                DateUpdate = setlist.DateUpdate.ToShortDateString(),
+                Id = x.Id,
+                Name = x.Name,
+                Owner = x.UserCreate.UserName,
+                UserUpdate = x.UserUpdate.UserName,
+                DateUpdate = x.DateUpdate.ToShortDateString(),
+                IsGigAssigned = g.Any(),
                 NumSets = 1
             }).OrderBy(x => x.Name).ToArray();
 
-            return result;
+            return list;
         }
 
         [HttpGet]
@@ -256,7 +263,7 @@ namespace SetGenerator.WebUI.Controllers
                     vm.TotalSongsPerSetlist = new SelectList(totalSongsPerSetlist,
                         setlist.SetSongs.Count(x => x.SetNumber == 1));
                 }
-                // Contains no songs
+                // Contains no songs (all spares)
                 else  
                 {
                     vm.TotalSetsList = new SelectList(new Collection<int>());

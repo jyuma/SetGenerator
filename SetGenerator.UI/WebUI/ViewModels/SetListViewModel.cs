@@ -10,6 +10,7 @@ namespace SetGenerator.WebUI.ViewModels
         public int NumSets { get; set; }
         public int NumSongs { get; set; }
         public string Owner { get; set; }
+        public bool IsGigAssigned { get; set; }
         public string UserUpdate { get; set; }
         public string DateUpdate { get; set; }
     }

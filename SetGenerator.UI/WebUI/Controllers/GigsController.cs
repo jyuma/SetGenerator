@@ -3,6 +3,7 @@ using SetGenerator.Service;
 using SetGenerator.WebUI.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Web.Mvc;
 using SetGenerator.Data.Repositories;
@@ -15,17 +16,20 @@ namespace SetGenerator.WebUI.Controllers
     {
         private readonly IBandRepository _bandRepository;
         private readonly IGigRepository _gigRepository;
+        private readonly ISetlistRepository _setlistRepository;
         private readonly IValidationRules _validationRules;
         private readonly User _currentUser;
         private readonly CommonSong _common;
 
         public GigsController(  IBandRepository bandRepository,
                                 IGigRepository gigRepository,
+                                ISetlistRepository setlistRepository,
                                 IValidationRules validationRules, 
                                 IAccount account)
         {
             _bandRepository = bandRepository;
             _gigRepository = gigRepository;
+            _setlistRepository = setlistRepository;
             _validationRules = validationRules;
 
             var currentUserName = GetCurrentSessionUser();
@@ -47,6 +51,7 @@ namespace SetGenerator.WebUI.Controllers
             var vm = new
             {
                 GigList = GetGigList(),
+                SetlistArrayList = _setlistRepository.GetSetlistArrayList(bandId),
                 TableColumnList = _common.GetTableColumnList(_currentUser.Id, Constants.UserTable.GigId, bandId)
             };
 
@@ -65,6 +70,7 @@ namespace SetGenerator.WebUI.Controllers
                 Venue = gig.Venue,
                 Description = gig.Description,
                 DateGig = gig.DateGig.ToShortDateString(),
+                SetlistId = (gig.Setlist != null) ? gig.Setlist.Id : 0,
                 UserUpdate = gig.UserUpdate.UserName,
                 DateUpdate = gig.DateUpdate.ToShortDateString()
             }).OrderBy(x => x.DateGig).ToArray();
@@ -102,6 +108,7 @@ namespace SetGenerator.WebUI.Controllers
         private GigEditViewModel LoadGigEditViewModel(int id)
         {
             var bandId = Convert.ToInt32(Session["BandId"]);
+            var setlists = _setlistRepository.GetByBandId(bandId);
             Gig gig = null;
 
             if (id > 0)
@@ -113,7 +120,19 @@ namespace SetGenerator.WebUI.Controllers
                 DateGig = (gig != null) ? gig.DateGig : DateTime.Now,
                 Venue = (gig != null) ? gig.Venue : string.Empty,
                 Description = (gig != null) ? gig.Description : string.Empty,
-                Venues = _gigRepository.GetVenueList(bandId)
+                Venues = _gigRepository.GetVenueList(bandId),
+                Setlists = new SelectList(
+                           new Collection<object> { new { Value = "0", Display = "<None>" } }.ToArray()
+                           .Union(
+                               setlists
+                               .Select(x => new
+                               {
+                                   Value = x.Id,
+                                   Display = x.Name
+                               })).ToArray(), "Value", "Display",
+                               (gig != null)
+                                   ? (gig.Setlist != null) ? gig.Setlist.Id : 0
+                                   : 0),
             };
 
             return vm;
@@ -178,6 +197,7 @@ namespace SetGenerator.WebUI.Controllers
         {
             var bandId = Convert.ToInt32(Session["BandId"]);
             var band = _bandRepository.Get(bandId);
+            var setlist = _setlistRepository.Get(gigDetail.SetlistId);
 
             var g = new Gig
             {
@@ -185,6 +205,7 @@ namespace SetGenerator.WebUI.Controllers
                 DateGig = Convert.ToDateTime(gigDetail.DateGig),
                 Venue = gigDetail.Venue,
                 Description = gigDetail.Description,
+                Setlist = setlist,
                 UserCreate = _currentUser,
                 UserUpdate = _currentUser,
                 DateCreate = DateTime.Now,
@@ -197,12 +218,14 @@ namespace SetGenerator.WebUI.Controllers
         private void UpdateGig(GigDetail gigDetail)
         {
             var gig = _gigRepository.Get(gigDetail.Id);
+            var setlist = _setlistRepository.Get(gigDetail.SetlistId);
 
             if (gig != null)
             {
                 gig.DateGig = Convert.ToDateTime(gigDetail.DateGig);
                 gig.Venue = gigDetail.Venue;
                 gig.Description = gigDetail.Description;
+                gig.Setlist = setlist;
                 gig.UserUpdate = _currentUser;
                 gig.DateUpdate = DateTime.Now;
             };
