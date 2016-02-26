@@ -132,6 +132,7 @@ namespace SetGenerator.WebUI.Controllers
 
             var setlists = _setlistRepository.GetByBandId(bandId);
             var setSongs = setlists.SelectMany(x => x.SetSongs);
+            var members = _bandRepository.GetMembers(bandId);
 
             var list = songs
                 .GroupJoin(setSongs, song => song.Id, setsong => setsong.Song.Id,
@@ -160,13 +161,15 @@ namespace SetGenerator.WebUI.Controllers
                     NeverClose = x.NeverClose,
                     NeverOpen = x.NeverOpen,
                     IsSetSong = ss.Any(),
-                    SongMemberInstrumentDetails = x.SongMemberInstruments.Select(y => 
-                    new SongMemberInstrumentDetail
-                    {
-                        MemberId = y.Member.Id,
-                        InstrumentId = (y.Instrument != null) ? y.Instrument.Id : 0,
-                        InstrumentName = (y.Instrument != null) ? y.Instrument.Name : Constants.SelectListText.NoneSelected
-                    }).ToArray()
+                    SongMemberInstrumentDetails = members
+                        .GroupJoin(x.SongMemberInstruments, m => m.Id, smi => smi.Member.Id,
+                        (m, smi) =>
+                            new SongMemberInstrumentDetail
+                            {
+                                MemberId = m.Id,
+                                InstrumentId = (smi.Any()) ? smi.SingleOrDefault().Instrument.Id : 0,
+                                InstrumentName = (smi.Any()) ? smi.SingleOrDefault().Instrument.Name : string.Empty
+                            }).ToArray()
                 }).OrderBy(x => x.Title).ToArray();
 
             return list;
