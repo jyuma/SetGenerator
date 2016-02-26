@@ -133,16 +133,23 @@
                 createSetSongArray(lists.SetSongList);
 
                 self.sort = function (header) {
-                    if (self.selectedSetNumber() !== 0) return;
+                    //if (self.selectedSetNumber() !== 0) return;
 
-                    var sortKey = header.sortKey;
+                    var afterSave = typeof header.afterSave != "undefined" ? header.afterSave : false;
+                    var sortKey;
 
-                    if (sortKey !== _currentSortKey) {
-                        _sortDescending = false;
+                    if (!afterSave) {
+                        sortKey = header.sortKey;
+
+                        if (sortKey !== _currentSortKey) {
+                            _sortDescending = false;
+                        } else {
+                            _sortDescending = !_sortDescending;
+                        }
+                        _currentSortKey = sortKey;
                     } else {
-                        _sortDescending = !_sortDescending;
+                        sortKey = _currentSortKey;
                     }
-                    _currentSortKey = sortKey;
 
                     $(self.columns()).each(function (index, value) {
                         if (value.sortKey === sortKey) {
@@ -456,6 +463,7 @@
                                 lists.SpareList = data.SpareList;
                                 createSetSongArray(lists.SetSongList);
                                 self.selectedSetSong(self.getSetSong(data.SelectedId));
+                                self.sort({ afterSave: true });
                                 self.highlightRow(self.selectedSetSong());
                                 tblSetSong.tableDnDUpdate();
                                 result = true;

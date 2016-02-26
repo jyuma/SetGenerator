@@ -151,7 +151,7 @@ namespace SetGenerator.WebUI.Controllers
                         MajorMinor = x.Key.MajorMinor,
                         SharpFlatNatural = x.Key.SharpFlatNatural
                     },
-                    Composer = x.Composer,
+                    Composer = x.Composer ?? string.Empty,
                     SingerId = (x.Singer != null) ? x.Singer.Id : 0,
                     GenreId = x.Genre.Id,
                     TempoId = x.Tempo.Id,
