@@ -375,7 +375,7 @@ namespace SetGenerator.Data.Repositories
                     User = user,
                     Band = band,
                     TableColumn = x,
-                    IsVisible = x.AlwaysVisible
+                    IsVisible = (x.Data != "updateuser" && x.Data != "updatedate")
                 });
 
             foreach (var column in userPreferenceTableColumns)
@@ -420,11 +420,11 @@ namespace SetGenerator.Data.Repositories
                 .List()
                 .Where(x => x.Table.Id == userTableBand);
 
-            var userPrefTableColumns = columns.Select(c => new UserPreferenceTableColumn
+            var userPrefTableColumns = columns.Select(x => new UserPreferenceTableColumn
             {
                 User = user,
-                TableColumn = c,
-                IsVisible = true
+                TableColumn = x,
+                IsVisible = (x.Data != "updateuser" && x.Data != "updatedate")
             }).ToList();
 
             foreach (var tableColumn in userPrefTableColumns)
