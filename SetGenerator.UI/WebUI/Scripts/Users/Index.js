@@ -390,6 +390,7 @@
                                 self.selectedUser(self.getUser(data.SelectedId));
                                 self.sort({ afterSave: true });
                                 self.highlightRow(self.selectedUser());
+                                window.location.href = site.url + "Users";
                                 result = true;
                             }
                             $("body").css("cursor", "default");

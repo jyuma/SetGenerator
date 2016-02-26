@@ -293,6 +293,7 @@ namespace SetGenerator.WebUI.Controllers
             var detail = JsonConvert.DeserializeObject<UserBandDetail>(userBandDetail);
 
             _userRepository.AddRemoveUserBands(detail.UserId, detail.BandIds);
+            ReloadUserBands();
 
             return Json(new
             {
@@ -302,6 +303,31 @@ namespace SetGenerator.WebUI.Controllers
                 Success = true,
                 ErrorMessages = string.Empty
             }, JsonRequestBehavior.AllowGet);
+        }
+
+        private void ReloadUserBands()
+        {
+            var userBands = _currentUser.UserBands;
+
+            Session["Bands"] = null;
+
+            if (userBands.Any())
+            {
+                Session["Bands"] = userBands.Select(x => new
+                {
+                    x.Band.Id,
+                    x.Band.Name
+                }).ToArray();
+            }
+
+            if (_currentUser.DefaultBand != null)
+            {
+                Session["BandId"] = _currentUser.DefaultBand.Id;
+            }
+            else
+            {
+                Session["BandId"] = userBands.First().Band.Id;
+            }
         }
     }
 }

@@ -217,10 +217,10 @@ namespace SetGenerator.Data.Repositories
         {
             var userBands = Session.QueryOver<User>()
                 .List()
-                .Select(x => x.DefaultBand)
-                .Where(x => x != null)
-                .OrderBy(o => o.Name)
-                .Distinct();
+                .Where(x => x.DefaultBand != null)
+                .GroupBy(g => g.DefaultBand)
+                .Select(x => x.Key)
+                .OrderBy(o => o.Name);
 
             return userBands
                 .Select(x => new
