@@ -22,7 +22,6 @@ namespace SetGenerator.WebUI.Controllers
         private readonly IBandRepository _bandRepository;
         private readonly ISongRepository _songRepository;
         private readonly IMemberRepository _memberRepository;
-        private readonly IInstrumentRepository _instrumentRepository;
         private readonly IValidationRules _validationRules;
         private readonly User _currentUser;
         private readonly CommonSong _common;
@@ -31,7 +30,6 @@ namespace SetGenerator.WebUI.Controllers
                                 IBandRepository bandRepository,
                                 ISongRepository songRepository,
                                 IMemberRepository memberRepository,
-                                IInstrumentRepository instrumentRepository,
                                 IValidationRules validationRules,
                                 IAccount account)
         {
@@ -39,7 +37,6 @@ namespace SetGenerator.WebUI.Controllers
             _bandRepository = bandRepository;
             _songRepository = songRepository;
             _memberRepository = memberRepository;
-            _instrumentRepository = instrumentRepository;
             _validationRules = validationRules;
 
             var currentUserName = GetCurrentSessionUser();
@@ -168,7 +165,7 @@ namespace SetGenerator.WebUI.Controllers
         public JsonResult Save(string band)
         {
             var b = JsonConvert.DeserializeObject<BandDetail>(band);
-            List<string> msgs;
+            IEnumerable<string> msgs;
             var bandId = b.Id;
 
             if (bandId > 0)
@@ -198,8 +195,7 @@ namespace SetGenerator.WebUI.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet]
-        public List<string> ValidateBand(string name, bool addNew)
+        private IEnumerable<string> ValidateBand(string name, bool addNew)
         {
             return _validationRules.ValidateBand(name, addNew);
         }
@@ -209,9 +205,9 @@ namespace SetGenerator.WebUI.Controllers
         {
             _songRepository.DeleteBandSetlistSongs(id);
             _songRepository.DeleteBandSongs(id);
-            _userRepository.DeleteUserPreferenceTableColumns(_currentUser.Id, id);
-            _userRepository.DeleteUserPreferenceTableMembers(_currentUser.Id, id);
-            _userRepository.DeleteUserBand(_currentUser.Id, id);
+            _userRepository.DeleteUserPreferenceTableColumns(id);
+            _userRepository.DeleteUserPreferenceTableMembers(id);
+            _userRepository.DeleteUserBands(id);
 
             if (_currentUser.DefaultBand != null)
             {
@@ -314,279 +310,6 @@ namespace SetGenerator.WebUI.Controllers
             };
 
             _bandRepository.Update(band);
-        }
-
-        // Members
-        [Route("{id}/Members/")]
-        [Authorize]
-        public ActionResult Members(int id)
-        {
-            return View(LoadMemberViewModel(id, 0, null));
-        }
-
-        [HttpGet]
-        public JsonResult GetDataMembers(int bandId)
-        {
-            var vm = new
-            {
-                MemberList = GetMemberList(bandId),
-                InstrumentArrayList = _instrumentRepository.GetNameArrayList(),
-                TableColumnList = _common.GetTableColumnList(_currentUser.Id, Constants.UserTable.MemberId, bandId)
-            };
-
-            return Json(vm, JsonRequestBehavior.AllowGet);
-        }
-
-        private IEnumerable<MemberDetail> GetMemberList(int bandId)
-        {
-            var memberList = _memberRepository.GetByBandId(bandId);
-
-            var result = memberList.Select(member => new MemberDetail
-            {
-                Id = member.Id,
-                BandId = member.Band.Id,
-                FirstName = member.FirstName,
-                LastName = member.LastName,
-                Alias = member.Alias,
-                DefaultInstrumentId = (member.DefaultInstrument != null) ? member.DefaultInstrument.Id : 0,
-            }).OrderBy(x => x.FirstName)
-                .ThenBy(x => x.LastName).ToArray();
-
-            return result;
-        }
-
-        private MemberViewModel LoadMemberViewModel(int bandId, int selectedId, List<string> msgs)
-        {
-            var bandName = _bandRepository.Get(bandId).Name;
-
-            var model = new MemberViewModel
-            {
-                BandName = bandName,
-                BandId = bandId,
-                SelectedId = selectedId,
-                Success = (msgs == null),
-                ErrorMessages = msgs
-            };
-
-            return model;
-        }
-
-        [HttpGet]
-        public PartialViewResult GetMemberEditView(int id)
-        {
-            return PartialView("_MemberEdit", LoadMemberEditViewModel(id));
-        }
-
-        private MemberEditViewModel LoadMemberEditViewModel(int id)
-        {
-            Member member = null;
-
-            if (id > 0)
-            {
-                member = _memberRepository.Get(id);
-            }
-            var vm = new MemberEditViewModel
-            {
-                Id = (member != null) ? member.Id : 0,
-                FirstName = (member != null) ? member.FirstName : string.Empty,
-                LastName = (member != null) ? member.LastName : string.Empty,
-                Alias = (member != null) ? member.Alias : string.Empty,
-                MemberInstruments =
-                    new SelectList((member != null)
-                    ? new Collection<object>{ new { Value = "0", Display = "<None>" }}.ToArray()
-                    .Union(
-                        member.MemberInstruments
-                        .OrderBy(o => o.Instrument.Name)
-                        .Select(x => new
-                        {
-                            Value = x.Instrument.Id,
-                            Display = x.Instrument.Name
-                        })).ToArray()
-                     : new Collection<object> { new { Value = "0", Display = "<None>" } }.ToArray()
-                     .Union(
-                     _instrumentRepository.GetAll()
-                        .OrderBy(o => o.Name)
-                        .Select(x => new
-                        {
-                            Value = x.Id,
-                            Display = x.Name
-                        })).ToArray(),
-                     "Value", "Display",
-                        (member != null) 
-                            ? (member.DefaultInstrument != null) ? member.DefaultInstrument.Id : 0
-                            : 0)
-
-            };
-
-            return vm;
-        }
-
-        [HttpPost]
-        public JsonResult SaveMember(string member)
-        {
-            var m = JsonConvert.DeserializeObject<MemberDetail>(member);
-            var memberId = m.Id;
-
-            List<string> msgs;
-            
-            if (memberId > 0)
-            {
-                msgs = ValidateMember(m.FirstName, m.LastName, m.Alias, false);
-                if (msgs == null)
-                    UpdateMember(m);
-            }
-            else
-            {
-                msgs = ValidateMember(m.FirstName, m.LastName, m.Alias, true);
-                if (msgs == null)
-                    memberId = AddMember(m);
-            }
-
-            return Json(new
-            {
-                MemberList = GetMemberList(m.BandId),
-                InstrumentArrayList = _instrumentRepository.GetNameArrayList(),
-                SelectedId = memberId,
-                Success = (null == msgs),
-                ErrorMessages = msgs
-            }, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpGet]
-        public List<string> ValidateMember(string firstName, string lastName, string alias, bool addNew)
-        {
-            var bandId = Convert.ToInt32(Session["BandId"]);
-            return _validationRules.ValidateMember(bandId, firstName, lastName, alias, addNew);
-        }
-
-        [HttpPost]
-        public JsonResult DeleteMember(int id)
-        {
-            var bandId = _memberRepository.Get(id).Band.Id;
-            _memberRepository.Delete(id);
-
-            return Json(new
-            {
-                MemberList = GetMemberList(bandId),
-                Success = true,
-            }, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpPost]
-        public JsonResult SaveColumnsMembers(string columns)
-        {
-            _common.SaveColumns(columns, Constants.UserTable.MemberId);
-            return Json(JsonRequestBehavior.AllowGet);
-        }
-
-        private int AddMember(MemberDetail memberDetail)
-        {
-            var band = _bandRepository.Get(memberDetail.BandId);
-            var defaultInstrument = _instrumentRepository.Get(memberDetail.DefaultInstrumentId);
-
-            var m = new Member
-            {
-                Band = band,
-                FirstName = memberDetail.FirstName,
-                LastName = memberDetail.LastName,
-                Alias = memberDetail.Alias,
-                DefaultInstrument = defaultInstrument
-            };
-
-            if (defaultInstrument != null)
-            {
-                m.MemberInstruments = new Collection<MemberInstrument>
-                {
-                    new MemberInstrument
-                    {
-                        Member = m,
-                        Instrument = defaultInstrument
-                    }
-                };
-            }
-
-            var id = _memberRepository.Add(m);
-
-            _userRepository.AddUserPreferenceTableMember(_currentUser.Id, id);
-
-            return id;
-        }
-
-        private void UpdateMember(MemberDetail memberDetail)
-        {
-            var member = _memberRepository.Get(memberDetail.Id);
-            var defaultInstrument = _instrumentRepository.Get(memberDetail.DefaultInstrumentId);
-
-            if (member != null)
-            {
-                member.FirstName = memberDetail.FirstName;
-                member.LastName = memberDetail.LastName;
-                member.Alias = memberDetail.Alias;
-                member.DefaultInstrument = defaultInstrument;
-            };
-
-            _memberRepository.Update(member);
-        }
-
-
-        // Member Instruments
-
-        [HttpGet]
-        public PartialViewResult GetMemberInstrumentEditView(int id)
-        {
-            return PartialView("_MemberInstrumentEdit", LoadMemberInstrumentEditViewModel(id));
-        }
-
-        private MemberInstrumentEditViewModel LoadMemberInstrumentEditViewModel(int memberId)
-        {
-            var memberInstruments = _memberRepository.GetInstruments(memberId)
-                .Select(x => new { x.Id, x.Name })
-                .ToArray();
-
-            var allInstruments = _instrumentRepository.GetAll()
-                .OrderBy(o => o.Name)
-                .Select(x => new { x.Id, x.Name });
-
-            var vm = new MemberInstrumentEditViewModel
-            {
-                AssignedInstruments =
-                    new SelectList(
-                        memberInstruments
-                        .Select(x => new
-                        {
-                            Value = x.Id,
-                            Display = x.Name
-                        }).ToArray(), "Value", "Display"),
-
-                AvailableInstruments = new SelectList(
-                        allInstruments
-                        .Where(x => !memberInstruments.Contains(x))
-                        .Select(x => new
-                        {
-                            Value = x.Id,
-                            Display = x.Name
-                        }).ToArray(), "Value", "Display")
-
-            };
-
-            return vm;
-        }
-
-        [HttpPost]
-        public JsonResult SaveMemberInstruments(string memberInstrumentDetail)
-        {
-            var detail = JsonConvert.DeserializeObject<MemberInstrumentDetail>(memberInstrumentDetail);
-
-            _memberRepository.AddRemoveMemberInstruments(detail.MemberId, detail.InstrumentIds);
-
-            return Json(new
-            {
-                MemberList = GetMemberList(detail.BandId),
-                InstrumentArrayList = _instrumentRepository.GetNameArrayList(),
-                SelectedId = detail.MemberId,
-                Success = true,
-                ErrorMessages = string.Empty
-            }, JsonRequestBehavior.AllowGet);
         }
     }
 }

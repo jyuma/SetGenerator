@@ -40,16 +40,16 @@
               <Width>0.32292in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>2.71251in</Width>
+              <Width>2.60834in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>2.34375in</Width>
+              <Width>2.26042in</Width>
             </TablixColumn>
             <TablixColumn>
               <Width>0.49167in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>0.66875in</Width>
+              <Width>0.86667in</Width>
             </TablixColumn>
             <TablixColumn>
               <Width>0.62708in</Width>
@@ -259,7 +259,7 @@
         <DataSetName>Songs</DataSetName>
         <Top>0.51277in</Top>
         <Height>0.22396in</Height>
-        <Width>7.16668in</Width>
+        <Width>7.1771in</Width>
         <ZIndex>1</ZIndex>
         <Style>
           <Border>
@@ -283,7 +283,6 @@
   <DataSources>
     <DataSource Name="SetGenerator">
       <DataSourceReference>SetGenerator</DataSourceReference>
-      <rd:SecurityType>None</rd:SecurityType>
       <rd:DataSourceID>97ff4bb8-6f60-4ec4-9716-c9b9d1b18502</rd:DataSourceID>
     </DataSource>
   </DataSources>

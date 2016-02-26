@@ -281,8 +281,9 @@ namespace SetGenerator.WebUI.Controllers
         public JsonResult Save(string song)
         {
             var s = JsonConvert.DeserializeObject<SongDetail>(song);
-            List<string> msgs;
+            IEnumerable<string> msgs;
             var songId = s.Id;
+            s.BandId = Convert.ToInt32(Session["BandId"]);
 
             if (songId > 0)
             {
@@ -297,11 +298,10 @@ namespace SetGenerator.WebUI.Controllers
                     songId = AddSong(s);
             }
 
-            var bandId = Convert.ToInt32(Session["BandId"]);
             return Json(new
             {
-                SongList = GetSongList(bandId),
-                SingerArrayList = _bandRepository.GetSingerNameArrayList(bandId),
+                SongList = GetSongList(s.BandId),
+                SingerArrayList = _bandRepository.GetSingerNameArrayList(s.BandId),
                 SelectedId = songId,
                 Success = (null == msgs),
                 ErrorMessages = msgs
@@ -350,8 +350,7 @@ namespace SetGenerator.WebUI.Controllers
             return Json(JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet]
-        public List<string> ValidateSong(string title, bool addNew)
+        private IEnumerable<string> ValidateSong(string title, bool addNew)
         {
             var bandId = Convert.ToInt32(Session["BandId"]);
             return _validationRules.ValidateSong(bandId, title, addNew);
@@ -368,10 +367,8 @@ namespace SetGenerator.WebUI.Controllers
 
         private int AddSong(SongDetail songDetail)
         {
-            var bandId = Convert.ToInt32(Session["BandId"]);
-
-            var band = _bandRepository.Get(bandId);
-            var members = _bandRepository.GetMembers(bandId).ToArray();
+            var band = _bandRepository.Get(songDetail.BandId);
+            var members = _bandRepository.GetMembers(songDetail.BandId).ToArray();
             var instruments = _instrumentRepository.GetAll();
             var genre = _bandRepository.GetGenre(songDetail.GenreId);
             var tempo = _songRepository.GetTempo(songDetail.TempoId);
@@ -414,10 +411,8 @@ namespace SetGenerator.WebUI.Controllers
 
         private void UpdateSong(SongDetail songDetail)
         {
-            var bandId = Convert.ToInt32(Session["BandId"]);
-
             var song = _songRepository.Get(songDetail.Id);
-            var members = _bandRepository.GetMembers(bandId).ToArray();
+            var members = _bandRepository.GetMembers(songDetail.BandId).ToArray();
             var instruments = _instrumentRepository.GetAll();
             var genre = _bandRepository.GetGenre(songDetail.GenreId);
             var tempo = _songRepository.GetTempo(songDetail.TempoId);

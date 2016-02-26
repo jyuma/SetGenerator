@@ -50,7 +50,7 @@ namespace SetGenerator.WebUI.Controllers
             var bandId = Convert.ToInt32(Session["BandId"]);
             var vm = new
             {
-                GigList = GetGigList(),
+                GigList = GetGigList(bandId),
                 SetlistArrayList = _setlistRepository.GetSetlistArrayList(bandId),
                 TableColumnList = _common.GetTableColumnList(_currentUser.Id, Constants.UserTable.GigId, bandId)
             };
@@ -58,9 +58,8 @@ namespace SetGenerator.WebUI.Controllers
             return Json(vm, JsonRequestBehavior.AllowGet);
         }
 
-        private IEnumerable<GigDetail> GetGigList()
+        private IEnumerable<GigDetail> GetGigList(int bandId)
         {
-            var bandId = Convert.ToInt32(Session["BandId"]);
             var gigList = _gigRepository.GetByBandId(bandId);
 
             var result = gigList.Select(gig => new GigDetail
@@ -142,8 +141,9 @@ namespace SetGenerator.WebUI.Controllers
         public JsonResult Save(string gig)
         {
             var g = JsonConvert.DeserializeObject<GigDetail>(gig);
-            List<string> msgs = null;
+            IEnumerable<string> msgs;
             var gigId = g.Id;
+            g.BandId = Convert.ToInt32(Session["BandId"]);
 
             if (gigId > 0)
             {
@@ -160,15 +160,14 @@ namespace SetGenerator.WebUI.Controllers
 
             return Json(new
             {
-                GigList = GetGigList(),
+                GigList = GetGigList(g.BandId),
                 SelectedId = gigId,
                 Success = (null == msgs),
                 ErrorMessages = msgs
             }, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet]
-        public List<string> ValidateGig(string venue, string dateGig, bool addNew)
+        private IEnumerable<string> ValidateGig(string venue, string dateGig, bool addNew)
         {
             var bandId = Convert.ToInt32(Session["BandId"]);
             return _validationRules.ValidateGig(bandId, venue, Convert.ToDateTime(dateGig), addNew);
@@ -178,10 +177,11 @@ namespace SetGenerator.WebUI.Controllers
         public JsonResult Delete(int id)
         {
             _gigRepository.Delete(id);
+            var bandId = Convert.ToInt32(Session["BandId"]);
 
             return Json(new
             {
-                GigList = GetGigList(),
+                GigList = GetGigList(bandId),
                 Success = true,
             }, JsonRequestBehavior.AllowGet);
         }
@@ -195,8 +195,7 @@ namespace SetGenerator.WebUI.Controllers
 
         private int AddGig(GigDetail gigDetail)
         {
-            var bandId = Convert.ToInt32(Session["BandId"]);
-            var band = _bandRepository.Get(bandId);
+            var band = _bandRepository.Get(gigDetail.BandId);
             var setlist = _setlistRepository.Get(gigDetail.SetlistId);
 
             var g = new Gig

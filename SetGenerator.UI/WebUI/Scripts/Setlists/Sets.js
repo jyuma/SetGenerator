@@ -133,8 +133,6 @@
                 createSetSongArray(lists.SetSongList);
 
                 self.sort = function (header) {
-                    //if (self.selectedSetNumber() !== 0) return;
-
                     var afterSave = typeof header.afterSave != "undefined" ? header.afterSave : false;
                     var sortKey;
 

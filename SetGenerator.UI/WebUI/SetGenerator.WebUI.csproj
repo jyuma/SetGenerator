@@ -253,6 +253,7 @@
     <Compile Include="Controllers\BandsController.cs" />
     <Compile Include="Controllers\GigsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\MembersController.cs" />
     <Compile Include="Controllers\SetlistsController.cs" />
     <Compile Include="Controllers\SongsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
@@ -330,7 +331,7 @@
     <Content Include="Global.asax" />
     <Content Include="Content\images\Thumbs.db" />
     <Content Include="Scripts\Bands\Index.js" />
-    <Content Include="Scripts\Bands\Members.js" />
+    <Content Include="Scripts\Members\Index.js" />
     <Content Include="Scripts\bootstrap-datepicker.js" />
     <Content Include="Scripts\bootstrap-datepicker.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -434,9 +435,9 @@
       <DependentUpon>jquery.validate.min.js</DependentUpon>
     </Content>
     <Content Include="Views\Bands\_BandEdit.cshtml" />
-    <Content Include="Views\Bands\_MemberEdit.cshtml" />
-    <Content Include="Views\Bands\Members.cshtml" />
-    <Content Include="Views\Bands\_MemberInstrumentEdit.cshtml" />
+    <Content Include="Views\Members\_MemberEdit.cshtml" />
+    <Content Include="Views\Members\Index.cshtml" />
+    <Content Include="Views\Members\_MemberInstrumentEdit.cshtml" />
     <Content Include="Views\Users\Index.cshtml" />
     <Content Include="Views\Users\_UserEdit.cshtml" />
     <Content Include="Views\Users\_UserBandEdit.cshtml" />

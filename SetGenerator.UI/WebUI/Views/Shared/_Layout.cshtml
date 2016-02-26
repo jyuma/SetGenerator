@@ -39,6 +39,7 @@
                         {
                             if (((ICollection)Session["Bands"]).Count > 0)
                             {
+                                <li>@Html.ActionLink("Members", "Index", "Members")</li>
                                 <li>@Html.ActionLink("Songs", "Index", "Songs")</li>
                                 <li>@Html.ActionLink("Setlists", "Index", "Setlists")</li>
                                 <li>@Html.ActionLink("Gigs", "Index", "Gigs")</li>

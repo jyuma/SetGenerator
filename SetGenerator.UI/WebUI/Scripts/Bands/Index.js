@@ -170,7 +170,9 @@
 
                     dialog.custom.showModal({
                         title: "<span class='glyphicon glyphicon-remove'></span> Delete Band?",
-                        message: "<p>This will permanently delete the band <i>" + g.name + "</i>.</p>",
+                        message: "<p><b>Are you sure?</b><br\><br\>" +
+                            "This will permanently delete the band <i><b>" + g.name + "</b></i>\n" +
+                            "including all associated members, songs and setlists.</p>",
                         callback: function () {
                             return self.deleteBand(row.id);
                         },

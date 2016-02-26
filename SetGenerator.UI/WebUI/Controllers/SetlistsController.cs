@@ -305,19 +305,18 @@ namespace SetGenerator.WebUI.Controllers
         [HttpGet]
         public JsonResult GetDataSets(int setlistId)
         {
-            var bandId = Convert.ToInt32(Session["BandId"]);
             var setlist = _setlistRepository.Get(setlistId);
-
+            
             var vm = new
             {
                 Name = setlist.Name,
                 SetSongList = GetSetSongList(setlist),
                 SpareList = GetSpareList(setlist),
-                MemberArrayList = _bandRepository.GetMemberNameArrayList(bandId),
+                MemberArrayList = _bandRepository.GetMemberNameArrayList(setlist.Band.Id),
                 GenreArrayList = _bandRepository.GetGenreArrayList(),
                 TempoArrayList = _songRepository.GetTempoArrayList(),
                 SetNumberList = setlist.SetSongs.Select(x => x.SetNumber).Distinct().ToArray(),
-                TableColumnList = _common.GetTableColumnList(_currentUser.Id, Constants.UserTable.SetId, bandId)
+                TableColumnList = _common.GetTableColumnList(_currentUser.Id, Constants.UserTable.SetId, setlist.Band.Id)
             };
 
             return Json(vm, JsonRequestBehavior.AllowGet);
@@ -361,7 +360,7 @@ namespace SetGenerator.WebUI.Controllers
         public JsonResult Save(string setlistDetail)
         {
             var detail = JsonConvert.DeserializeObject<SetlistDetail>(setlistDetail);
-            List<string> msgs = null;
+            IEnumerable<string> msgs = null;
             var setlistId = detail.Id;
 
             if (setlistId > 0)
@@ -389,7 +388,7 @@ namespace SetGenerator.WebUI.Controllers
             var detail = JsonConvert.DeserializeObject<SetlistDetail>(setlistDetail);
             int selectedId = detail.Id;
 
-            List<string> msgs = ValidateSetlist(detail.Name, (detail.NumSets * detail.NumSongs), true);
+            IEnumerable<string> msgs = ValidateSetlist(detail.Name, (detail.NumSets * detail.NumSongs), true);
             if (msgs == null)
             {
                 var generator = new SetlistHelper(_bandRepository);
@@ -510,8 +509,7 @@ namespace SetGenerator.WebUI.Controllers
             return Json(JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet]
-        public List<string> ValidateSetlist(string name, int numSongs, bool addNew)
+        private IEnumerable<string> ValidateSetlist(string name, int numSongs, bool addNew)
         {
             var bandId = Convert.ToInt32(Session["BandId"]);
             return _validationRules.ValidateSetlist(bandId, name, numSongs, addNew);
@@ -519,9 +517,8 @@ namespace SetGenerator.WebUI.Controllers
 
         private IEnumerable<SetSongDetail> GetSpareList(Setlist setlist)
         {
-            var bandId = Convert.ToInt32(Session["BandId"]);
             var setSongIds = setlist.SetSongs.Select(x => x.Song.Id);
-            var allAListSongs = _songRepository.GetAList(bandId);
+            var allAListSongs = _songRepository.GetAList(setlist.Band.Id);
 
             return allAListSongs
                 .Where(x => !setSongIds.Contains(x.Id))
@@ -585,24 +582,6 @@ namespace SetGenerator.WebUI.Controllers
                 SharpFlatNatural = key.SharpFlatNatural,
                 MajorMinor = key.MajorMinor
             };
-        }
-
-        private int AddSetlist(SetlistDetail setlist)
-        {
-            var bandId = Convert.ToInt32(Session["BandId"]);
-            var band = _bandRepository.Get(bandId);
-
-            var sl = new Setlist
-            {
-                Name = setlist.Name,
-                Band = band,
-                UserCreate = _currentUser,
-                UserUpdate = _currentUser,
-                DateCreate = DateTime.Now,
-                DateUpdate = DateTime.Now
-            };
-
-            return _setlistRepository.Add(sl);
         }
 
         private void UpdateSetlist(SetlistDetail setlistDetail)

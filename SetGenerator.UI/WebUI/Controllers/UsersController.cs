@@ -148,7 +148,7 @@ namespace SetGenerator.WebUI.Controllers
         public JsonResult Save(string user)
         {
             var u = JsonConvert.DeserializeObject<UserEditViewModel>(user);
-            List<string> msgs;
+            IEnumerable<string> msgs;
             var userId = 0;
 
             if (u.Id > 0)
@@ -175,8 +175,7 @@ namespace SetGenerator.WebUI.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet]
-        public List<string> ValidateUser(string username, string password, string email, bool addNew)
+        private IEnumerable<string> ValidateUser(string username, string password, string email, bool addNew)
         {
             return _validationRules.ValidateUser(username, password, email, addNew);
         }

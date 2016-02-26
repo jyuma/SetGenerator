@@ -19,16 +19,18 @@ namespace SetGenerator.Data.Repositories
 
         // UserBand
         int AddUserBand(int userId, int bandId);
-        void DeleteUserBand(int userId, int bandId);
+        void DeleteUserBands(int bandId);
 
         // UserPreferenceTableColumns
         int AddUserPreferenceTableColumns(int userId, int bandId);
         void DeleteUserPreferenceTableColumns(int userId, int bandId);
+        void DeleteUserPreferenceTableColumns(int bandId);
 
         // UserPreferenceTableMember
-        int AddUserPreferenceTableMember(int userId, int memberId);
+        int AddAllUserPreferenceTableMember(int bandId, int memberId);
         void DeleteUserPreferenceTableMember(int userId, int memberId);
         void DeleteUserPreferenceTableMembers(int userId, int bandId);
+        void DeleteUserPreferenceTableMembers(int bandId);
     }
 
     public class UserRepository : RepositoryBase<User>, IUserRepository
@@ -286,12 +288,16 @@ namespace SetGenerator.Data.Repositories
                 
                 using (var transaction = Session.BeginTransaction())
                 {
-                    result = (int) Session.Save(userBand);
+                    Session.Save(userBand);
                     transaction.Commit();
                 }
 
-                AddUserPreferenceTableColumns(user.Id, idLocal);
-                AddUserPreferenceTableMembers(user.Id, idLocal);
+                result = AddUserPreferenceTableColumns(user.Id, idLocal);
+
+                if (result > 0)
+                {
+                    result = AddUserPreferenceTableMembers(user.Id, idLocal);
+                }
             }
 
             return result;
@@ -336,21 +342,24 @@ namespace SetGenerator.Data.Repositories
             return id;
         }
 
-        public void DeleteUserBand(int userId, int bandId)
+        public void DeleteUserBands(int bandId)
         {
-            var user = Session.QueryOver<User>()
-                .Where(x => x.Id == userId).SingleOrDefault();
+            var userBands = Session.QueryOver<UserBand>()
+                .Where(x => x.Band.Id == bandId).List();
 
-            var userBand = user.UserBands
-                .SingleOrDefault(x => x.Band.Id == bandId);
-
-            if (userBand == null) return;
-
-            user.UserBands.Remove(userBand);
-            using (var transaction = Session.BeginTransaction())
+            foreach (var ub in userBands)
             {
-                Session.Delete(userBand);
-                transaction.Commit();
+                var userBand = ub;
+                var user = Session.QueryOver<User>()
+                    .Where(x => x.Id == userBand.User.Id).SingleOrDefault();
+
+                user.UserBands.Remove(userBand);
+
+                using (var transaction = Session.BeginTransaction())
+                {
+                    Session.Delete(userBand);
+                    transaction.Commit();
+                }
             }
         }
 
@@ -388,6 +397,22 @@ namespace SetGenerator.Data.Repositories
             }
 
             return id;
+        }
+
+        public void DeleteUserPreferenceTableColumns(int bandId)
+        {
+            var bandUsers = Session.QueryOver<UserPreferenceTableColumn>()
+                .Where(x => x.Band.Id == bandId).List()
+                .Select(x => new
+                {
+                    BandId = x.Band.Id,
+                    UserId = x.User.Id
+                }).Distinct();
+
+            foreach (var bandUser in bandUsers)
+            {
+                DeleteUserPreferenceTableColumns(bandUser.UserId, bandUser.BandId);
+            }
         }
 
         public void DeleteUserPreferenceTableColumns(int userId, int bandId)
@@ -438,8 +463,22 @@ namespace SetGenerator.Data.Repositories
         }
 
         // UserPreferenceTableMembers
+        public int AddAllUserPreferenceTableMember(int bandId, int memberId)
+        {
+            var result = -1;
 
-        public int AddUserPreferenceTableMember(int userId, int memberId)
+            var bandUsers = Session.QueryOver<UserBand>()
+                .Where(x => x.Band.Id == bandId).List();
+
+            foreach (var bandUser in bandUsers)
+            {
+                result = AddUserPreferenceTableMember(bandUser.User.Id, memberId);
+            }
+
+            return result;
+        }
+
+        private int AddUserPreferenceTableMember(int userId, int memberId)
         {
             int id;
             var user = Session.QueryOver<User>().Where(x => x.Id == userId).SingleOrDefault();
@@ -499,29 +538,53 @@ namespace SetGenerator.Data.Repositories
             return result;
         }
 
+        public void DeleteUserPreferenceTableMembers(int bandId)
+        {
+            Member memberTableAlias = null;
+
+            var tableMembers = Session.QueryOver<UserPreferenceTableMember>()
+                .JoinAlias(x => x.Member, () => memberTableAlias)
+                .Where(x => x.Member.Id == memberTableAlias.Id)
+                .Where(x => memberTableAlias.Band.Id == bandId)
+                .List()
+                .Select(x => new
+                {
+                    UserId = x.User.Id,
+                    MemberId = x.Member.Id
+                }).Distinct().ToArray();
+
+            foreach (var tableMember in tableMembers)
+            {
+                DeleteUserPreferenceTableMember(tableMember.UserId, tableMember.MemberId);
+            }
+        }
+
         public void DeleteUserPreferenceTableMember(int userId, int memberId)
         {
             var user = Session.QueryOver<User>().Where(x => x.Id == userId).SingleOrDefault();
 
-            var userPreferenceTableMember = user.UserPreferenceTableMembers
-                .SingleOrDefault(x => x.Member.Id == memberId);
+            var userPreferenceTableMembers = user.UserPreferenceTableMembers
+                .Where(x => x.Member.Id == memberId)
+                .ToArray();
 
-            if (userPreferenceTableMember == null) return;
-
-            user.UserPreferenceTableMembers.Remove(userPreferenceTableMember);
-            using (var transaction = Session.BeginTransaction())
+            foreach (var userPreferenceTableMember in userPreferenceTableMembers)
             {
-                Session.Delete(userPreferenceTableMember);
-                transaction.Commit();
+                user.UserPreferenceTableMembers.Remove(userPreferenceTableMember);
+                using (var transaction = Session.BeginTransaction())
+                {
+                    Session.Delete(userPreferenceTableMember);
+                    transaction.Commit();
+                }
             }
+
         }
 
         public void DeleteUserPreferenceTableMembers(int userId, int bandId)
         {
             var user = Session.QueryOver<User>().Where(x => x.Id == userId).SingleOrDefault();
+            var band = Session.QueryOver<Band>().Where(x => x.Id == bandId).SingleOrDefault();
 
-            IList<int> memberIds = Session.QueryOver<Band>().Where(x => x.Id == bandId)
-                .SingleOrDefault()
+            IList<int> memberIds = band
                 .Members.Select(x => x.Id)
                 .ToArray();
 

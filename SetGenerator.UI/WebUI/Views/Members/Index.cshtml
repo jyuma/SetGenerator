@@ -7,24 +7,18 @@
 }
 
 @{
-    ViewBag.Title = "Manage Members";
+    ViewBag.Title = "Manage Members for <i>" + @Model.BandName + "</i>";
 }
 
 <script type="text/javascript">
     $(document).ready(function() {
-        bands.members.init(
-        {
-            bandId: '@Model.BandId'
-        });
+        bands.members.init();
     });
 </script>
 
 <div class="panel panel-default">
     <div class="panel-heading">
         <div class="row">
-            <div class="col-sm-10">
-                <h3><i>@Model.BandName</i> Members</h3>
-            </div>
             <div class="pull-right record-total">
                 <label>Total:</label> <span data-bind="text: totalMembers()"></span>
             </div>
@@ -32,9 +26,6 @@
         <ul class="nav nav-pills">
             <li>
                 <input type="button" class="btn btn-success" value="Add Member" data-bind="click: showEditDialog"/>
-            </li>
-            <li>
-                <a style="padding: 5px 0 0 10px" href="#" onclick="location.href = '@Url.Action("Index", "Bands", new {@id = @Model.BandId})'">Back To List</a>
             </li>
             <li class="navbar-right">
                 <div id="ddlColumns" class="dropdown">

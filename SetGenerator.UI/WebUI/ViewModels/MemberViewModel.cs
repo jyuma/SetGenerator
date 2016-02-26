@@ -19,7 +19,6 @@ namespace SetGenerator.WebUI.ViewModels
         public List<string> ErrorMessages { get; set; }
         public bool Success { get; set; }
         public string BandName { get; set; }
-        public int BandId { get; set; }
     }
 
     public class MemberEditViewModel

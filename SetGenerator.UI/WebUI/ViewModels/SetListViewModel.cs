@@ -6,6 +6,7 @@ namespace SetGenerator.WebUI.ViewModels
     public class SetlistDetail
     {
         public int Id { get; set; }
+        public int BandId { get; set; }
         public string Name  { get; set; }
         public int NumSets { get; set; }
         public int NumSongs { get; set; }

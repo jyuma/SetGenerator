@@ -1,5 +1,5 @@
 ﻿/*!
- * Bands/Members.js
+ * Members/Index.js
  * Author: John Charlton
  * Date: 2015-05
  */
@@ -8,15 +8,9 @@
     var HIGHLIGHT_ROW_COLOUR = "#e3e8ff";
 
     bands.members = {
-        init: function (options) {
+        init: function () {
             var _sortDescending = false;
-            var _currentSortKey = "firstname";
-
-            var config = {
-                bandId: 0
-            }
-
-            $.extend(config, options);
+            var _currentSortKey = "alias";
 
             var lists = {
                 MemberList: [],
@@ -31,9 +25,8 @@
             function loadConfig() {
                 $.ajax({
                     type: "GET",
-                    url: site.url + "Bands/GetDataMembers/",
+                    url: site.url + "Members/GetData/",
                     dataType: "json",
-                    data: { bandId: config.bandId },
                     traditional: true,
                     async: false,
                     success: function (data) {
@@ -193,7 +186,7 @@
                     $.ajax({
                         type: "GET",
                         async: false,
-                        url: site.url + "Bands/GetMemberEditView/" + id,
+                        url: site.url + "Members/GetMemberEditView/" + id,
                         success: function (data) {
                             message = data;
                         }
@@ -224,7 +217,7 @@
                     $.ajax({
                         type: "GET",
                         async: false,
-                        url: site.url + "Bands/GetMemberInstrumentEditView/" + id,
+                        url: site.url + "Members/GetMemberInstrumentEditView/" + id,
                         success: function (data) {
                             message = data;
                         }
@@ -272,7 +265,7 @@
                     var defaultinstrumentid = $.trim($("#ddlMemberInstruments").val());
 
                     return {
-                        Id: self.selectedMember().id, BandId: config.bandId, FirstName: firstname, LastName: lastname, Alias: alias, DefaultInstrumentId: defaultinstrumentid.length > 0 ? defaultinstrumentid: 0
+                        Id: self.selectedMember().id, FirstName: firstname, LastName: lastname, Alias: alias, DefaultInstrumentId: defaultinstrumentid.length > 0 ? defaultinstrumentid: 0
                     };
                 };
 
@@ -285,7 +278,7 @@
                     });
 
                     return {
-                        BandId: config.bandId, MemberId: self.selectedMember().id, InstrumentIds: ids
+                        MemberId: self.selectedMember().id, InstrumentIds: ids
                     };
                 };
 
@@ -315,7 +308,7 @@
                     $.ajax({
                         type: "POST",
                         async: false,
-                        url: site.url + "Bands/SaveMember/",
+                        url: site.url + "Members/Save/",
                         data: { member: jsonData },
                         dataType: "json",
                         traditional: true,
@@ -358,7 +351,7 @@
 
                     $.ajax({
                         type: "POST",
-                        url: site.url + "Bands/DeleteMember/",
+                        url: site.url + "Members/Delete/",
                         data: { id: id },
                         dataType: "json",
                         traditional: true,
@@ -388,7 +381,7 @@
                     $.ajax({
                         type: "POST",
                         async: false,
-                        url: site.url + "Bands/SaveMemberInstruments/",
+                        url: site.url + "Members/SaveMemberInstruments/",
                         data: { memberInstrumentDetail: jsonData },
                         dataType: "json",
                         traditional: true,
@@ -427,7 +420,7 @@
                     if (isDifference) {
                         $.ajax({
                             type: "POST",
-                            url: site.url + "Bands/SaveColumnsMembers/",
+                            url: site.url + "Members/SaveColumns/",
                             data: { columns: jsonData },
                             dataType: "json",
                             traditional: true
