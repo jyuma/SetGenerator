@@ -63,12 +63,15 @@ namespace SetGenerator.Service
 
         private List<string> ValidateUserName(string username, bool addNew, List<string> msgs)
         {
-            var band = _bandRepository.GetByName(username);
-
             if (string.IsNullOrEmpty(username))
                 msgs.Add("UserName is required");
-            if (addNew && band != null)
-                msgs.Add("UserName already exists");
+
+            else if (addNew)
+            {
+                var band = _bandRepository.GetByName(username);
+                if (band != null)
+                    msgs.Add("UserName already exists");
+            }
 
             return msgs;
         }
@@ -83,16 +86,24 @@ namespace SetGenerator.Service
 
         private static List<string> ValidateEmail(string email, List<string> msgs)
         {
-            const string validEmailPattern = @"^(?!\.)(""([^""\r\\]|\\[""\r\\])*""|"
-                                             + @"([-a-z0-9!#$%&'*+/=?^_`{|}~]|(?<!\.)\.)*)(?<!\.)"
-                                             + @"@[a-z0-9][\w\.-]*[a-z0-9]\.[a-z][a-z\.]*[a-z]$";
 
-            var validEmailRegex = new Regex(validEmailPattern, RegexOptions.IgnoreCase);
+            if (string.IsNullOrEmpty(email))
+            {
+                msgs.Add("Email address is required");
+            }
+            else
+            {
+                const string validEmailPattern = @"^(?!\.)(""([^""\r\\]|\\[""\r\\])*""|"
+                                                 + @"([-a-z0-9!#$%&'*+/=?^_`{|}~]|(?<!\.)\.)*)(?<!\.)"
+                                                 + @"@[a-z0-9][\w\.-]*[a-z0-9]\.[a-z][a-z\.]*[a-z]$";
 
-            var isMatch = validEmailRegex.IsMatch(email);
+                var validEmailRegex = new Regex(validEmailPattern, RegexOptions.IgnoreCase);
 
-            if (!isMatch)
-                msgs.Add("Invalild email address");
+                var isMatch = validEmailRegex.IsMatch(email);
+
+                if (!isMatch)
+                    msgs.Add("Invalild email address");
+            }
 
             return msgs;
         }
@@ -107,12 +118,16 @@ namespace SetGenerator.Service
 
         private List<string> ValidateName(string name, bool addNew, List<string> msgs)
         {
-            var band = _bandRepository.GetByName(name);
-
+           
             if (string.IsNullOrEmpty(name))
                 msgs.Add("Name is required");
-            if (addNew && band != null)
-                msgs.Add("Band name already exists");
+
+            else if (addNew)
+            {
+                var band = _bandRepository.GetByName(name);
+                if (band != null)
+                    msgs.Add("Band name already exists");
+            }
 
             return msgs;
         }
@@ -127,13 +142,19 @@ namespace SetGenerator.Service
 
         private List<string> ValidateAlias(int bandId, string alias, bool addNew, List<string> msgs)
         {
-            var member = _memberRepository.GetByBandIdAlias(bandId, alias);
-
             if (string.IsNullOrEmpty(alias))
                 msgs.Add("Alias is required");
-            if (addNew && member != null)
-                msgs.Add("Alias already exists");
 
+            else if (alias.Any(char.IsWhiteSpace))
+                msgs.Add("Alias cannot contain spaces");
+
+            else if (addNew)
+            {
+                var member = _memberRepository.GetByBandIdAlias(bandId, alias);
+                if (member != null)
+                    msgs.Add("Alias already exists");
+            }
+        
             return msgs;
         }
 
@@ -149,12 +170,15 @@ namespace SetGenerator.Service
 
         public List<string> ValidateTitle(int bandId, string title, bool addNew, List<string> msgs)
         {
-            var s = _songRepository.GetByTitle(bandId, title);
-
             if (string.IsNullOrEmpty(title))
                 msgs.Add("Title is required");
-            if (addNew && s != null)
-                msgs.Add("Title already exists");
+
+            else if (addNew)
+            {
+                var song = _songRepository.GetByTitle(bandId, title);
+                if (song != null)
+                    msgs.Add("Title already exists");
+            }
 
             return msgs;
         }
@@ -170,12 +194,15 @@ namespace SetGenerator.Service
 
         private List<string> ValidateName(int bandId, string name, bool addNew, List<string> msgs)
         {
-            var s = _setListRepository.GetByName(bandId, name);
-
             if (string.IsNullOrEmpty(name))
                 msgs.Add("Name is required");
-            if (addNew && s != null)
-                msgs.Add("Name already exists");
+
+            else if (addNew)
+            {
+                var setlist = _setListRepository.GetByName(bandId, name);
+                if (setlist != null)
+                    msgs.Add("Name already exists");
+            }
 
             return msgs;
         }
@@ -199,12 +226,15 @@ namespace SetGenerator.Service
 
         private List<string> ValidateVenue(int bandId, string venue, DateTime dateGig, bool addNew, List<string> msgs)
         {
-            var s = _gigRepository.GetByBandVenueDateGig(bandId, venue, dateGig);
-
             if (string.IsNullOrEmpty(venue))
                 msgs.Add("Venue is required");
-            if (addNew && s != null)
-                msgs.Add("Venue / Gig Date combination already exists");
+
+            else if (addNew)
+            {
+                var gig = _gigRepository.GetByBandVenueDateGig(bandId, venue, dateGig);
+                if (gig != null)
+                    msgs.Add("Venue/GigDate combination already exists");
+            }
 
             return msgs;
         }
