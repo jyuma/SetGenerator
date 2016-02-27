@@ -25,8 +25,15 @@
                         {
                             if (Session["UserName"].ToString() == "admin")
                             {
-                                <li>@Html.ActionLink("Users", "Index", "Users")</li>
-                                <li>@Html.ActionLink("Bands", "Index", "Bands")</li>
+                                <li class="dropdown">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Admin<span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li>@Html.ActionLink("Users", "Index", "Users")</li>
+                                        <li>@Html.ActionLink("Bands", "Index", "Bands")</li>
+                                        <li>@Html.ActionLink("Instruments", "Index", "Instruments")</li>
+                                        <li>@Html.ActionLink("Genres", "Index", "Genres")</li>
+                                    </ul>
+                                </li>
                             }
                             else
                             {

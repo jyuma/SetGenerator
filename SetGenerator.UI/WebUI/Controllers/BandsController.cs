@@ -2,13 +2,10 @@
 using SetGenerator.Service;
 using SetGenerator.WebUI.ViewModels;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Web.Mvc;
-using NHibernate.Util;
-using ServiceStack.Text;
 using SetGenerator.Data.Repositories;
 using SetGenerator.Domain.Entities;
 using SetGenerator.WebUI.Common;

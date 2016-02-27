@@ -1,5 +1,5 @@
 ﻿/*!
- * Bands/Index.js
+ * Instruments/Index.js
  * Author: John Charlton
  * Date: 2015-05
  */
@@ -7,35 +7,24 @@
 
     var HIGHLIGHT_ROW_COLOUR = "#e3e8ff";
 
-    bands.index = {
-        init: function (options) {
+    instruments.index = {
+        init: function () {
             var _sortDescending = false;
             var _currentSortKey = "name";
 
-            var config = {
-                bandId: "0"
-            };
-
-            $.extend(config, options);
-
             var lists = {
-                BandList: [],
-                DefaultSingerArrayList: [],
-                DefaultGenreArrayList: [],
+                InstrumentList: [],
                 TableColumnList: []
             };
 
             loadConfig();
 
-            ko.applyBindings(new BandViewModel());
-
-            // pre-select the band whose members were just being managed
-            if (config.bandId > 0) { $("#row_" + config.bandId).trigger("click"); }
+            ko.applyBindings(new InstrumentViewModel());
 
             function loadConfig() {
                 $.ajax({
                     type: "GET",
-                    url: site.url + "Bands/GetData/",
+                    url: site.url + "Instruments/GetData/",
                     dataType: "json",
                     traditional: true,
                     async: false,
@@ -45,35 +34,33 @@
                 });
             }
 
-            function Band(id, name, defaultsingerid, defaultgenreid, updateuser, updatedate) {
+            function Instrument(id, name, abbreviation, issonginstrument) {
                 var self = this;
 
                 self.id = id;
                 self.name = name;
-                self.defaultsinger = getValue(lists.DefaultSingerArrayList, defaultsingerid, "Display", "Value");
-                self.defaultgenre = getValue(lists.DefaultGenreArrayList, defaultgenreid, "Display", "Value");
-                self.updateuser = updateuser;
-                self.updatedate = updatedate;
+                self.abbreviation = abbreviation;
+                self.issonginstrument = issonginstrument;
             }
 
-            function BandViewModel() {
-                var tblBand = $("#tblBand");
+            function InstrumentViewModel() {
+                var tblInstrument = $("#tblInstrument");
                 var ddlColumns = $("#ddlColumns");
 
                 var self = this;
 
-                self.bands = ko.observableArray([]);
-                self.selectedBand = ko.observable();
+                self.instruments = ko.observableArray([]);
+                self.selectedInstrument = ko.observable();
                 self.nameSearch = ko.observable("");
                 self.editFormHeader = ko.observable("");
-                self.totalBands = ko.observable(0);
+                self.totalInstruments = ko.observable(0);
 
-                createBandArray(lists.BandList);
+                createInstrumentArray(lists.InstrumentList);
 
-                function createBandArray(list) {
-                    self.bands.removeAll();
+                function createInstrumentArray(list) {
+                    self.instruments.removeAll();
                     $(list).each(function (index, value) {
-                        pushBand(value);
+                        pushInstrument(value);
                     });
                 };
 
@@ -89,11 +76,11 @@
                     return arr;
                 });
 
-                function pushBand(value) {
-                    self.bands.push(new Band(value.Id, value.Name, value.DefaultSingerId, value.DefaultGenreId, value.UserUpdate, value.DateUpdate));
+                function pushInstrument(value) {
+                    self.instruments.push(new Instrument(value.Id, value.Name, value.Abbreviation, value.IsSongInstrument));
                 };
 
-                self.selectedBand(self.bands()[0]);
+                self.selectedInstrument(self.instruments()[0]);
 
                 self.sort = function (header) {
                     var afterSave = typeof header.afterSave != "undefined" ? header.afterSave : false;
@@ -114,7 +101,7 @@
 
                     $(self.columns()).each(function (index, value) {
                         if (value.sortKey === sortKey) {
-                            self.bands.sort(function (a, b) {
+                            self.instruments.sort(function (a, b) {
                                 if (_sortDescending) {
                                     return a[sortKey].toString().toLowerCase() > b[sortKey].toString().toLowerCase()
                                         ? -1 : a[sortKey].toString().toLowerCase() < b[sortKey].toString().toLowerCase()
@@ -129,19 +116,19 @@
                     });
                 };
 
-                self.filteredBands = ko.computed(function () {
-                    return ko.utils.arrayFilter(self.bands(), function (g) {
+                self.filteredInstruments = ko.computed(function () {
+                    return ko.utils.arrayFilter(self.instruments(), function (g) {
                         return (
                             (self.nameSearch().length === 0 || g.name.toLowerCase().indexOf(self.nameSearch().toLowerCase()) !== -1)
                         );
                     });
                 });
 
-                self.bandsTable = ko.computed(function () {
-                    var filteredBands = self.filteredBands();
-                    self.totalBands(filteredBands.length);
+                self.instrumentsTable = ko.computed(function () {
+                    var filteredInstruments = self.filteredInstruments();
+                    self.totalInstruments(filteredInstruments.length);
 
-                    return filteredBands;
+                    return filteredInstruments;
                 });
 
                 self.showEditDialog = function (row) {
@@ -151,53 +138,51 @@
                         self.highlightRow(row);
                     }
 
-                    self.showBandEditDialog(row);
+                    self.showInstrumentEditDialog(row);
                 };
 
-                self.deleteSelectedBand = function (row) {
-                    deleteBand(row.id);
+                self.deleteSelectedInstrument = function (row) {
+                    deleteInstrument(row.id);
                 };
 
                 self.showDeleteDialog = function (row) {
                     self.highlightRow(row);
-                    self.showBandDeleteDialog(row);
+                    self.showInstrumentDeleteDialog(row);
                 };
 
-                self.showBandDeleteDialog = function (row) {
+                self.showInstrumentDeleteDialog = function (row) {
                     var id = (typeof row.id !== "undefined" ? row.id : 0);
                     if (id <= 0) return;
-                    var b = self.getBand(id);
+                    var i = self.getInstrument(id);
 
                     dialog.custom.showModal({
-                        title: "<span class='glyphicon glyphicon-remove'></span> Delete Band?",
-                        message: "<p><b>Are you sure?</b><br\><br\>" +
-                            "This will permanently delete the band <i><b>" + b.name + "</b></i>\n" +
-                            "including all associated members, songs and setlists.</p>",
+                        title: "<span class='glyphicon glyphicon-remove'></span> Delete Instrument?",
+                        message: "<p>This will permanently delete the instrument <i><b>" + i.name + "</b></i>.</p>",
                         callback: function () {
-                            return self.deleteBand(row.id);
+                            return self.deleteInstrument(row.id);
                         },
-                        width: 500
+                        width: 400
                     });
                 };
 
-                self.showBandEditDialog = function (row) {
+                self.showInstrumentEditDialog = function (row) {
                     var id = (typeof row.id !== "undefined" ? row.id : 0);
                     var title = "<span class='glyphicon glyphicon-pencil'></span>";
                     var message;
 
                     if (id > 0) {
-                        title = title + " Edit Band";
-                        var band = self.getBand(id);
-                        self.selectedBand(band);
+                        title = title + " Edit Instrument";
+                        var instrument = self.getInstrument(id);
+                        self.selectedInstrument(instrument);
                     } else {
-                        title = title + " Add Band";
-                        self.selectedBand([]);
+                        title = title + " Add Instrument";
+                        self.selectedInstrument([]);
                     }
 
                     $.ajax({
                         type: "GET",
                         async: false,
-                        url: site.url + "Bands/GetBandEditView/" + id,
+                        url: site.url + "Instruments/GetInstrumentEditView/" + id,
                         success: function (data) {
                             message = data;
                         }
@@ -210,47 +195,45 @@
                         callback: function () {
                             $("#validation-container").html("");
                             $("#validation-container").hide();
-                            return self.saveBand();
+                            return self.saveInstrument();
                         },
                         width: 400
                     });
                 };
 
-                self.getBand = function (bandid) {
-                    var band = null;
+                self.getInstrument = function (instrumentid) {
+                    var instrument = null;
 
-                    ko.utils.arrayForEach(self.bands(), function (item) {
-                        if (item.id === bandid) {
-                            band = item;
+                    ko.utils.arrayForEach(self.instruments(), function (item) {
+                        if (item.id === instrumentid) {
+                            instrument = item;
                         }
                     });
 
-                    return band;
+                    return instrument;
                 };
 
                 self.highlightRow = function (row) {
                     if (row == null) return;
 
-                    var rows = tblBand.find("tr:gt(0)");
+                    var rows = tblInstrument.find("tr:gt(0)");
                     rows.each(function () {
                         $(this).css("background-color", "#ffffff");
                     });
 
-                    var r = tblBand.find("#row_" + row.id);
+                    var r = tblInstrument.find("#row_" + row.id);
                     r.css("background-color", HIGHLIGHT_ROW_COLOUR);
-                    $("#tblBand").attr("tr:hover", HIGHLIGHT_ROW_COLOUR);
+                    $("#tblInstrument").attr("tr:hover", HIGHLIGHT_ROW_COLOUR);
                 };
 
-                self.getBandDetailFromDialog = function () {
+                self.getInstrumentDetailFromDialog = function () {
                     var name = $.trim($("#txtName").val());
-                    var defaultsingerid = $.trim($("#ddlMembers").val());
-                    var defaultgenreid = $.trim($("#ddlGenres").val());
+                    var abbreviation = $.trim($("#txtAbbreviation").val());
 
                     return {
-                        Id: self.selectedBand().id,
+                        Id: self.selectedInstrument().id,
                         Name: name,
-                        DefaultSingerId: (defaultsingerid.length > 0) ? defaultsingerid : 0,
-                        DefaultGenreId: (defaultgenreid.length > 0) ? defaultgenreid : 0
+                        Abbreviation: abbreviation
                     };
                 };
 
@@ -268,11 +251,12 @@
                     return arr;
                 };
 
+
                 //---------------------------------------------- CONTROLLER (BEGIN) -------------------------------------------------------
 
-                self.saveBand = function () {
-                    var banddetail = self.getBandDetailFromDialog();
-                    var jsonData = JSON.stringify(banddetail);
+                self.saveInstrument = function () {
+                    var instrumentdetail = self.getInstrumentDetailFromDialog();
+                    var jsonData = JSON.stringify(instrumentdetail);
                     var result;
 
                     $("body").css("cursor", "wait");
@@ -280,8 +264,8 @@
                     $.ajax({
                         type: "POST",
                         async: false,
-                        url: site.url + "Bands/Save/",
-                        data: { band: jsonData },
+                        url: site.url + "Instruments/Save/",
+                        data: { instrument: jsonData },
                         dataType: "json",
                         traditional: true,
                         failure: function () {
@@ -290,14 +274,13 @@
                         },
                         success: function (data) {
                             if (data.Success) {
-                                lists.BandList = data.BandList;
-                                createBandArray(lists.BandList);
-                                self.selectedBand(self.getBand(data.SelectedId));
+                                lists.InstrumentList = data.InstrumentList;
+                                createInstrumentArray(lists.InstrumentList);
+                                self.selectedInstrument(self.getInstrument(data.SelectedId));
                                 self.sort({ afterSave: true });
-                                self.highlightRow(self.selectedBand());
+                                self.highlightRow(self.selectedInstrument());
                                 result = true;
-                                window.location.href = site.url + "Bands";
-                                
+
                             } else {
                                 if (data.ErrorMessages.length > 0) {
                                     $("#validation-container").show();
@@ -320,12 +303,12 @@
                     return result;
                 };
 
-                self.deleteBand = function (id) {
+                self.deleteInstrument = function (id) {
                     $("body").css("cursor", "wait");
 
                     $.ajax({
                         type: "POST",
-                        url: site.url + "Bands/Delete/",
+                        url: site.url + "Instruments/Delete/",
                         data: { id: id },
                         dataType: "json",
                         traditional: true,
@@ -334,12 +317,11 @@
                         },
                         success: function (data) {
                             if (data.Success) {
-                                lists.BandList = data.BandList;
-                                createBandArray(lists.BandList);
+                                lists.InstrumentList = data.InstrumentList;
+                                createInstrumentArray(lists.InstrumentList);
                                 self.sort({ afterSave: true });
                             }
                             $("body").css("cursor", "default");
-                            window.location.href = site.url + "Bands";
                         }
                     });
 
@@ -362,7 +344,7 @@
                     if (isDifference) {
                         $.ajax({
                             type: "POST",
-                            url: site.url + "Bands/SaveColumns/",
+                            url: site.url + "Instruments/SaveColumns/",
                             data: { columns: jsonData },
                             dataType: "json",
                             traditional: true
@@ -380,17 +362,6 @@
                 if (startsWith.length > string.length) return false;
                 return string.substring(0, startsWith.length) === startsWith;
             };
-
-            function getValue(list, id, dataMember, valueMember) {
-                var name = "";
-                $(list).each(function (index, item) {
-                    if (item[valueMember] === id) {
-                        name = item[dataMember];
-                        return name;
-                    }
-                });
-                return name;
-            }
         }
     }
 })(jQuery);

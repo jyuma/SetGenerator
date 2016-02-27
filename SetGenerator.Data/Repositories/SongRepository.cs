@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using SetGenerator.Domain.Entities;
 using NHibernate;
@@ -14,6 +13,8 @@ namespace SetGenerator.Data.Repositories
         IEnumerable<Song> GetByBandId(int bandId);
         IEnumerable<string> GetComposerList(int bandId);
         IEnumerable<SongMemberInstrument> GetMemberInstrumentList(int id);
+        IEnumerable<int> GetSongInstrumentIds();
+        IEnumerable<int> GetSongGenreIds();
 
         void DeleteBandSongs(int bandId);
         void DeleteBandSetlistSongs(int bandId);
@@ -86,6 +87,24 @@ namespace SetGenerator.Data.Repositories
             var list = Get(id)
                 .SongMemberInstruments
                 .ToList();
+
+            return list;
+        }
+
+        public IEnumerable<int> GetSongInstrumentIds()
+        {
+            var list = Session.QueryOver<SongMemberInstrument>().List()
+                .Select(x => x.Instrument.Id)
+                .Distinct();
+
+            return list;
+        }
+
+        public IEnumerable<int> GetSongGenreIds()
+        {
+            var list = Session.QueryOver<Song>().List()
+                .Select(x => x.Genre.Id)
+                .Distinct();
 
             return list;
         }

@@ -58,6 +58,7 @@
     <Compile Include="Repositories\Entity.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Repositories\GenreRepository.cs" />
     <Compile Include="Repositories\GigRepository.cs">
       <SubType>Code</SubType>
     </Compile>

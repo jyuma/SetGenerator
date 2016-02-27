@@ -58,7 +58,9 @@ namespace SetGenerator.WebUI
                     "~/Scripts/Bands/Index.js",
                     "~/Scripts/Bands/Index.js",
                     "~/Scripts/Members/Index.js",
-                    "~/Scripts/Users/Index.js");
+                    "~/Scripts/Users/Index.js",
+                    "~/Scripts/Instruments/Index.js",
+                    "~/Scripts/Genres/Index.js");
             customScriptsBundle.Builder = nullBuilder;
             customScriptsBundle.Transforms.Add(scriptTransformer);
             bundles.Add(customScriptsBundle);

@@ -34,6 +34,8 @@
             public const int SetId = 5;
             public const int SetlistId = 6;
             public const int UserId = 7;
+            public const int InstrumentId = 8;
+            public const int GenreId = 9;
         }
 
         // user table

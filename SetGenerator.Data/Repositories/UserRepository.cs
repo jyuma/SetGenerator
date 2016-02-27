@@ -369,6 +369,8 @@ namespace SetGenerator.Data.Repositories
         {
             const int bandTableId = 1;
             const int userTableId = 7;
+            const int instrumentTableId = 8;
+            const int genreTableId = 9;
             var id = 0;
 
             var user = Session.QueryOver<User>().Where(x => x.Id == userId).SingleOrDefault();
@@ -376,6 +378,8 @@ namespace SetGenerator.Data.Repositories
             var tableColumns = Session.QueryOver<TableColumn>()
                 .Where(x => x.Table.Id != bandTableId)
                 .Where(x => x.Table.Id != userTableId)
+                .Where(x => x.Table.Id != instrumentTableId)
+                .Where(x => x.Table.Id != genreTableId)
                 .List();
 
             var userPreferenceTableColumns = tableColumns.Select(x => new
@@ -439,6 +443,7 @@ namespace SetGenerator.Data.Repositories
         public void AssignStartupUserPreferenceTableColumns(int userId)
         {
             const int userTableBand = 1;
+
             var user = Session.QueryOver<User>().Where(x => x.Id == userId).SingleOrDefault();
 
             var columns = Session.QueryOver<TableColumn>()

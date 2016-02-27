@@ -1,5 +1,5 @@
 ﻿/*!
- * Bands/Index.js
+ * Genres/Index.js
  * Author: John Charlton
  * Date: 2015-05
  */
@@ -7,35 +7,24 @@
 
     var HIGHLIGHT_ROW_COLOUR = "#e3e8ff";
 
-    bands.index = {
-        init: function (options) {
+    genres.index = {
+        init: function () {
             var _sortDescending = false;
             var _currentSortKey = "name";
 
-            var config = {
-                bandId: "0"
-            };
-
-            $.extend(config, options);
-
             var lists = {
-                BandList: [],
-                DefaultSingerArrayList: [],
-                DefaultGenreArrayList: [],
+                GenreList: [],
                 TableColumnList: []
             };
 
             loadConfig();
 
-            ko.applyBindings(new BandViewModel());
-
-            // pre-select the band whose members were just being managed
-            if (config.bandId > 0) { $("#row_" + config.bandId).trigger("click"); }
+            ko.applyBindings(new GenreViewModel());
 
             function loadConfig() {
                 $.ajax({
                     type: "GET",
-                    url: site.url + "Bands/GetData/",
+                    url: site.url + "Genres/GetData/",
                     dataType: "json",
                     traditional: true,
                     async: false,
@@ -45,35 +34,33 @@
                 });
             }
 
-            function Band(id, name, defaultsingerid, defaultgenreid, updateuser, updatedate) {
+            function Genre(id, name, abbreviation, issonggenre) {
                 var self = this;
 
                 self.id = id;
                 self.name = name;
-                self.defaultsinger = getValue(lists.DefaultSingerArrayList, defaultsingerid, "Display", "Value");
-                self.defaultgenre = getValue(lists.DefaultGenreArrayList, defaultgenreid, "Display", "Value");
-                self.updateuser = updateuser;
-                self.updatedate = updatedate;
+                self.abbreviation = abbreviation;
+                self.issonggenre = issonggenre;
             }
 
-            function BandViewModel() {
-                var tblBand = $("#tblBand");
+            function GenreViewModel() {
+                var tblGenre = $("#tblGenre");
                 var ddlColumns = $("#ddlColumns");
 
                 var self = this;
 
-                self.bands = ko.observableArray([]);
-                self.selectedBand = ko.observable();
+                self.genres = ko.observableArray([]);
+                self.selectedGenre = ko.observable();
                 self.nameSearch = ko.observable("");
                 self.editFormHeader = ko.observable("");
-                self.totalBands = ko.observable(0);
+                self.totalGenres = ko.observable(0);
 
-                createBandArray(lists.BandList);
+                createGenreArray(lists.GenreList);
 
-                function createBandArray(list) {
-                    self.bands.removeAll();
+                function createGenreArray(list) {
+                    self.genres.removeAll();
                     $(list).each(function (index, value) {
-                        pushBand(value);
+                        pushGenre(value);
                     });
                 };
 
@@ -89,11 +76,11 @@
                     return arr;
                 });
 
-                function pushBand(value) {
-                    self.bands.push(new Band(value.Id, value.Name, value.DefaultSingerId, value.DefaultGenreId, value.UserUpdate, value.DateUpdate));
+                function pushGenre(value) {
+                    self.genres.push(new Genre(value.Id, value.Name, value.Abbreviation, value.IsSongGenre));
                 };
 
-                self.selectedBand(self.bands()[0]);
+                self.selectedGenre(self.genres()[0]);
 
                 self.sort = function (header) {
                     var afterSave = typeof header.afterSave != "undefined" ? header.afterSave : false;
@@ -114,7 +101,7 @@
 
                     $(self.columns()).each(function (index, value) {
                         if (value.sortKey === sortKey) {
-                            self.bands.sort(function (a, b) {
+                            self.genres.sort(function (a, b) {
                                 if (_sortDescending) {
                                     return a[sortKey].toString().toLowerCase() > b[sortKey].toString().toLowerCase()
                                         ? -1 : a[sortKey].toString().toLowerCase() < b[sortKey].toString().toLowerCase()
@@ -129,19 +116,19 @@
                     });
                 };
 
-                self.filteredBands = ko.computed(function () {
-                    return ko.utils.arrayFilter(self.bands(), function (g) {
+                self.filteredGenres = ko.computed(function () {
+                    return ko.utils.arrayFilter(self.genres(), function (g) {
                         return (
                             (self.nameSearch().length === 0 || g.name.toLowerCase().indexOf(self.nameSearch().toLowerCase()) !== -1)
                         );
                     });
                 });
 
-                self.bandsTable = ko.computed(function () {
-                    var filteredBands = self.filteredBands();
-                    self.totalBands(filteredBands.length);
+                self.genresTable = ko.computed(function () {
+                    var filteredGenres = self.filteredGenres();
+                    self.totalGenres(filteredGenres.length);
 
-                    return filteredBands;
+                    return filteredGenres;
                 });
 
                 self.showEditDialog = function (row) {
@@ -151,53 +138,51 @@
                         self.highlightRow(row);
                     }
 
-                    self.showBandEditDialog(row);
+                    self.showGenreEditDialog(row);
                 };
 
-                self.deleteSelectedBand = function (row) {
-                    deleteBand(row.id);
+                self.deleteSelectedGenre = function (row) {
+                    deleteGenre(row.id);
                 };
 
                 self.showDeleteDialog = function (row) {
                     self.highlightRow(row);
-                    self.showBandDeleteDialog(row);
+                    self.showGenreDeleteDialog(row);
                 };
 
-                self.showBandDeleteDialog = function (row) {
+                self.showGenreDeleteDialog = function (row) {
                     var id = (typeof row.id !== "undefined" ? row.id : 0);
                     if (id <= 0) return;
-                    var b = self.getBand(id);
+                    var i = self.getGenre(id);
 
                     dialog.custom.showModal({
-                        title: "<span class='glyphicon glyphicon-remove'></span> Delete Band?",
-                        message: "<p><b>Are you sure?</b><br\><br\>" +
-                            "This will permanently delete the band <i><b>" + b.name + "</b></i>\n" +
-                            "including all associated members, songs and setlists.</p>",
+                        title: "<span class='glyphicon glyphicon-remove'></span> Delete Genre?",
+                        message: "<p>This will permanently delete the genre <i><b>" + i.name + "</b></i>.</p>",
                         callback: function () {
-                            return self.deleteBand(row.id);
+                            return self.deleteGenre(row.id);
                         },
-                        width: 500
+                        width: 400
                     });
                 };
 
-                self.showBandEditDialog = function (row) {
+                self.showGenreEditDialog = function (row) {
                     var id = (typeof row.id !== "undefined" ? row.id : 0);
                     var title = "<span class='glyphicon glyphicon-pencil'></span>";
                     var message;
 
                     if (id > 0) {
-                        title = title + " Edit Band";
-                        var band = self.getBand(id);
-                        self.selectedBand(band);
+                        title = title + " Edit Genre";
+                        var genre = self.getGenre(id);
+                        self.selectedGenre(genre);
                     } else {
-                        title = title + " Add Band";
-                        self.selectedBand([]);
+                        title = title + " Add Genre";
+                        self.selectedGenre([]);
                     }
 
                     $.ajax({
                         type: "GET",
                         async: false,
-                        url: site.url + "Bands/GetBandEditView/" + id,
+                        url: site.url + "Genres/GetGenreEditView/" + id,
                         success: function (data) {
                             message = data;
                         }
@@ -210,47 +195,45 @@
                         callback: function () {
                             $("#validation-container").html("");
                             $("#validation-container").hide();
-                            return self.saveBand();
+                            return self.saveGenre();
                         },
                         width: 400
                     });
                 };
 
-                self.getBand = function (bandid) {
-                    var band = null;
+                self.getGenre = function (genreid) {
+                    var genre = null;
 
-                    ko.utils.arrayForEach(self.bands(), function (item) {
-                        if (item.id === bandid) {
-                            band = item;
+                    ko.utils.arrayForEach(self.genres(), function (item) {
+                        if (item.id === genreid) {
+                            genre = item;
                         }
                     });
 
-                    return band;
+                    return genre;
                 };
 
                 self.highlightRow = function (row) {
                     if (row == null) return;
 
-                    var rows = tblBand.find("tr:gt(0)");
+                    var rows = tblGenre.find("tr:gt(0)");
                     rows.each(function () {
                         $(this).css("background-color", "#ffffff");
                     });
 
-                    var r = tblBand.find("#row_" + row.id);
+                    var r = tblGenre.find("#row_" + row.id);
                     r.css("background-color", HIGHLIGHT_ROW_COLOUR);
-                    $("#tblBand").attr("tr:hover", HIGHLIGHT_ROW_COLOUR);
+                    $("#tblGenre").attr("tr:hover", HIGHLIGHT_ROW_COLOUR);
                 };
 
-                self.getBandDetailFromDialog = function () {
+                self.getGenreDetailFromDialog = function () {
                     var name = $.trim($("#txtName").val());
-                    var defaultsingerid = $.trim($("#ddlMembers").val());
-                    var defaultgenreid = $.trim($("#ddlGenres").val());
+                    var abbreviation = $.trim($("#txtAbbreviation").val());
 
                     return {
-                        Id: self.selectedBand().id,
+                        Id: self.selectedGenre().id,
                         Name: name,
-                        DefaultSingerId: (defaultsingerid.length > 0) ? defaultsingerid : 0,
-                        DefaultGenreId: (defaultgenreid.length > 0) ? defaultgenreid : 0
+                        Abbreviation: abbreviation
                     };
                 };
 
@@ -268,11 +251,12 @@
                     return arr;
                 };
 
+
                 //---------------------------------------------- CONTROLLER (BEGIN) -------------------------------------------------------
 
-                self.saveBand = function () {
-                    var banddetail = self.getBandDetailFromDialog();
-                    var jsonData = JSON.stringify(banddetail);
+                self.saveGenre = function () {
+                    var genredetail = self.getGenreDetailFromDialog();
+                    var jsonData = JSON.stringify(genredetail);
                     var result;
 
                     $("body").css("cursor", "wait");
@@ -280,8 +264,8 @@
                     $.ajax({
                         type: "POST",
                         async: false,
-                        url: site.url + "Bands/Save/",
-                        data: { band: jsonData },
+                        url: site.url + "Genres/Save/",
+                        data: { genre: jsonData },
                         dataType: "json",
                         traditional: true,
                         failure: function () {
@@ -290,14 +274,13 @@
                         },
                         success: function (data) {
                             if (data.Success) {
-                                lists.BandList = data.BandList;
-                                createBandArray(lists.BandList);
-                                self.selectedBand(self.getBand(data.SelectedId));
+                                lists.GenreList = data.GenreList;
+                                createGenreArray(lists.GenreList);
+                                self.selectedGenre(self.getGenre(data.SelectedId));
                                 self.sort({ afterSave: true });
-                                self.highlightRow(self.selectedBand());
+                                self.highlightRow(self.selectedGenre());
                                 result = true;
-                                window.location.href = site.url + "Bands";
-                                
+
                             } else {
                                 if (data.ErrorMessages.length > 0) {
                                     $("#validation-container").show();
@@ -320,12 +303,12 @@
                     return result;
                 };
 
-                self.deleteBand = function (id) {
+                self.deleteGenre = function (id) {
                     $("body").css("cursor", "wait");
 
                     $.ajax({
                         type: "POST",
-                        url: site.url + "Bands/Delete/",
+                        url: site.url + "Genres/Delete/",
                         data: { id: id },
                         dataType: "json",
                         traditional: true,
@@ -334,12 +317,11 @@
                         },
                         success: function (data) {
                             if (data.Success) {
-                                lists.BandList = data.BandList;
-                                createBandArray(lists.BandList);
+                                lists.GenreList = data.GenreList;
+                                createGenreArray(lists.GenreList);
                                 self.sort({ afterSave: true });
                             }
                             $("body").css("cursor", "default");
-                            window.location.href = site.url + "Bands";
                         }
                     });
 
@@ -362,7 +344,7 @@
                     if (isDifference) {
                         $.ajax({
                             type: "POST",
-                            url: site.url + "Bands/SaveColumns/",
+                            url: site.url + "Genres/SaveColumns/",
                             data: { columns: jsonData },
                             dataType: "json",
                             traditional: true
@@ -380,17 +362,6 @@
                 if (startsWith.length > string.length) return false;
                 return string.substring(0, startsWith.length) === startsWith;
             };
-
-            function getValue(list, id, dataMember, valueMember) {
-                var name = "";
-                $(list).each(function (index, item) {
-                    if (item[valueMember] === id) {
-                        name = item[dataMember];
-                        return name;
-                    }
-                });
-                return name;
-            }
         }
     }
 })(jQuery);

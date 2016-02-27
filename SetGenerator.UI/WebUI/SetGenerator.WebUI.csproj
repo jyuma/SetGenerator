@@ -251,8 +251,10 @@
     <Compile Include="Common\Common.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BandsController.cs" />
+    <Compile Include="Controllers\GenresController.cs" />
     <Compile Include="Controllers\GigsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\InstrumentsController.cs" />
     <Compile Include="Controllers\MembersController.cs" />
     <Compile Include="Controllers\SetlistsController.cs" />
     <Compile Include="Controllers\SongsController.cs" />
@@ -284,8 +286,10 @@
     </Compile>
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\BandViewModel.cs" />
+    <Compile Include="ViewModels\GenreViewModel.cs" />
     <Compile Include="ViewModels\GigViewModel.cs" />
     <Compile Include="ViewModels\HomeViewModel.cs" />
+    <Compile Include="ViewModels\InstrumentViewModel.cs" />
     <Compile Include="ViewModels\MemberViewModel.cs" />
     <Compile Include="ViewModels\SetlistViewModel.cs" />
     <Compile Include="ViewModels\SongViewModel.cs" />
@@ -331,6 +335,8 @@
     <Content Include="Global.asax" />
     <Content Include="Content\images\Thumbs.db" />
     <Content Include="Scripts\Bands\Index.js" />
+    <Content Include="Scripts\Genres\Index.js" />
+    <Content Include="Scripts\Instruments\Index.js" />
     <Content Include="Scripts\Members\Index.js" />
     <Content Include="Scripts\bootstrap-datepicker.js" />
     <Content Include="Scripts\bootstrap-datepicker.min.js" />
@@ -441,6 +447,10 @@
     <Content Include="Views\Users\Index.cshtml" />
     <Content Include="Views\Users\_UserEdit.cshtml" />
     <Content Include="Views\Users\_UserBandEdit.cshtml" />
+    <Content Include="Views\Instruments\Index.cshtml" />
+    <Content Include="Views\Instruments\_InstrumentEdit.cshtml" />
+    <Content Include="Views\Genres\Index.cshtml" />
+    <Content Include="Views\Genres\_GenreEdit.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

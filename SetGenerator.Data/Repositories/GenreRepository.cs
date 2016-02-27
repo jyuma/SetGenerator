@@ -5,22 +5,22 @@ using NHibernate;
 
 namespace SetGenerator.Data.Repositories
 {
-    public interface IInstrumentRepository : IRepositoryBase<Instrument>
+    public interface IGenreRepository : IRepositoryBase<Genre>
     {
-        Instrument GetByName(string name);
+        Genre GetByName(string name);
         ArrayList GetNameArrayList();
     }
 
-    public class InstrumentRepository : RepositoryBase<Instrument>, IInstrumentRepository
+    public class GenreRepository : RepositoryBase<Genre>, IGenreRepository
     {
-        public InstrumentRepository(ISession session)
+        public GenreRepository(ISession session)
             : base(session)
         {
         }
 
-        public Instrument GetByName(string name)
+        public Genre GetByName(string name)
         {
-            return Session.QueryOver<Instrument>()
+            return Session.QueryOver<Genre>()
                 .Where(x => x.Name == name)
                 .SingleOrDefault();
         }

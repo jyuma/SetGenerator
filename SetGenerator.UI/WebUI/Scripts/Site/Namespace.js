@@ -10,4 +10,6 @@
     window.bands = {};
     window.members = {};
     window.users = {};
+    window.instruments = {};
+    window.genres = {};
 })(jQuery);

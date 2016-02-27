@@ -26,6 +26,12 @@ namespace SetGenerator.Service
 
         // gig
         List<string> ValidateGig(int bandId, string venue, DateTime dateGig, bool addNew);
+
+        // instrument
+        List<string> ValidateInstrument(string name, string abbreviation, bool addNew);
+
+        // genre
+        List<string> ValidateGenre(string name, bool addNew);
     }
 
     public class ValidationRules : IValidationRules
@@ -35,18 +41,21 @@ namespace SetGenerator.Service
         private readonly ISongRepository _songRepository;
         private readonly ISetlistRepository _setListRepository;
         private readonly IGigRepository _gigRepository;
+        private readonly IInstrumentRepository _instrumentRepository;
 
         public ValidationRules(IBandRepository bandRepository,
                                 IMemberRepository memberRepository, 
                                 ISongRepository songRepository, 
                                 ISetlistRepository setListRepository, 
-                                IGigRepository gigRepository)
+                                IGigRepository gigRepository,
+                                IInstrumentRepository instrumentRepository)
         {
             _bandRepository = bandRepository;
             _memberRepository = memberRepository;
             _songRepository = songRepository;
             _setListRepository = setListRepository;
             _gigRepository = gigRepository;
+            _instrumentRepository = instrumentRepository;
         }
         //----------------------------------- validation rules ------------------------------------
 
@@ -234,6 +243,55 @@ namespace SetGenerator.Service
                 var gig = _gigRepository.GetByBandVenueDateGig(bandId, venue, dateGig);
                 if (gig != null)
                     msgs.Add("Venue/GigDate combination already exists");
+            }
+
+            return msgs;
+        }
+
+        // instrument
+        public List<string> ValidateInstrument(string name, string abbreviation, bool addNew)
+        {
+            var msgs = new List<string>();
+            msgs = ValidateInstrumentName(name, abbreviation, addNew, msgs);
+            return msgs.Count > 0 ? msgs : null;
+        }
+
+        private List<string> ValidateInstrumentName(string name, string abbreviation, bool addNew, List<string> msgs)
+        {
+            if (string.IsNullOrEmpty(name))
+                msgs.Add("Instrument name is required");
+
+            if (string.IsNullOrEmpty(abbreviation))
+                msgs.Add("Instrument abbreviation is required");
+
+            else if (addNew)
+            {
+                var gig = _instrumentRepository.GetByName(name);
+                if (gig != null)
+                    msgs.Add("Instrument already exists");
+            }
+
+            return msgs;
+        }
+
+        // genre
+        public List<string> ValidateGenre(string name, bool addNew)
+        {
+            var msgs = new List<string>();
+            msgs = ValidateGenretName(name, addNew, msgs);
+            return msgs.Count > 0 ? msgs : null;
+        }
+
+        private List<string> ValidateGenretName(string name, bool addNew, List<string> msgs)
+        {
+            if (string.IsNullOrEmpty(name))
+                msgs.Add("Genre name is required");
+
+            else if (addNew)
+            {
+                var gig = _instrumentRepository.GetByName(name);
+                if (gig != null)
+                    msgs.Add("Genre already exists");
             }
 
             return msgs;
