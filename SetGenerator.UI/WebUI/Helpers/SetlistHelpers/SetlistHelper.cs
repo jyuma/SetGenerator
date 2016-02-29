@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using SetGenerator.Data.Repositories;
 using SetGenerator.Domain.Entities;
-using SetGenerator.Service;
 using SetGenerator.WebUI.Helpers.SetlistHelpers.Algorithms;
 using SetGenerator.WebUI.ViewModels;
 
@@ -21,57 +20,65 @@ namespace SetGenerator.WebUI.Helpers.SetlistHelpers
 
         public Setlist GenerateSets(IEnumerable<Song> masterSongList, SetlistDetail setlistDetail, int bandId, User currentUser)
         {
-            Setlist setlist = null;
+            if (masterSongList == null) return null;
 
-            if (masterSongList != null)
+            var songs = masterSongList.ToArray();
+            var numSets = setlistDetail.NumSets;
+            var numSetSongs = setlistDetail.NumSongs;
+
+            var setlist = new Setlist
             {
-                var songs = masterSongList.ToArray();
-                var numSets = setlistDetail.NumSets;
-                var numSetSongs = setlistDetail.NumSongs;
+                Band = _bandRepository.Get(bandId),
+                Name = setlistDetail.Name,
+                DateCreate = DateTime.Now,
+                DateUpdate = DateTime.Now,
+                UserCreate = currentUser,
+                UserUpdate = currentUser,
+                SetSongs = new Collection<SetSong>()
+            };
 
-                setlist = new Setlist
+            IEnumerable<SetSong> setSongs;
+
+            var numChanges = GetNumberInstrumentChanges(songs);
+
+            switch (numChanges)
+            {
+                case 0:
                 {
-                    Band = _bandRepository.Get(bandId),
-                    Name = setlistDetail.Name,
-                    DateCreate = DateTime.Now,
-                    DateUpdate = DateTime.Now,
-                    UserCreate = currentUser,
-                    UserUpdate = currentUser,
-                    SetSongs = new Collection<SetSong>()
-                };
-
-                IEnumerable<SetSong> setSongs = null;
-                switch (bandId)
-                {
-                    case Constants.Band.Slugfest:
-                    {
-                        setSongs = Slugfest.Generate(numSets, numSetSongs, songs);
-                        break;
-                    }
-
-                    case Constants.Band.StetsonBrothers:
-                    {
-                        setSongs = StetsonBrothers.Generate(numSets, numSetSongs, songs);
-                        break;
-                    }
-                    
-                    default:
-                    {
-                        setSongs = Default.Generate(numSets, numSetSongs, songs);
-                        break;
-                    }
+                    setSongs = KeyGenreTempo.Generate(numSets, numSetSongs, songs);
+                    break;
                 }
-
-                if (setSongs == null) return setlist;
-
-                foreach (var setSong in setSongs)
+                    
+                default:
                 {
-                    setSong.Setlist = setlist;
-                    setlist.SetSongs.Add(setSong);
+                    setSongs = InstrumentSinger.Generate(numSets, numSetSongs, songs);
+                    break;
                 }
             }
 
+            if (setSongs == null) return setlist;
+
+            foreach (var setSong in setSongs)
+            {
+                setSong.Setlist = setlist;
+                setlist.SetSongs.Add(setSong);
+            }
+
             return setlist;
+        }
+
+        private static int GetNumberInstrumentChanges(ICollection<Song> songs)
+        {
+            var numMembers = songs.SelectMany(x => x.SongMemberInstruments)
+                .GroupBy(x => x.Member)
+                .Count();
+            
+            var instrumentationCount = songs.SelectMany(x => x.SongMemberInstruments)
+                .GroupBy(x => x.Instrument)
+                .Select(x => x.Key)
+                .Count();
+
+            return (instrumentationCount - numMembers);
         }
     }
 }

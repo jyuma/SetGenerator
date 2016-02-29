@@ -263,9 +263,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\SetlistHelpers\Algorithms\Default.cs" />
-    <Compile Include="Helpers\SetlistHelpers\Algorithms\Slugfest.cs" />
-    <Compile Include="Helpers\SetlistHelpers\Algorithms\StetsonBrothers.cs" />
+    <Compile Include="Helpers\SetlistHelpers\Algorithms\InstrumentSinger.cs" />
+    <Compile Include="Helpers\SetlistHelpers\Algorithms\KeyGenreTempo.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

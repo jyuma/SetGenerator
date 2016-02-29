@@ -7,7 +7,7 @@ using SetGenerator.Service;
 
 namespace SetGenerator.WebUI.Helpers.SetlistHelpers.Algorithms
 {
-    public static class StetsonBrothers
+    public static class KeyGenreTempo
     {
         private static IEnumerable<Song> _masterSongList;
         private static ICollection<SetSong> _setSongs;

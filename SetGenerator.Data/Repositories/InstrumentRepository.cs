@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using SetGenerator.Domain.Entities;
 using NHibernate;
@@ -16,6 +17,11 @@ namespace SetGenerator.Data.Repositories
         public InstrumentRepository(ISession session)
             : base(session)
         {
+        }
+
+        public override ICollection<Instrument> GetAll()
+        {
+            return Session.QueryOver<Instrument>().List();
         }
 
         public Instrument GetByName(string name)

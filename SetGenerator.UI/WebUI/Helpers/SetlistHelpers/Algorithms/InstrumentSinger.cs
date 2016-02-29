@@ -8,7 +8,7 @@ using SetGenerator.WebUI.Extensions;
 
 namespace SetGenerator.WebUI.Helpers.SetlistHelpers.Algorithms
 {
-    public static class Slugfest
+    public static class InstrumentSinger
     {
         private static IEnumerable<Song> _masterSongList;
         private static ICollection<SetSong> _setSongs;
@@ -135,16 +135,39 @@ namespace SetGenerator.WebUI.Helpers.SetlistHelpers.Algorithms
                 
             if (Container.IsNewSet)
             {
-                eligibleSongs = _masterSongList
-                    .Where(x => x.NeverOpen == false);
+                var masterList = _masterSongList.ToArray();
+
+                if (_masterSongList.Any(x => x.Singer != null))
+                {
+                    masterList = _masterSongList.Where(x => x.Singer != null).ToArray();
+                }
+
+                if (masterList.Where(x => x.Singer.Id == Container.DefaultSingerId)
+                    .Any(x => x.NeverOpen == false))
+                {
+                    eligibleSongs = masterList.Where(x => x.Singer.Id == Container.DefaultSingerId)
+                        .Where(x => x.NeverOpen == false);
+                }
+                else if (_masterSongList.Any(x => x.NeverOpen == false))
+                {
+                    eligibleSongs = masterList.Where(x => x.NeverOpen == false);
+                }
+                else
+                {
+                    eligibleSongs = masterList;
+                }
             }
+
             else if (!Container.IsNewSet && !Container.IsLastSong)
             {
                 eligibleSongs = _masterSongList;
             }
+
             else if (Container.IsLastSong)
             {
-                eligibleSongs = _masterSongList.Where(x => x.NeverClose == false).ToArray();
+                eligibleSongs = _masterSongList.Any(x => x.NeverClose == false) 
+                    ? _masterSongList.Where(x => x.NeverClose == false).ToArray() 
+                    : _masterSongList;
             }
 
             var usedSongs = _setSongs != null
@@ -240,7 +263,6 @@ namespace SetGenerator.WebUI.Helpers.SetlistHelpers.Algorithms
 
                 // try to find different instrumentation than the last song
                 var filteredEligibleKeys = eligibleSongs.Keys.Except(dicPreviousMatchingSongs.Keys);
-
                 middleEligibleSongs = filteredEligibleKeys.Select(x => eligibleSongs[x]).ToDictionary(x => x.Id);
             }
 
@@ -270,39 +292,42 @@ namespace SetGenerator.WebUI.Helpers.SetlistHelpers.Algorithms
 
                 song = eligibleSongs[eligibleIds[idx]];
                 
-                // if a middle song and an instrument change try to find one that has a few other songs with the same instrumentation
+                // if a middle song and an instrument change try to find one that has 
+                // at least 3 other songs with the same instrumentation
                 if ((!Container.IsLastSong) && (Container.IsSameInstrumentation == false))
                 {
                     var matchingSongs = song.GetMatchingSongs(_songMemberInstrumentList);
-                    rank = matchingSongs.Count() >= Constants.MinSongInstrumentationCount 
-                        ? 1 : 2;
+                    if (matchingSongs.Count() >= Constants.MinSongInstrumentationCount)
+                    {
+                        rank = 1;
+                    }
                 }
 
                 else if ((Container.LastSingerId == Container.DefaultSingerId) && (Container.SingerCount < Constants.MaxDefaultSingerCount))
                 {
-                    rank = 1;
+                    rank = 2;
                 }
 
                 else if ((Container.LastSingerId != Container.DefaultSingerId) && (Container.LastSingerId != (song.Singer != null ? song.Singer.Id : 0)))
                 {
-                    rank = 1;
-                }
-                else if (Container.IsSameInstrumentation && Container.IntrumentCount <= Constants.MinSongInstrumentationCount)
-                {
                     rank = 2;
                 }
-                else if (Container.IsSameInstrumentation && Container.IntrumentCount > Constants.MinSongInstrumentationCount)
-                {
-                    rank = 2;
-                }
+                //else if (Container.IsSameInstrumentation && Container.IntrumentCount <= Constants.MinSongInstrumentationCount)
+                //{
+                //    rank = 3;
+                //}
+                //else if (Container.IsSameInstrumentation && Container.IntrumentCount > Constants.MinSongInstrumentationCount)
+                //{
+                //    rank = 3;
+                //}
                 else if ((Container.LastSingerId == Container.DefaultSingerId) && (Container.SingerCount < Constants.MaxDefaultSingerCount))
-                {
-                    rank = 3;
-                }
-
-                else if ((Container.LastSingerId != Container.DefaultSingerId) && (Container.LastSingerId != (song.Singer != null ? song.Singer.Id : 0)))
                 {
                     rank = 4;
+                }
+
+                else if ((Container.LastSingerId != Container.DefaultSingerId) && (Container.LastSingerId != (song.Singer != null ? song.Singer.Id : 0)))
+                {
+                    rank = 5;
                 }
 
                 // tolerance
@@ -310,15 +335,19 @@ namespace SetGenerator.WebUI.Helpers.SetlistHelpers.Algorithms
                 {
                     break;
                 }
-                if ((rank == 2) && numAttempts > 500)
+                if ((rank == 2) && numAttempts > 400)
                 {
                     break;
                 }
-                if ((rank == 3) && numAttempts > 1000)
+                if ((rank == 3) && numAttempts > 800)
                 {
                     break;
                 }
-                if ((rank == 4) && numAttempts > 1500)
+                if ((rank == 4) && numAttempts > 1200)
+                {
+                    break;
+                }
+                if ((rank == 5) && numAttempts > 1600)
                 {
                     break;
                 }
