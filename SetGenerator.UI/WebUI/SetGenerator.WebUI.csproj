@@ -263,8 +263,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\SetlistHelpers\Algorithms\InstrumentSinger.cs" />
-    <Compile Include="Helpers\SetlistHelpers\Algorithms\KeyGenreTempo.cs" />
+    <Compile Include="Helpers\SetlistHelpers\Generators\Generator.cs" />
+    <Compile Include="Helpers\SetlistHelpers\Generators\InstrumentSinger.cs" />
+    <Compile Include="Helpers\SetlistHelpers\Generators\KeyGenreTempo.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

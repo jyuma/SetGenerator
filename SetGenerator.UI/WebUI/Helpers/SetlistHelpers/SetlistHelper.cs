@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using SetGenerator.Data.Repositories;
 using SetGenerator.Domain.Entities;
-using SetGenerator.WebUI.Helpers.SetlistHelpers.Algorithms;
+using SetGenerator.WebUI.Helpers.SetlistHelpers.Generators;
 using SetGenerator.WebUI.ViewModels;
 
 namespace SetGenerator.WebUI.Helpers.SetlistHelpers
@@ -45,13 +45,15 @@ namespace SetGenerator.WebUI.Helpers.SetlistHelpers
             {
                 case 0:
                 {
-                    setSongs = KeyGenreTempo.Generate(numSets, numSetSongs, songs);
+                    var keyGenereTempo = new KeyGenreTempo();
+                    setSongs = keyGenereTempo.Generate(numSets, numSetSongs, songs);
                     break;
                 }
                     
                 default:
                 {
-                    setSongs = InstrumentSinger.Generate(numSets, numSetSongs, songs);
+                    var instrumentSinger = new InstrumentSinger();
+                    setSongs = instrumentSinger.Generate(numSets, numSetSongs, songs);
                     break;
                 }
             }
