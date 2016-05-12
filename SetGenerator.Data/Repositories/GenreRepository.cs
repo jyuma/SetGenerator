@@ -33,12 +33,12 @@ namespace SetGenerator.Data.Repositories
 
         public ArrayList GetNameArrayList()
         {
-            var instruments = GetAll().OrderBy(o => o.Name);
+            var genres = GetAll().OrderBy(o => o.Name);
 
             var al = new ArrayList();
 
-            foreach (var i in instruments)
-                al.Add(new { Value = i.Id, Display = i.Name });
+            foreach (var g in genres)
+                al.Add(new { Value = g.Id, Display = g.Name });
 
             return al;
         }
