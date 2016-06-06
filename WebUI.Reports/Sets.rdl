@@ -597,7 +597,7 @@
     <DataSource Name="SetGenerator">
       <ConnectionProperties>
         <DataProvider>SQL</DataProvider>
-        <ConnectString>Data Source=YUMA-SERVER2008;Initial Catalog=SetGenerator</ConnectString>
+        <ConnectString>Data Source=REPORT-SERVER;Initial Catalog=SetGenerator</ConnectString>
       </ConnectionProperties>
       <rd:SecurityType>DataBase</rd:SecurityType>
       <rd:DataSourceID>148d347d-15db-40b4-9461-f760307d484b</rd:DataSourceID>
@@ -613,7 +613,7 @@
             <rd:UserDefined>true</rd:UserDefined>
           </QueryParameter>
         </QueryParameters>
-        <CommandText>EXEC GetSetlist 106, 'Frank', 'Jerry', 'Tom'</CommandText>
+        <CommandText>EXEC GetSetlist 1014, 'Wig', 'Fletch', 'Rut'</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>

@@ -20,9 +20,9 @@
           </Paragraph>
         </Paragraphs>
         <rd:DefaultName>textbox1</rd:DefaultName>
-        <Left>0.00001in</Left>
-        <Height>0.44333in</Height>
-        <Width>7.16667in</Width>
+        <Left>0.21875in</Left>
+        <Height>0.42944in</Height>
+        <Width>7.77083in</Width>
         <Style>
           <Border>
             <Style>None</Style>
@@ -37,27 +37,30 @@
         <TablixBody>
           <TablixColumns>
             <TablixColumn>
-              <Width>0.32292in</Width>
+              <Width>0.34821in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>2.71251in</Width>
+              <Width>2.20238in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>2.34375in</Width>
+              <Width>2.9003in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>0.49167in</Width>
+              <Width>0.4003in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>0.66875in</Width>
+              <Width>0.7753in</Width>
             </TablixColumn>
             <TablixColumn>
-              <Width>0.62708in</Width>
+              <Width>0.76488in</Width>
+            </TablixColumn>
+            <TablixColumn>
+              <Width>0.57738in</Width>
             </TablixColumn>
           </TablixColumns>
           <TablixRows>
             <TablixRow>
-              <Height>0.22396in</Height>
+              <Height>0.25in</Height>
               <TablixCells>
                 <TablixCell>
                   <CellContents>
@@ -72,9 +75,7 @@
                               <Style />
                             </TextRun>
                           </TextRuns>
-                          <Style>
-                            <TextAlign>Left</TextAlign>
-                          </Style>
+                          <Style />
                         </Paragraph>
                       </Paragraphs>
                       <rd:DefaultName>RowNumber</rd:DefaultName>
@@ -83,7 +84,7 @@
                           <Style>None</Style>
                         </Border>
                         <PaddingLeft>2pt</PaddingLeft>
-                        <PaddingRight>2pt</PaddingRight>
+                        <PaddingRight>4pt</PaddingRight>
                         <PaddingTop>2pt</PaddingTop>
                         <PaddingBottom>2pt</PaddingBottom>
                       </Style>
@@ -179,6 +180,35 @@
                 </TablixCell>
                 <TablixCell>
                   <CellContents>
+                    <Textbox Name="Singer">
+                      <CanGrow>true</CanGrow>
+                      <KeepTogether>true</KeepTogether>
+                      <Paragraphs>
+                        <Paragraph>
+                          <TextRuns>
+                            <TextRun>
+                              <Value>=Fields!Singer.Value</Value>
+                              <Style />
+                            </TextRun>
+                          </TextRuns>
+                          <Style />
+                        </Paragraph>
+                      </Paragraphs>
+                      <rd:DefaultName>Singer</rd:DefaultName>
+                      <Style>
+                        <Border>
+                          <Style>None</Style>
+                        </Border>
+                        <PaddingLeft>2pt</PaddingLeft>
+                        <PaddingRight>2pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                    </Textbox>
+                  </CellContents>
+                </TablixCell>
+                <TablixCell>
+                  <CellContents>
                     <Textbox Name="Genre">
                       <CanGrow>true</CanGrow>
                       <KeepTogether>true</KeepTogether>
@@ -247,6 +277,7 @@
             <TablixMember />
             <TablixMember />
             <TablixMember />
+            <TablixMember />
           </TablixMembers>
         </TablixColumnHierarchy>
         <TablixRowHierarchy>
@@ -257,9 +288,9 @@
           </TablixMembers>
         </TablixRowHierarchy>
         <DataSetName>Songs</DataSetName>
-        <Top>0.51277in</Top>
-        <Height>0.22396in</Height>
-        <Width>7.16668in</Width>
+        <Top>0.47111in</Top>
+        <Height>0.25in</Height>
+        <Width>7.96875in</Width>
         <ZIndex>1</ZIndex>
         <Style>
           <Border>
@@ -268,15 +299,15 @@
         </Style>
       </Tablix>
     </ReportItems>
-    <Height>0.79041in</Height>
+    <Height>0.73833in</Height>
     <Style />
   </Body>
-  <Width>7.25001in</Width>
+  <Width>8in</Width>
   <Page>
-    <LeftMargin>0.5in</LeftMargin>
-    <RightMargin>0.5in</RightMargin>
-    <TopMargin>0.5in</TopMargin>
-    <BottomMargin>0.5in</BottomMargin>
+    <LeftMargin>1in</LeftMargin>
+    <RightMargin>1in</RightMargin>
+    <TopMargin>1in</TopMargin>
+    <BottomMargin>1in</BottomMargin>
     <Style />
   </Page>
   <AutoRefresh>0</AutoRefresh>
@@ -284,20 +315,15 @@
     <DataSource Name="SetGenerator">
       <DataSourceReference>SetGenerator</DataSourceReference>
       <rd:SecurityType>None</rd:SecurityType>
-      <rd:DataSourceID>97ff4bb8-6f60-4ec4-9716-c9b9d1b18502</rd:DataSourceID>
+      <rd:DataSourceID>6f8ff359-9c10-4968-81b1-e3bf1ea1bc48</rd:DataSourceID>
     </DataSource>
   </DataSources>
   <DataSets>
     <DataSet Name="Songs">
       <Query>
         <DataSourceName>SetGenerator</DataSourceName>
-        <QueryParameters>
-          <QueryParameter Name="@bandId">
-            <Value>4</Value>
-          </QueryParameter>
-        </QueryParameters>
-        <CommandType>StoredProcedure</CommandType>
-        <CommandText>GetAllSongs</CommandText>
+        <CommandText>EXEC GetAllSongs 1</CommandText>
+        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
         <Field Name="RowNumber">
@@ -338,5 +364,5 @@
   <Language>en-US</Language>
   <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
   <rd:ReportUnitType>Inch</rd:ReportUnitType>
-  <rd:ReportID>9727ba31-d730-42e3-b326-7274a2f0003a</rd:ReportID>
+  <rd:ReportID>a4978c99-b89b-4db0-91dd-5182ee794928</rd:ReportID>
 </Report>
