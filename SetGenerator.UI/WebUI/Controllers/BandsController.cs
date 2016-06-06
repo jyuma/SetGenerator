@@ -205,6 +205,7 @@ namespace SetGenerator.WebUI.Controllers
             _userRepository.DeleteUserPreferenceTableColumns(id);
             _userRepository.DeleteUserPreferenceTableMembers(id);
             _userRepository.DeleteUserBands(id);
+            _userRepository.UpdateDefaultBandIdAllUsers(id);
 
             if (_currentUser.DefaultBand != null)
             {

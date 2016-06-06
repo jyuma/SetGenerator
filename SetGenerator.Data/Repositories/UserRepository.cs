@@ -31,6 +31,9 @@ namespace SetGenerator.Data.Repositories
         void DeleteUserPreferenceTableMember(int userId, int memberId);
         void DeleteUserPreferenceTableMembers(int userId, int bandId);
         void DeleteUserPreferenceTableMembers(int bandId);
+
+        // DefaultBandId
+        void UpdateDefaultBandIdAllUsers(int bandId);
     }
 
     public class UserRepository : RepositoryBase<User>, IUserRepository
@@ -614,6 +617,27 @@ namespace SetGenerator.Data.Repositories
                 using (var transaction = Session.BeginTransaction())
                 {
                     Session.Delete(userPreferenceTableMember);
+                    transaction.Commit();
+                }
+            }
+        }
+
+        // UpdateDefaultBandIds
+
+        public void UpdateDefaultBandIdAllUsers(int bandId)
+        {
+            var users = Session.QueryOver<User>()
+                .Where(x => x.DefaultBand != null)
+                .List();
+
+            foreach (var user in users)
+            {
+                if (user.DefaultBand.Id != bandId) continue;
+
+                using (var transaction = Session.BeginTransaction())
+                {
+                    user.DefaultBand = null;
+                    Session.Update(user);
                     transaction.Commit();
                 }
             }

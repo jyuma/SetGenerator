@@ -14,6 +14,11 @@ namespace SetGenerator.Data.Repositories
         ArrayList GetNameArrayList(int bandId);
         IEnumerable<Instrument> GetInstruments(int id);
         int AddRemoveMemberInstruments(int memberId, int[] instrumentIds);
+        void DeleteSongMemberInstruments(int memberId);
+        void DeleteMemberInstruments(int memberId);
+        void DeleteMemberSetSongs(int bandId, int memberId);
+        void DeleteMemberSongs(int bandId, int memberId);
+        void DeleteUserPreferenceTableMembers(int memberId);
     }
 
     public class MemberRepository : RepositoryBase<Member>, IMemberRepository
@@ -118,6 +123,96 @@ namespace SetGenerator.Data.Repositories
             
 
             return id;
+        }
+
+        public void DeleteSongMemberInstruments(int memberId)
+        {
+            var songMemberInstruments = Session.QueryOver<SongMemberInstrument>()
+                .Where(x => x.Member.Id == memberId)
+                .List();
+
+            foreach (var songMemberInstrument in songMemberInstruments)
+            {
+                using (var transaction = Session.BeginTransaction())
+                {
+                    Session.Delete(songMemberInstrument);
+                    transaction.Commit();
+                }
+            }
+        }
+
+        public void DeleteMemberSetSongs(int bandId, int memberId)
+        {
+            Song songTableAlias = null;
+
+            var bandSetSongs = Session.QueryOver<SetSong>()
+                .JoinAlias(x => x.Song, () => songTableAlias)
+                .Where(x => x.Song.Id == songTableAlias.Id)
+                .Where(x => songTableAlias.Band.Id == bandId)
+                .Where(x => songTableAlias.Singer != null)
+                .List();
+
+            foreach (var bandSetSong in bandSetSongs)
+            {
+                if (bandSetSong.Song.Singer.Id != memberId) continue;
+
+                using (var transaction = Session.BeginTransaction())
+                {
+                    Session.Delete(bandSetSong);
+                    transaction.Commit();
+                }
+            }
+        }
+
+        public void DeleteMemberSongs(int bandId, int memberId)
+        {
+            var bandSongs = Session.QueryOver<Song>()
+              .Where(x => x.Band.Id == bandId)
+              .Where(x => x.Singer != null)
+              .List();
+
+            foreach (var bandSong in bandSongs)
+            {
+                if (bandSong.Singer.Id != memberId) continue;
+
+                using (var transaction = Session.BeginTransaction())
+                {
+                    Session.Delete(bandSong);
+                    transaction.Commit();
+                }
+            }
+        }
+
+        public void DeleteMemberInstruments(int memberId)
+        {
+            var memberInstruments = Session.QueryOver<MemberInstrument>()
+                .Where(x => x.Member.Id == memberId)
+                .List();
+           
+            foreach (var memberInstrument in memberInstruments)
+            {
+                using (var transaction = Session.BeginTransaction())
+                {
+                    Session.Delete(memberInstrument);
+                    transaction.Commit();
+                }
+            }
+        }
+
+        public void DeleteUserPreferenceTableMembers(int memberId)
+        {
+            var userPreferenceTableMembers = Session.QueryOver<UserPreferenceTableMember>()
+                .Where(x => x.Member.Id == memberId)
+                .List();
+
+            foreach (var userPreferenceTableMember in userPreferenceTableMembers)
+            {
+                using (var transaction = Session.BeginTransaction())
+                {
+                    Session.Delete(userPreferenceTableMember);
+                    transaction.Commit();
+                }
+            }
         }
 
         private int AddMemberInstruments(Member member, IEnumerable<int> instrumentIds)

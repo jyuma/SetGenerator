@@ -18,6 +18,7 @@ namespace SetGenerator.WebUI.Controllers
         private readonly IBandRepository _bandRepository;
         private readonly IMemberRepository _memberRepository;
         private readonly IInstrumentRepository _instrumentRepository;
+        private readonly ISongRepository _songRepository;
         private readonly IValidationRules _validationRules;
         private readonly User _currentUser;
         private readonly CommonSong _common;
@@ -26,6 +27,7 @@ namespace SetGenerator.WebUI.Controllers
                                 IBandRepository bandRepository,
                                 IMemberRepository memberRepository,
                                 IInstrumentRepository instrumentRepository,
+                                ISongRepository songRepository,
                                 IValidationRules validationRules,
                                 IAccount account)
         {
@@ -33,6 +35,7 @@ namespace SetGenerator.WebUI.Controllers
             _bandRepository = bandRepository;
             _memberRepository = memberRepository;
             _instrumentRepository = instrumentRepository;
+            _songRepository = songRepository;
             _validationRules = validationRules;
 
             var currentUserName = GetCurrentSessionUser();
@@ -63,20 +66,25 @@ namespace SetGenerator.WebUI.Controllers
 
         private IEnumerable<MemberDetail> GetMemberList(int bandId)
         {
-            var memberList = _memberRepository.GetByBandId(bandId);
+            var members = _memberRepository.GetByBandId(bandId);
+            var songMemberInstruments = _songRepository.GetByBandId(bandId).SelectMany(x => x.SongMemberInstruments);
 
-            var result = memberList.Select(member => new MemberDetail
+            var list = members
+                .GroupJoin( songMemberInstruments, m => m.Id, 
+                            smi => smi.Member.Id,
+                (member, songMemberInstrument) => new MemberDetail
             {
                 Id = member.Id,
                 BandId = member.Band.Id,
                 FirstName = member.FirstName,
                 LastName = member.LastName,
                 Alias = member.Alias,
+                IsSongMemberInstrument = songMemberInstrument.Any(),
                 DefaultInstrumentId = (member.DefaultInstrument != null) ? member.DefaultInstrument.Id : 0,
             }).OrderBy(x => x.FirstName)
-                .ThenBy(x => x.LastName).ToArray();
+              .ThenBy(x => x.LastName).ToArray();
 
-            return result;
+            return list;
         }
 
         public string GetCurrentSessionUser()
@@ -192,6 +200,12 @@ namespace SetGenerator.WebUI.Controllers
         public JsonResult Delete(int id)
         {
             var bandId = _memberRepository.Get(id).Band.Id;
+
+            _memberRepository.DeleteMemberSetSongs(bandId, id);
+            _memberRepository.DeleteMemberSongs(bandId, id);
+            _memberRepository.DeleteSongMemberInstruments(id);
+            _memberRepository.DeleteMemberInstruments(id);
+            _memberRepository.DeleteUserPreferenceTableMembers(id);
             _memberRepository.Delete(id);
 
             return Json(new

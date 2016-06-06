@@ -63,14 +63,19 @@
             </thead>
 
             <tbody data-bind="foreach: membersTable">
-                <tr data-bind="click: $parent.highlightRow, attr: {id: 'row_' +  id}">
-                    <td><a data-bind="attr: { href: '#' }, click: $parent.showDeleteDialog, css: 'glyphicon glyphicon-remove'"></a></td>
-                    <td><a data-bind="attr: { href: '#' }, click: $parent.showEditDialog, css: 'glyphicon glyphicon-pencil'"></a></td>
-                    <td><a data-bind="attr: { href: '#' }, click: $parent.showMemberInstrumentEditDialog, css: 'glyphicon glyphicon-music'"></a></td>
-                    <!-- ko foreach: $parent.columns -->
-                    <td data-bind="text: (dataMember.indexOf('updatedate') >= 0) ? moment($parent[dataMember]).format('ll') : $parent[dataMember], visible: isVisible, css: { 'col-small': dataMember.indexOf('updateuser') >= 0 || dataMember.indexOf('updatedate') >= 0 }"></td>
-                    <!-- /ko -->
-                </tr>
+            <tr data-bind="click: $parent.highlightRow, attr: {id: 'row_' +  id}">
+                <!-- ko if: !issongmemberinstrument -->
+                <td><a href="#" data-bind="click: $parent.showDeleteDialog, css: 'glyphicon glyphicon-remove'"></a></td>
+                <!-- /ko -->
+                <!-- ko if: issongmemberinstrument -->
+                <td><a href="#" data-bind="click: $parent.showDeleteDialog, css: 'glyphicon glyphicon-remove'"></a></td>
+                <!-- /ko -->
+                <td><a data-bind="attr: { href: '#' }, click: $parent.showEditDialog, css: 'glyphicon glyphicon-pencil'"></a></td>
+                <td><a data-bind="attr: { href: '#' }, click: $parent.showMemberInstrumentEditDialog, css: 'glyphicon glyphicon-music'"></a></td>
+                <!-- ko foreach: $parent.columns -->
+                <td data-bind="text: (dataMember.indexOf('updatedate') >= 0) ? moment($parent[dataMember]).format('ll') : $parent[dataMember], visible: isVisible, css: { 'col-small': dataMember.indexOf('updateuser') >= 0 || dataMember.indexOf('updatedate') >= 0 }"></td>
+                <!-- /ko -->
+            </tr>
             </tbody>
         </table>
     </div>

@@ -35,13 +35,14 @@
                 });
             }
 
-            function Member(id, firstname, lastname, alias, defaultinstrumentid, updateuser, updatedate) {
+            function Member(id, firstname, lastname, alias, issongmemberinstrument, defaultinstrumentid, updateuser, updatedate) {
                 var self = this;
 
                 self.id = id;
                 self.firstname = firstname;
                 self.lastname = lastname;
                 self.alias = alias;
+                self.issongmemberinstrument = issongmemberinstrument;
                 self.defaultinstrument = getValue(lists.InstrumentArrayList, defaultinstrumentid, "Display", "Value");
                 self.updateuser = updateuser;
                 self.updatedate = updatedate;
@@ -81,7 +82,7 @@
                 });
 
                 function pushMember(value) {
-                    self.members.push(new Member(value.Id, value.FirstName, value.LastName, value.Alias, value.DefaultInstrumentId, value.UserUpdate, value.DateUpdate));
+                    self.members.push(new Member(value.Id, value.FirstName, value.LastName, value.Alias, value.IsSongMemberInstrument, value.DefaultInstrumentId, value.UserUpdate, value.DateUpdate));
                 };
 
                 self.selectedMember(self.members()[0]);

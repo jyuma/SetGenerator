@@ -149,7 +149,7 @@ namespace SetGenerator.Data.Repositories
 
         private void DeleteBandSetSongs(int bandId)
         {
-            Member songTableAlias = null;
+            Song songTableAlias = null;
 
             var setSongs = Session.QueryOver<SetSong>()
                 .JoinAlias(x => x.Song, () => songTableAlias)
