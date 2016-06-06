@@ -67,19 +67,15 @@ namespace SetGenerator.WebUI.Controllers
         private IEnumerable<MemberDetail> GetMemberList(int bandId)
         {
             var members = _memberRepository.GetByBandId(bandId);
-            var songMemberInstruments = _songRepository.GetByBandId(bandId).SelectMany(x => x.SongMemberInstruments);
-
+            
             var list = members
-                .GroupJoin( songMemberInstruments, m => m.Id, 
-                            smi => smi.Member.Id,
-                (member, songMemberInstrument) => new MemberDetail
+                .Select(member => new MemberDetail
             {
                 Id = member.Id,
                 BandId = member.Band.Id,
                 FirstName = member.FirstName,
                 LastName = member.LastName,
                 Alias = member.Alias,
-                IsSongMemberInstrument = songMemberInstrument.Any(),
                 DefaultInstrumentId = (member.DefaultInstrument != null) ? member.DefaultInstrument.Id : 0,
             }).OrderBy(x => x.FirstName)
               .ThenBy(x => x.LastName).ToArray();

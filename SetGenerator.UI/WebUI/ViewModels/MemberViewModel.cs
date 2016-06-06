@@ -10,7 +10,6 @@ namespace SetGenerator.WebUI.ViewModels
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Alias { get; set; }
-        public bool IsSongMemberInstrument { get; set; }
         public int DefaultInstrumentId { get; set; }
     }
 

@@ -35,14 +35,13 @@
                 });
             }
 
-            function Member(id, firstname, lastname, alias, issongmemberinstrument, defaultinstrumentid, updateuser, updatedate) {
+            function Member(id, firstname, lastname, alias, defaultinstrumentid, updateuser, updatedate) {
                 var self = this;
 
                 self.id = id;
                 self.firstname = firstname;
                 self.lastname = lastname;
                 self.alias = alias;
-                self.issongmemberinstrument = issongmemberinstrument;
                 self.defaultinstrument = getValue(lists.InstrumentArrayList, defaultinstrumentid, "Display", "Value");
                 self.updateuser = updateuser;
                 self.updatedate = updatedate;
@@ -82,7 +81,7 @@
                 });
 
                 function pushMember(value) {
-                    self.members.push(new Member(value.Id, value.FirstName, value.LastName, value.Alias, value.IsSongMemberInstrument, value.DefaultInstrumentId, value.UserUpdate, value.DateUpdate));
+                    self.members.push(new Member(value.Id, value.FirstName, value.LastName, value.Alias, value.DefaultInstrumentId, value.UserUpdate, value.DateUpdate));
                 };
 
                 self.selectedMember(self.members()[0]);
@@ -162,7 +161,9 @@
 
                     dialog.custom.showModal({
                         title: "<span class='glyphicon glyphicon-remove'></span> Delete Member?",
-                        message: "<p>This will permanently delete the member <i>" + m.firstname + m.lastname + "</i>.</p>",
+                        message: "<p><b>Are you sure?</b><br\><br\>" +
+                            "This will permanently delete the member <i><b>" + m.firstname + " " + m.lastname + "</b></i>\n" +
+                            "including all songs where the member is the designated lead singer.</p>",
                         callback: function () {
                             return self.deleteMember(row.id);
                         },

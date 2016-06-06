@@ -64,12 +64,7 @@
 
             <tbody data-bind="foreach: membersTable">
             <tr data-bind="click: $parent.highlightRow, attr: {id: 'row_' +  id}">
-                <!-- ko if: !issongmemberinstrument -->
                 <td><a href="#" data-bind="click: $parent.showDeleteDialog, css: 'glyphicon glyphicon-remove'"></a></td>
-                <!-- /ko -->
-                <!-- ko if: issongmemberinstrument -->
-                <td><a href="#" data-bind="click: $parent.showDeleteDialog, css: 'glyphicon glyphicon-remove'"></a></td>
-                <!-- /ko -->
                 <td><a data-bind="attr: { href: '#' }, click: $parent.showEditDialog, css: 'glyphicon glyphicon-pencil'"></a></td>
                 <td><a data-bind="attr: { href: '#' }, click: $parent.showMemberInstrumentEditDialog, css: 'glyphicon glyphicon-music'"></a></td>
                 <!-- ko foreach: $parent.columns -->
