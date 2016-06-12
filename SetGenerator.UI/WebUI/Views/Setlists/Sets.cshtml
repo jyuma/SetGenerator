@@ -47,7 +47,7 @@
         </div>
         <!-- ko if: selectedSetNumber() === 0 -->
         <div class="set-songs-search">
-            <input class="form-control" type="text" placeholder="Title" data-bind="value: titleSearch, valueUpdate: 'keyup', style: { width: '150px' }" "/>
+            <input class="form-control" type="text" placeholder="Title" data-bind="value: titleSearch, valueUpdate: 'keyup', style: { width: '150px' }"/>
         </div>
         <!-- /ko -->
         <div class="set-songs-col-picker">
@@ -74,23 +74,28 @@
                 <!-- /ko -->
                 <!-- ko foreach: columns -->
                 <!-- ko if: !isMemberColumn -->
-                <th data-bind="style: { cursor: 'default' }, visible: isVisible, click: $parent.sort, attr: { id: 'song-col-' + dataMember }">
-                    <!-- ko if: $parent.selectedSetNumber() > 0 -->
+
+                <!-- ko if: $parent.selectedSetNumber() > 0 -->
+                <th data-bind="style: { cursor: 'default' }, visible: isVisible, attr: { id: 'song-col-' + dataMember }">
                     <span data-bind="text: title"></span>
-                    <!-- /ko -->
-                    <!-- ko if: $parent.selectedSetNumber() === 0 -->
-                    <a href="#" data-bind="text: title"></a>
-                    <!-- /ko -->
                 </th>
+                <!-- /ko -->
+
+                <!-- ko if: $parent.selectedSetNumber() === 0 -->
+                <th data-bind="style: { cursor: 'default' }, visible: isVisible, click: $parent.sort, attr: { id: 'song-col-' + dataMember }">
+                    <a href="#" data-bind="text: title"></a>
+                </th>
+                <!-- /ko -->
+
                 <!-- /ko -->
                 <!-- ko if: isMemberColumn > 0 -->
                 <th class="column-member" data-bind="visible: isVisible, click: $parent.sort">
-                    <!-- ko if: $parent.selectedSetNumber() > 0 -->
-                    <span data-bind="text: title"></span>
-                    <!-- /ko -->
-                    <!-- ko if: $parent.selectedSetNumber() === 0 -->
-                    <a href="#" data-bind="text: title"></a>
-                    <!-- /ko -->
+                <!-- ko if: $parent.selectedSetNumber() > 0 -->
+                <span data-bind="text: title"></span>
+                <!-- /ko -->
+                <!-- ko if: $parent.selectedSetNumber() === 0 -->
+                <a href="#" data-bind="text: title"></a>
+                <!-- /ko -->
                 </th>
                 <!-- /ko -->
                 <!-- /ko -->
